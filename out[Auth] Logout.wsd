@@ -1,7 +1,0 @@
-$startuml [Auth] Logout
- interface "[Auth] Logout"  <<action>> {
-            name: [Auth] Logout;
-            src: [Auth]
-            
-        } 
-@enduml
