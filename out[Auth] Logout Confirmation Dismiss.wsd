@@ -1,0 +1,7 @@
+$startuml [Auth] Logout Confirmation Dismiss
+ interface "[Auth] Logout Confirmation Dismiss"  <<action>> {
+            name: [Auth] Logout Confirmation Dismiss;
+            src: [Auth]
+            
+        } 
+@enduml

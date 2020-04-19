@@ -1,37 +1,38 @@
-import glob from 'glob';
+#!/usr/bin/env node
+/* eslint-disable @typescript-eslint/no-use-before-define */
+
+import log from 'loglevel';
 import yargs from 'yargs';
 
-const argv = yargs
+import { prepareTraceLogger } from '../src/utils/utils';
+
+yargs
   .usage('Usage: $0 <command> [options]')
-  .command('generate', 'generate plantUML diagram', {
-    year: {
-      description: 'the year to check for',
-      alias: 'g',
-      type: 'string',
-    }
-  })
-  .example('$0 generate -s "src/**/*.ts"', 'generate plantUML diagram for files')
-  .option('source', {
-    alias: 's',
-    description: ' Glob-like file pattern specifying the filepath for the source files',
-    type: 'string',
-    nargs: 1,
-    default: 'src/**/*.ts'
-  })
-  .option('outDir', {
-    alias: 'o',
-    description: 'Redirect output structure to the directory',
-    type: 'string',
-    nargs: 1,
+  .strict()
+  .commandDir('cmds', { extensions: getCommandFilesExtensionsForEnvironment() })
+  .option('log', {
+    alias: 'l',
+    default: 'DEBUG',
+    choices: ['TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', 'SILENT']
   })
   .help()
   .alias('help', 'h')
-  .epilog('copyright 2020')
+  .example('$0 generate -s "src/**/*.ts"', 'Generate plantUML diagram')
+  .demandCommand()
+  .wrap(72)
+  .middleware([prepare])
   .argv;
 
-const iterateFiles = (_err: Error | null, files: string[]): void => {
-  console.log(files);
-};
 
-// options is optional
-glob(argv.source, {}, iterateFiles );
+function getCommandFilesExtensionsForEnvironment(): string[] {
+  return __filename.endsWith('ts')  ? ['js', 'ts'] : ['js']
+}
+
+
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function prepare(argv: any): void {
+  log.setLevel(argv.log);  
+  log.debug('prepare - log level:', argv.log);
+  prepareTraceLogger();
+}
