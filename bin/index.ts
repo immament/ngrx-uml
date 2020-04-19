@@ -4,7 +4,7 @@
 import log from 'loglevel';
 import yargs from 'yargs';
 
-import { prepareTraceLogger } from '../src/utils/utils';
+import { getCommandFilesExtensionsForEnvironment, prepareTraceLogger } from '../src/utils/utils';
 
 yargs
   .usage('Usage: $0 <command> [options]')
@@ -22,12 +22,6 @@ yargs
   .wrap(72)
   .middleware([prepare])
   .argv;
-
-
-function getCommandFilesExtensionsForEnvironment(): string[] {
-  return __filename.endsWith('ts')  ? ['js', 'ts'] : ['js']
-}
-
 
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

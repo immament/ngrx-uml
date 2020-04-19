@@ -47,9 +47,10 @@ export function generateDiagram(
     saveActions(actions, outDir, '/actions-with-references.json');
     saveReferences(actionsReferences, outDir, '/actions-references.json');
 
-    writeDiagramsToFiles(actions, outDir);
+    writeDiagramsToFiles(actions, outDir);    
 
     log.info(chalk.yellow(`Found ${actionsReferences.length} action's references`));
 
 }
+
 

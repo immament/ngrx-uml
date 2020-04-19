@@ -22,23 +22,22 @@ export function printRecursiveFrom(
 
 function iterateFiles(fileNames: string[]): void {
 
-
     fileNames.forEach(fileName => {
-        log.debug(fileName);
+        log.info('File:', fileName);
         const sourceFile = ts.createSourceFile(
             fileName,
             readFileSync(fileName).toString(),
             ts.ScriptTarget.ES2015,
         );
 
-        log.debug(chalk.blue('FILE: ', fileName));
+        log.info(chalk.blue('FILE: ', fileName));
         printRecursiveFrom(sourceFile, 0, sourceFile);
     });
 
 }
 
-export const print = (source: string, outDir: string): void => {
-    log.debug('print', source, outDir);
+export const printAst = (source: string): void => {
+    log.info('printAst', source);
     const files = globSync(source, {});
 
     iterateFiles(files);

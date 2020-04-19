@@ -28,6 +28,7 @@ export class Action implements PlantItem {
             --
             ${propsText || ''}
         }
+        
         `;
         if (withReferences) {
             diagramContent += this.referencesToPlantUml();

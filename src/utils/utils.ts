@@ -57,3 +57,15 @@ export function prepareTraceLogger(): void {
 export function getFileName(filePath?: string): string | undefined {
     return filePath && path.parse(filePath).name;
 }
+
+
+export function printProgress(progress: string): void{
+    process.stdout.clearLine(0);
+    process.stdout.cursorTo(0);
+    process.stdout.write(progress);
+}
+
+export function getCommandFilesExtensionsForEnvironment(): string[] {
+    return __filename.endsWith('ts')  ? ['js', 'ts'] : ['js']
+  }
+  
