@@ -46,7 +46,7 @@ export function createProgram(fileNames: string[], baseDir: string, configName: 
         useCaseSensitiveFileNames: true
     };
 
-    const compilerOptions = ts.parseJsonConfigFileContent(configFileRef.config, parseConfigHost, "./");
+    const compilerOptions = ts.parseJsonConfigFileContent(configFileRef.config, parseConfigHost, './');
 
     log.trace(chalk.yellow('CompilerOptions:'), compilerOptions.options);
     compilerOptions.options.baseUrl = baseDir;

@@ -1,6 +1,7 @@
-import { createAction, props } from '@ngrx/store';
+// @ts-nocheck
 
 import { Book } from '@example-app/books/models';
+import { createAction, props } from '@ngrx/store';
 
 /**
  * Add Book to Collection Action

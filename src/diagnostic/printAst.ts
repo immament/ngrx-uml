@@ -10,7 +10,7 @@ export function printRecursiveFrom(
 ): void {
 
     if (!ts.isSourceFile(node)) {
-        const indentation = " ".repeat(indentLevel);
+        const indentation = ' '.repeat(indentLevel);
         const syntaxKind = ts.SyntaxKind[node.kind];
         const nodeText = node.getText(sourceFile);
         log.debug(`${indentation}${chalk.yellow(syntaxKind)}: ${nodeText}`);
@@ -41,4 +41,4 @@ export const printAst = (source: string): void => {
     const files = globSync(source, {});
 
     iterateFiles(files);
-}
+};

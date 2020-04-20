@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { createAction, props } from '@ngrx/store';
 
 export const selectBook = createAction(

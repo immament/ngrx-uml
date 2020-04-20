@@ -12,7 +12,7 @@ export function searchActionsInFile(sourceFile: ts.SourceFile, typeChecker: ts.T
 
     function main(): ActionWithSymbol[] {
         // eslint-disable-next-line @typescript-eslint/no-use-before-define
-        ts.forEachChild(sourceFile, searchActionsInNode);
+        sourceFile.forEachChild(searchActionsInNode);
         return actions;
     }
 
@@ -104,6 +104,7 @@ export function searchActionsInFile(sourceFile: ts.SourceFile, typeChecker: ts.T
     }
 
     function searchActionsInNode(node: ts.Node): void {
+        log.trace('searchActionsInNode', node);
         switch (node.kind) {
             case ts.SyntaxKind.VariableDeclaration: {
                 checkIfVariableStatementIsAction(node as ts.VariableDeclaration);

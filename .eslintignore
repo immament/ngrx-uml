@@ -2,3 +2,4 @@ node_modules
 dist
 out
 test/test-files/
+test/**/*_data/

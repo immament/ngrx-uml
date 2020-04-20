@@ -1,6 +1,7 @@
-import { createAction, props } from '@ngrx/store';
+// @ts-nocheck
 
 import { Book } from '@example-app/books/models';
+import { createAction, props } from '@ngrx/store';
 
 export const loadBook = createAction(
   '[Book Exists Guard] Load Book',

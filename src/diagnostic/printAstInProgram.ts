@@ -37,7 +37,7 @@ export const printAstVariablesInProgram = (source: string,  baseDir: string, con
   const sourceFile = program.getSourceFile(fileName);
   const typeChecker = program.getTypeChecker();
   if (sourceFile) {
-    recursivelyPrintVariableDeclarations(sourceFile, sourceFile, typeChecker)
+    recursivelyPrintVariableDeclarations(sourceFile, sourceFile, typeChecker);
   }
-}
+};
 

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { createAction } from '@ngrx/store';
 
 /**

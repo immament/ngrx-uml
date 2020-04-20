@@ -12,13 +12,13 @@ import { searchActions } from './searchActions';
 
 function saveActions(actions: Action[], outDir: string, fileName: string): void {
     writeJsonToFile(actions,  outDir,  fileName, getKeyReplacer('references'));
-    log.info(`Actions saved to ${outDir}${fileName}`)
+    log.info(`Actions saved to ${outDir}${fileName}`);
 }
 
 
 function saveReferences(actionsReferences: ActionReference[], outDir: string, fileName: string): void {
     writeJsonToFile(actionsReferences,  outDir,  fileName, getKeyReplacer('action'));
-    log.info(`Action's references saved to ${outDir}${fileName}`)
+    log.info(`Action's references saved to ${outDir}${fileName}`);
 }
 
 

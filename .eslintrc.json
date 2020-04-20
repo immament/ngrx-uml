@@ -1,4 +1,5 @@
 {
+    "root": true,
     "env": {
         "es6": true,
         "node": true
@@ -27,6 +28,18 @@
             {
                 "argsIgnorePattern": "^_"
             }
+        ],
+        "semi": [
+            "error",
+            "always"
+        ],
+        "quotes": [
+            "warn",
+            "single",
+            {
+                "allowTemplateLiterals": true
+            }
         ]
-    }
+    },
+    "reportUnusedDisableDirectives": true
 }

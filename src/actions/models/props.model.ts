@@ -2,5 +2,5 @@
 
 export interface Props {
     name: string;
-    type: string;
+    type?: string;
 }
