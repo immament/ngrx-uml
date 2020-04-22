@@ -4,7 +4,7 @@ import ts from 'typescript';
 import { ActionWithSymbol } from '../../src/actions/models/action-with-symbol.model';
 import { Action } from '../../src/actions/models/action.model';
 import { CallExpression, NamedType, TypeLiteral } from '../../src/actions/models/type.model';
-import { searchActionsInFile } from '../../src/actions/searchActionsInFile';
+import searchActionsInFile from '../../src/actions/searchActionsInFile';
 
 describe('searchActionsInFile', () => {
     const base = path.join(__dirname, 'searchActionsFile_data');

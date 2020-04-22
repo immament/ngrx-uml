@@ -4,7 +4,7 @@ import log from 'loglevel';
 import ts from 'typescript';
 
 import { Action } from './models/action.model';
-import { searchActionsInFile } from './searchActionsInFile';
+import searchActionsInFile from './searchActionsInFile';
 
 export type ActionsMap = Map<ts.Symbol, Action>;
 
@@ -20,7 +20,9 @@ export function searchActions(program: ts.Program, checker: ts.TypeChecker): Act
 
     function search(sourceFile: ts.SourceFile): void {
         log.trace('search action in file: ' + sourceFile.fileName);
+
         const foundedActions = searchActionsInFile(sourceFile, checker);
+        
         if (foundedActions.length) {
             log.debug(chalk.yellow('END FILE: ', sourceFile.fileName, 'found: ', foundedActions.length));
             for (const actionWithSymbol of foundedActions) {

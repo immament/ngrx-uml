@@ -2,10 +2,11 @@ import { EOL } from 'os';
 
 import { getFileName } from '../../utils/utils';
 import { ActionReference } from './action-reference.model';
+import { ConvertedItem } from './convertet-item.model';
 import { PlantItem } from './plant-item.model';
 import { CallExpression, NamedType, TypeKind, TypeLiteral, TypeReference } from './type.model';
 
-export class Action implements PlantItem {
+export class Action implements PlantItem, ConvertedItem {
     variable?: string;
     filePath?: string;
     references?: ActionReference[];

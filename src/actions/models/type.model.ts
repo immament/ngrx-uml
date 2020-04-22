@@ -1,20 +1,23 @@
 import ts from 'typescript';
 
+import { ConvertedItem } from './convertet-item.model';
+
 export enum TypeKind {
     Unknown = ts.SyntaxKind.Unknown,
     TypeLiteral = ts.SyntaxKind.TypeLiteral,
     ExpressionWithTypeArguments = ts.SyntaxKind.ExpressionWithTypeArguments,
     TypeReference = ts.SyntaxKind.TypeReference,
     CallExpression = ts.SyntaxKind.CallExpression,
+    VariableDeclaration = ts.SyntaxKind.VariableDeclaration,
     TypeArgument = 1001
 }
 
-export class Type {
+export class BaseType {
     readonly kind: TypeKind = TypeKind.Unknown;
     readonly kindText: string = 'Unknown';
 }
 
-export class NamedType extends Type {
+export class NamedType extends BaseType implements ConvertedItem {
     readonly kind: TypeKind = TypeKind.Unknown;
     constructor(
         public readonly kindText: string,
@@ -29,7 +32,7 @@ export interface Property {
     type?: string;
 }
 
-export class TypeArgument extends Type {
+export class TypeArgument extends BaseType {
     readonly kind = TypeKind.TypeArgument;
     kindText = 'TypeArgument';
 }
@@ -50,7 +53,7 @@ export class TypeLiteral extends TypeArgument {
 }
 
 
-export class CallExpression extends Type {
+export class CallExpression extends BaseType {
     readonly kind = TypeKind.CallExpression;
     kindText = 'CallExpression';
 
