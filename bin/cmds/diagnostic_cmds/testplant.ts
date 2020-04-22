@@ -1,7 +1,7 @@
 import log from 'loglevel';
 import { Argv } from 'yargs';
 
-import { testPlantServer } from '../../../src/diagnostic/testPlantServer';
+import testPlantServer from '../../../src/diagnostic/testPlantServer';
 
 exports.command = 'testplant';
 exports.desc = 'Generate test diagram using plant server';
@@ -14,7 +14,7 @@ exports.builder = (yargs: Argv): unknown => {
             type: 'string',
             nargs: 1
         });
-}
+};
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 exports.handler = function (argv: any): void {
@@ -22,4 +22,4 @@ exports.handler = function (argv: any): void {
     log.debug('testplant', argv.outDir);
 
     testPlantServer(argv.outDir);
-}
+};

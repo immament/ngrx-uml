@@ -8,11 +8,18 @@ import { encode } from 'plantuml-encoder';
 import { writeToFile } from '../utils/utils';
 import { Action } from './models/action.model';
 
+// used to make links clickable in vscode terminal
+const makeClickableInTerminal = true;
+
 function removeiIlegalCharacters(name: string): string {
-    return name.replace(/[<>:"/\\|?*]/g, ' ');
+    
+    if (makeClickableInTerminal) {
+        name = name.replace(/[\s]/g, '-').replace(/[[\]]/g, '_').replace(/_-/g, '_');
+    }
+    return name.replace(/[<>:"/\\|?*]/g, '-');
 }
 
-function writeDiagramToFile(name: string, diagram: string, outDir: string): void {
+function writeWsdToFile(name: string, diagram: string, outDir: string): void {
 
     name = removeiIlegalCharacters(name);
     writeToFile(diagram, outDir, name + '.wsd');
@@ -21,13 +28,14 @@ function writeDiagramToFile(name: string, diagram: string, outDir: string): void
 
 export function requestImageFile(outDir: string, fileName: string, extension: string, plantuml: string): void {
 
+
     fileName = removeiIlegalCharacters(fileName);
+
     const encodedPlantuml = encode(plantuml);
 
-    // writeToFile(decode(encodedPlanuml), outDir, fileName + '.decoded.wsd');
-
-    const remotePath = `/plantuml/${extension}/${encodedPlantuml}`
+    const remotePath = `/plantuml/${extension}/${encodedPlantuml}`;
     log.trace(chalk.yellow(fileName + '`:'), remotePath);
+
 
     const filePath = path.format({
         dir: outDir, name: fileName, ext: '.' + extension
@@ -39,7 +47,7 @@ export function requestImageFile(outDir: string, fileName: string, extension: st
 
         const fileStream: WriteStream = createWriteStream(filePath);
         fileStream.once('close', () => {
-           log.debug('saved diagram image: ', chalk.cyan(filePath));
+            log.debug(`Saved diagram image: ${chalk.cyan(filePath)} `);
         });
 
         res.pipe(fileStream);
@@ -67,9 +75,9 @@ export function writeDiagramsToFiles(actions: Action[], outDir: string): void {
     for (const action of actions) {
         const diagramContent = action.toPlantUml(true);
         const diagram = createDiagram(action.name, diagramContent);
-        writeDiagramToFile(action.name, diagram, outDir);
-        const ext = 'png';
+        writeWsdToFile(action.name, diagram, path.join(outDir, 'wsd'));
 
+        const ext = 'png';
         requestImageFile(outDir, action.name, ext, diagram);
 
     }

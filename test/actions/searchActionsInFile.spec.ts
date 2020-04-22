@@ -1,10 +1,9 @@
-
-
 import path from 'path';
 import ts from 'typescript';
 
 import { ActionWithSymbol } from '../../src/actions/models/action-with-symbol.model';
 import { Action } from '../../src/actions/models/action.model';
+import { CallExpression, NamedType, TypeLiteral } from '../../src/actions/models/type.model';
 import { searchActionsInFile } from '../../src/actions/searchActionsInFile';
 
 describe('searchActionsInFile', () => {
@@ -22,7 +21,7 @@ describe('searchActionsInFile', () => {
             expect(actionWithSymbol.symbol.escapedName, 'symbol has correct name').toBe(expectedAction.variable);
         }
     }
-    
+
 
     it('Should find one action without props', () => {
 
@@ -63,20 +62,16 @@ describe('searchActionsInFile', () => {
 
         const expectedActions: Partial<Action>[] = [{
             name: '[Books] Remove Book',
-            props: undefined,
             variable: 'removeBook',
             filePath: testFile
         }, {
             name: '[Collection/Api] Load Collection',
-            props: undefined,
             variable: 'loadCollection',
             filePath: testFile
         }, {
             name: '[Collection/Api] Add book',
-            props: undefined,
             variable: 'addBook',
             filePath: testFile
-
         }];
 
         expectedSearchResult(testFile, result, expectedActions);
@@ -96,7 +91,11 @@ describe('searchActionsInFile', () => {
 
         const expectedActions: Partial<Action>[] = [{
             name: '[Heros] Load Heroes Success',
-            props: [{ name: 'error', type: 'any', }, { 'name': 'books', 'type': 'Book[]' }],
+            createActionArgs: [
+                new CallExpression('props', [
+                    new TypeLiteral([{ name: 'error', type: 'any', }, { 'name': 'books', 'type': 'Book[]' }])
+                ])
+            ],
             variable: 'loadHeroesSuccess',
             filePath: testFile
         }];
@@ -118,40 +117,51 @@ describe('searchActionsInFile', () => {
 
         const expectedActions: Partial<Action>[] = [{
             name: '[Books] Remove Book',
-            props: [{
-                'name': 'silent',
-                'type': 'boolean',
-            }, {
-                'name': 'clear',
-                'type': undefined,
-            }, {
-                'name': 'book',
-                'type': 'Book',
-            }, {
-                'name': 'options',
-                'type': '{}',
-            }, {
-                'name': 'options',
-                'type': '2',
-            }],
+            createActionArgs: [
+                new CallExpression('props', [
+                    new TypeLiteral([{
+                        'name': 'silent',
+                        'type': 'boolean',
+                    }, {
+                        'name': 'clear',
+                        'type': undefined,
+                    }, {
+                        'name': 'book',
+                        'type': 'Book',
+                    }, {
+                        'name': 'options',
+                        'type': '{}',
+                    }, {
+                        'name': 'options',
+                        'type': '2',
+                    }])
+                ])
+            ],
             variable: 'removeBook',
             filePath: testFile
         }, {
             name: '[Collection/Api] Load Collection',
-            props: [{
-                'name': 'id',
-                'type': 'string',
-            }],
+            createActionArgs: [
+                new CallExpression('props', [
+                    new TypeLiteral([{
+                        'name': 'id',
+                        'type': 'string',
+                    }])
+                ])
+            ],
             variable: 'loadCollection',
             filePath: testFile
         }, {
             name: '[Collection/Api] Add book',
-            props: [],
             variable: 'addBook',
-            filePath: testFile
+            filePath: testFile,
+            createActionArgs: [
+                new CallExpression('props', [
+                    new TypeLiteral([])
+                ])
+            ]
         }, {
             name: '[Heroes Page] Add Hero',
-            props: undefined,
             variable: 'addHero',
             filePath: testFile
 
@@ -174,60 +184,95 @@ describe('searchActionsInFile', () => {
 
         const expectedActions: Partial<Action>[] = [{
             name: '[Collection/API] Load Books Success',
-            props: [{
-                'name': 'books',
-                'type': 'Book[]'
-            }],
+            createActionArgs: [
+                new CallExpression('props', [
+                    new TypeLiteral([{
+                        'name': 'books',
+                        'type': 'Book[]'
+                    }])])
+            ],
             variable: 'loadBooksSuccess',
             filePath: testFile
         }, {
             name: '[Collection/API] Load Books Failure',
-            props: [{
-                'name': 'error',
-                'type': 'any',
-            }],
+            createActionArgs: [
+                new CallExpression('props', [
+                    new TypeLiteral([{
+                        'name': 'error',
+                        'type': 'any',
+                    }])
+                ])
+            ],
             variable: 'loadBooksFailure',
             filePath: testFile
         }, {
             name: '[Collection/API] Add Book Success',
-            props: [{
-                'name': 'book',
-                'type': 'Book',
-            }],
+            createActionArgs: [
+                new CallExpression('props', [
+                    new TypeLiteral([{
+                        'name': 'book',
+                        'type': 'Book',
+                    }])
+                ])
+            ],
             variable: 'addBookSuccess',
             filePath: testFile
         }, {
             name: '[Collection/API] Add Book Failure',
-            props: [{
-                'name': 'book',
-                'type': 'Book',
-            }],
+            createActionArgs: [
+                new CallExpression('props', [
+                    new TypeLiteral([{
+                        'name': 'book',
+                        'type': 'Book',
+                    }])
+                ])
+            ],
             variable: 'addBookFailure',
             filePath: testFile
         }, {
             name: '[Collection/API] Remove Book Success',
-            props: [{
-                'name': 'book',
-                'type': 'Book',
-            }],
+            createActionArgs: [
+                new CallExpression('props', [
+                    new TypeLiteral([{
+                        'name': 'book',
+                        'type': 'Book',
+                    }])
+                ])
+            ],
+
             variable: 'removeBookSuccess',
             filePath: testFile
         }, {
             name: '[Collection/API] Remove Book Failure',
-            props: [],
             variable: 'removeBookFailure',
-            filePath: testFile
+            filePath: testFile,
+            createActionArgs: [
+                new CallExpression('props', [
+                    new TypeLiteral([])
+                ])]
         }];
 
         expectedSearchResult(testFile, result, expectedActions);
     });
 
 
+    // let startTime: number, endTime: number;
+
+    // function start(): void {
+    //     startTime = new Date().getTime();
+    // }
+
+    // function end(): void {
+    //     endTime = new Date().getTime();
+    //     const timeDiff = endTime - startTime; //in ms
+    // }
+
     it('Should find one action with Type in props', () => {
 
         const testFile = path.join(base, 'one-action-with-type-in-props.actions.ts');
 
         const program = ts.createProgram([testFile], {});
+
         const typeChecker = program.getTypeChecker();
         const sourceFile = program.getSourceFile(testFile);
 
@@ -237,7 +282,20 @@ describe('searchActionsInFile', () => {
 
         const expectedActions = [{
             name: '[Heros] Load Heroes Success',
-            props: undefined, // TODO
+            'createActionArgs':  [
+                      {
+                       'kind': 196,
+                       'kindText': 'CallExpression',
+                       'name': 'props',
+                       'typeArguments': [
+                          {
+                           'kind': 169,
+                           'kindText': 'TypeReference',
+                           'name': 'Heroes',
+                         },
+                       ],
+                     },
+                   ],
             variable: 'loadHeroesSuccess',
             filePath: testFile
         }];
@@ -256,20 +314,18 @@ describe('searchActionsInFile', () => {
         const typeChecker = program.getTypeChecker();
         const sourceFile = program.getSourceFile(testFile);
 
-        expect(sourceFile).toBeTruthy();
+        expect(sourceFile, 'program returns source file').toBeTruthy();
 
         const result = searchActionsInFile(sourceFile!, typeChecker);
 
         const expectedActions = [{
             name: '[Heros] Load Heroes Success',
-            props: [], // TODO
+            createActionArgs: [new NamedType('ArrowFunction')],
             variable: 'loadHeroesSuccess',
             filePath: testFile
         }];
 
         expectedSearchResult(testFile, result, expectedActions);
-
-
     });
 
     it('Should find ZERO actions', () => {
@@ -280,7 +336,7 @@ describe('searchActionsInFile', () => {
         const typeChecker = program.getTypeChecker();
         const sourceFile = program.getSourceFile(testFile);
 
-        expect(sourceFile).toBeTruthy();
+        expect(sourceFile, 'program returns source file').toBeTruthy();
 
         const result = searchActionsInFile(sourceFile!, typeChecker);
 
@@ -290,8 +346,4 @@ describe('searchActionsInFile', () => {
         expect(result.length, 'found zero actions').toBe(expectedActionsCount);
 
     });
-
-
-
-
 });

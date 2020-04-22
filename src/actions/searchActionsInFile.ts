@@ -2,10 +2,12 @@
 import log from 'loglevel';
 import ts from 'typescript';
 
-import { getCallExpressionName } from '../utils/tsutils';
+import { getCallExpressionName, syntaxKindText } from '../utils/tsutils';
 import { ActionWithSymbol } from './models/action-with-symbol.model';
 import { Action } from './models/action.model';
-import { Props } from './models/props.model';
+import {
+    CallExpression, NamedType, Property, Type, TypeArgument, TypeLiteral, TypeReference
+} from './models/type.model';
 
 export function searchActionsInFile(sourceFile: ts.SourceFile, typeChecker: ts.TypeChecker): ActionWithSymbol[] {
     const actions: ActionWithSymbol[] = [];
@@ -22,51 +24,58 @@ export function searchActionsInFile(sourceFile: ts.SourceFile, typeChecker: ts.T
         return getCallExpressionName(callExpression) === 'createAction';
     }
 
-    function propertySignatureToProps(property: ts.PropertySignature): Props {
-
+    function propertySignatureToProperty(property: ts.PropertySignature): Property {
         return {
             name: property.name.getText(sourceFile),
             type: property.type && property.type.getText(sourceFile)
-        } as Props;
+        };
     }
 
-    function getPropsMembers(arg: ts.TypeLiteralNode): Props[] {
-        const props = arg.members.map((member) => {
+    function convertTypeLiteral(arg: ts.TypeLiteralNode): TypeLiteral {
+        const properties = arg.members.map((member) => {
             if (ts.isPropertySignature(member)) {
-                return propertySignatureToProps(member);
+                return propertySignatureToProperty(member);
             }
+
             return;
-        }).filter(p => !!p) as Props[];
-        return props;
+        }).filter(p => !!p) as Property[];
+        return new TypeLiteral(properties);
     }
 
-    function extractProps(callExpression: ts.CallExpression): Props[] | undefined {
-        if (getCallExpressionName(callExpression) !== 'props') {
-            return;
-        }
-        const props = [];
+    function extractTypeArguments(callExpression: ts.CallExpression): TypeArgument[] | undefined {
+
+        const typeArguments = [];
+
         if (callExpression.typeArguments) {
             for (const typeArgument of callExpression.typeArguments) {
                 if (ts.isTypeLiteralNode(typeArgument)) {
-                    props.push(...getPropsMembers(typeArgument));
+                    typeArguments.push(convertTypeLiteral(typeArgument));
+                } else if (ts.isTypeReferenceNode(typeArgument)) {
+                    typeArguments.push(new TypeReference(typeArgument.getText(sourceFile)));
+                } else {
+                    typeArguments.push(new NamedType(  syntaxKindText(typeArgument) ));
                 }
             }
         }
-        return props;
+        return typeArguments;
     }
 
-    function extractCreateActionProps(args: ts.Expression[]): Props[] | undefined {
+    function extractCreateActionArgs(args: ts.Expression[]): Type[] | undefined {
         if (!args) {
             return;
         }
+        const convertedArgs: Type[] = [];
+        //  const convertedArgs = []
         for (const arg of args) {
             if (ts.isCallExpression(arg)) {
-                if (getCallExpressionName(arg) === 'props') {
-                    return extractProps(arg);
-                }
+                const callExpressionName = getCallExpressionName(arg);
+                convertedArgs.push(new CallExpression(callExpressionName, extractTypeArguments(arg)));
+            } else {
+                const name = ts.isIdentifier(arg) ? arg.text : undefined;
+                convertedArgs.push(new NamedType(syntaxKindText(arg), name));
             }
         }
-        return;
+        return convertedArgs.length > 0 ? convertedArgs : undefined;
     }
 
 
@@ -76,7 +85,7 @@ export function searchActionsInFile(sourceFile: ts.SourceFile, typeChecker: ts.T
             let action: Action;
             if (ts.isStringLiteral(nameArg)) {
                 action = new Action(nameArg.text);
-                action.props = extractCreateActionProps(args);
+                action.createActionArgs = extractCreateActionArgs(args);
                 return action;
             }
         }

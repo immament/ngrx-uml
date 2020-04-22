@@ -6,11 +6,9 @@ export function syntaxKindText(element: { kind: ts.SyntaxKind }): string {
     return ts.SyntaxKind[element.kind];
 }
 
-export function getCallExpressionName(callExpression: ts.CallExpression): string | null {
-    return ts.isIdentifier(callExpression.expression) ? callExpression.expression.text : null;
+export function getCallExpressionName(callExpression: ts.CallExpression): string | undefined {
+    return ts.isIdentifier(callExpression.expression) ? callExpression.expression.text : undefined;
 }
-
-
 
 function readConfigFile(baseDir: string, configName: string): {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -20,7 +18,7 @@ function readConfigFile(baseDir: string, configName: string): {
     const configFileName = ts.findConfigFile(baseDir, ts.sys.fileExists, configName);
 
     if (!configFileName) {
-        console.error(`Can't file config file`);
+        log.error(`Can't file config file`);
         throw new Error(`Can't file config file`);
     }
 

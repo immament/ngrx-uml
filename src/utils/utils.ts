@@ -18,7 +18,7 @@ export function getKeyReplacer(keyToReplace: string) {
             return undefined;
         }
         return value;
-    }
+    };
     
 }
 
@@ -66,6 +66,6 @@ export function printProgress(progress: string): void{
 }
 
 export function getCommandFilesExtensionsForEnvironment(): string[] {
-    return __filename.endsWith('ts')  ? ['js', 'ts'] : ['js']
+    return __filename.endsWith('ts')  ? ['js', 'ts'] : ['js'];
   }
   

@@ -29,7 +29,7 @@ exports.builder = (yargs: Argv): unknown => {
         type: 'string',
         default: 'tsconfig.json'
     });
-}
+};
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 exports.handler = function (argv: any): void {
@@ -41,4 +41,4 @@ exports.handler = function (argv: any): void {
         tsConfig: argv.tsConfig
     }
     );
-}
+};

@@ -14,10 +14,10 @@ exports.builder = (yargs: Argv): unknown => {
             nargs: 1,
             default: 'src/index.ts'
         });
-}
+};
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 exports.handler = function (argv: any): void {
     log.debug('AST');
     printAst(argv.source);
-}
+};

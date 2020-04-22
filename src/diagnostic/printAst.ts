@@ -1,22 +1,22 @@
 import chalk from 'chalk';
 import { readFileSync } from 'fs';
 import log from 'loglevel';
+import { EOL } from 'os';
 import ts from 'typescript';
 
 import { globSync } from '../utils/glob';
 
-export function printRecursiveFrom(
-    node: ts.Node, indentLevel: number, sourceFile: ts.SourceFile
+export function printAstRecursiveFrom(
+    node: ts.Node, sourceFile: ts.SourceFile, indentLevel: number, lines: string[]
 ): void {
-
     if (!ts.isSourceFile(node)) {
         const indentation = ' '.repeat(indentLevel);
         const syntaxKind = ts.SyntaxKind[node.kind];
         const nodeText = node.getText(sourceFile);
-        log.debug(`${indentation}${chalk.yellow(syntaxKind)}: ${nodeText}`);
+        lines.push(`${indentation}${chalk.yellow(syntaxKind)}: ${nodeText}`);
     }
     node.forEachChild(child =>
-        printRecursiveFrom(child, indentLevel + 1, sourceFile)
+        printAstRecursiveFrom(child, sourceFile, indentLevel + 1, lines)
     );
 }
 
@@ -31,7 +31,9 @@ function iterateFiles(fileNames: string[]): void {
         );
 
         log.info(chalk.blue('FILE: ', fileName));
-        printRecursiveFrom(sourceFile, 0, sourceFile);
+        const lines: string[] = [];
+        printAstRecursiveFrom(sourceFile, sourceFile, 0,  lines);
+        log.info(lines.join(EOL));
     });
 
 }

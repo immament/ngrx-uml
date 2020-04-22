@@ -24,11 +24,11 @@ exports.builder = (yargs: Argv): unknown => {
             description: 'tsconfig file name with relative path from baseDir',
             type: 'string',
             default: 'tsconfig.json'
-        })
-}
+        });
+};
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 exports.handler = function (argv: any): void {
     log.debug('ast-program');
     printAstVariablesInProgram(argv.source, argv.baseDir, argv.tsConfig);
-}
+};

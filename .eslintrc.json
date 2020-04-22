@@ -39,7 +39,8 @@
             {
                 "allowTemplateLiterals": true
             }
-        ]
+        ],
+        "no-console": "warn"
     },
     "reportUnusedDisableDirectives": true
 }

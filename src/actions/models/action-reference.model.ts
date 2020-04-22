@@ -1,5 +1,5 @@
 import { Action } from './action.model';
-import { PlantItem } from './PlanItem';
+import { PlantItem } from './plant-item.model';
 
 export class ActionReference implements PlantItem {
     isCall?: boolean;
@@ -16,7 +16,7 @@ export class ActionReference implements PlantItem {
         const stereotyp = this.isCall ? '<< (D,orchid) dispatch >>' : '<< (L,orchid) listen >>';
 
         return `interface "${this.fileName} ${this.isCall ? 'D' : 'L'}" ${stereotyp} {
-            name: ${this.name}
+            name: ${this.name}ng 
             action: ${this.action && this.action.name}
             ${this.fileName ? `src: ${this.fileName}` : ''}
             ..
