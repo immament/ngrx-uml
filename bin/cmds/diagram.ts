@@ -33,7 +33,7 @@ exports.builder = (yargs: Argv): unknown => {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 exports.handler = function (argv: any): void {
-    log.info('Generate diagram command');
+    log.debug('Generate diagram..');
     generateDiagram({
         filesPattern: argv.files,
         outDir: argv.outDir,

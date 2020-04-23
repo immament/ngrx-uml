@@ -1,10 +1,12 @@
 import { EOL } from 'os';
 
+import { ConvertedItem } from '../../converters/models/convertet-item.model';
+import {
+    CallExpression, NamedType, TypeKind, TypeLiteral, TypeReference
+} from '../../converters/models/type.model';
 import { getFileName } from '../../utils/utils';
 import { ActionReference } from './action-reference.model';
-import { ConvertedItem } from './convertet-item.model';
 import { PlantItem } from './plant-item.model';
-import { CallExpression, NamedType, TypeKind, TypeLiteral, TypeReference } from './type.model';
 
 export class Action implements PlantItem, ConvertedItem {
     variable?: string;

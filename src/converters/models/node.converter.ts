@@ -1,7 +1,7 @@
 import ts from 'typescript';
 
-import { ConvertedItem } from '../../models/convertet-item.model';
 import { ConvertContext } from '../convert.context';
+import { ConvertedItem } from './convertet-item.model';
 
 export default abstract class NodeConverter {
 

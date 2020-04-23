@@ -47,7 +47,7 @@ export function requestImageFile(outDir: string, fileName: string, extension: st
 
         const fileStream: WriteStream = createWriteStream(filePath);
         fileStream.once('close', () => {
-            log.debug(`Saved diagram image: ${chalk.cyan(filePath)} `);
+            log.info(`Diagram image saved: ${chalk.cyan(filePath)} `);
         });
 
         res.pipe(fileStream);

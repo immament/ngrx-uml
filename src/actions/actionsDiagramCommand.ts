@@ -1,11 +1,10 @@
 import chalk from 'chalk';
 import log from 'loglevel';
-import ts from 'typescript';
 
+import { Converter } from '../converters/converter';
 import { globSync } from '../utils/glob';
 import { createProgram } from '../utils/tsutils';
 import { getKeyReplacer, writeJsonToFile } from '../utils/utils';
-import { Converter } from './converters/converter';
 import { SearchActionsConvertContextFactory } from './converters/search-actions-convert.context';
 import { findActionReferences } from './findActionReferences';
 import { writeDiagramsToFiles } from './mapToPlantUml';
@@ -15,13 +14,13 @@ import { ActionsMap } from './searchActions';
 
 function saveActions(actions: Action[], outDir: string, fileName: string): void {
     writeJsonToFile(actions,  outDir,  fileName, getKeyReplacer('references'));
-    log.info(`Actions saved to ${outDir}${fileName}`);
+    log.debug(`Actions saved to ${outDir}${fileName}`);
 }
 
 
 function saveReferences(actionsReferences: ActionReference[], outDir: string, fileName: string): void {
     writeJsonToFile(actionsReferences,  outDir,  fileName, getKeyReplacer('action'));
-    log.info(`Action's references saved to ${outDir}${fileName}`);
+    log.debug(`Action's references saved to ${outDir}${fileName}`);
 }
 
 
@@ -41,21 +40,17 @@ export function generateDiagram(
     const typeChecker = program.getTypeChecker();
     
     const converter = new Converter();
-    
     const actionsMap = converter.convert(new SearchActionsConvertContextFactory(), program, typeChecker) as ActionsMap;
 
+    log.info(chalk.yellow(`Found ${actionsMap.size} actions`));
     const actions = [...actionsMap.values()];
     saveActions(actions, outDir, '/actions.json');
 
-
     const actionsReferences = findActionReferences(program.getSourceFiles(), typeChecker, actionsMap);
-
-  
     saveActions(actions, outDir, '/actions-with-references.json');
     saveReferences(actionsReferences, outDir, '/actions-references.json');
 
-    writeDiagramsToFiles(actions, outDir);    
-
+    writeDiagramsToFiles(actions, outDir);
     log.info(chalk.yellow(`Found ${actionsReferences.length} action's references`));
 
 }

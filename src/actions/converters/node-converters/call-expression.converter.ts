@@ -1,12 +1,12 @@
 
 import ts from 'typescript';
 
+import { ConvertContext } from '../../../converters/convert.context';
+import { ConvertedItem } from '../../../converters/models/convertet-item.model';
+import NodeConverter from '../../../converters/models/node.converter';
+import { BaseType, CallExpression, TypeArgument } from '../../../converters/models/type.model';
 import { getCallExpressionName } from '../../../utils/tsutils';
 import { Action } from '../../models/action.model';
-import { ConvertedItem } from '../../models/convertet-item.model';
-import { BaseType, CallExpression, TypeArgument } from '../../models/type.model';
-import { ConvertContext } from '../convert.context';
-import NodeConverter from './node.converter';
 
 const createActionName = 'createAction';
 

@@ -1,11 +1,11 @@
 
 import ts from 'typescript';
 
+import { ConvertContext } from '../../../converters/convert.context';
+import { ConvertedItem } from '../../../converters/models/convertet-item.model';
+import NodeConverter from '../../../converters/models/node.converter';
+import { NamedType } from '../../../converters/models/type.model';
 import { syntaxKindText } from '../../../utils/tsutils';
-import { ConvertedItem } from '../../models/convertet-item.model';
-import { NamedType } from '../../models/type.model';
-import { ConvertContext } from '../convert.context';
-import NodeConverter from './node.converter';
 
 export class DefaultConverter extends NodeConverter {
 

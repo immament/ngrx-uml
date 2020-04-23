@@ -1,10 +1,10 @@
 import log from 'loglevel';
 import ts from 'typescript';
 
+import NodeConverter from '../../../converters/models/node.converter';
 import { ActionWithSymbol } from '../../models/action-with-symbol.model';
 import { Action } from '../../models/action.model';
 import { SearchActionsConvertContext } from '../search-actions-convert.context';
-import NodeConverter from './node.converter';
 
 export class VariableDeclarationConverter extends NodeConverter {
 
