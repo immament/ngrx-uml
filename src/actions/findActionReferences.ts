@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import chalk from 'chalk';
 import log from 'loglevel';
+import path from 'path';
 import ts from 'typescript';
 
 import { getFileName } from '../utils/utils';
@@ -33,8 +34,9 @@ export function findActionReferences(
             if (symbol) {
                 const action = actionsMap.get(symbol);
                 if (action) {
-                    log.debug(`FOUND ACTION: "${chalk.yellow(action.name)}" in ${node.getSourceFile().fileName}`);
-                    log.debug('name:', node.getText());
+                    const fileName = path.basename(node.getSourceFile().fileName );
+                    log.trace(`Found Action: "${chalk.yellow(action.name)}" in ${fileName}`);
+                    log.trace('name:', node.getText());
                     actionsReferences.push(serializeActionUse(action, node, symbol));
                     return;
                 }

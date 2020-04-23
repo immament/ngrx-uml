@@ -1,11 +1,11 @@
 
 import ts from 'typescript';
 
-import { getCallExpressionName } from '../../utils/tsutils';
-import { ConvertContext } from '../convert-context';
-import { Action } from '../models/action.model';
-import { ConvertedItem } from '../models/convertet-item.model';
-import { BaseType, CallExpression, TypeArgument } from '../models/type.model';
+import { getCallExpressionName } from '../../../utils/tsutils';
+import { Action } from '../../models/action.model';
+import { ConvertedItem } from '../../models/convertet-item.model';
+import { BaseType, CallExpression, TypeArgument } from '../../models/type.model';
+import { ConvertContext } from '../convert.context';
 import NodeConverter from './node.converter';
 
 const createActionName = 'createAction';
@@ -40,7 +40,7 @@ export class CallExpressionConverter extends NodeConverter {
         if (callExpression.typeArguments) {
             for (const typeArgument of callExpression.typeArguments) {
 
-                const convertedTypeArgument  = context.convertNode(typeArgument, true);
+                const convertedTypeArgument  = context.converter.convertNode(context, typeArgument, true);
                 if(convertedTypeArgument instanceof TypeArgument) {
                     typeArguments.push(convertedTypeArgument);
                 }
@@ -56,7 +56,7 @@ export class CallExpressionConverter extends NodeConverter {
         const convertedArgs: BaseType[] = [];
 
         for (const arg of args) {
-            const convertedArg = context.convertNode(arg, true);
+            const convertedArg = context.converter.convertNode(context, arg, true);
             if(convertedArg instanceof BaseType) {
                 convertedArgs.push(convertedArg);
             }

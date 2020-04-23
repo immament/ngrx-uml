@@ -1,93 +1,100 @@
 import path from 'path';
 import ts from 'typescript';
 
-import { ActionWithSymbol } from '../../src/actions/models/action-with-symbol.model';
+import { Converter } from '../../src/actions/converters/converter';
+import {
+    SearchActionsConvertContextFactory
+} from '../../src/actions/converters/search-actions-convert.context';
 import { Action } from '../../src/actions/models/action.model';
 import { CallExpression, NamedType, TypeLiteral } from '../../src/actions/models/type.model';
-import searchActionsInFile from '../../src/actions/searchActionsInFile';
 
-describe('searchActionsInFile', () => {
-    const base = path.join(__dirname, 'searchActionsFile_data');
+describe('SearchActionsConverter', () => {
+    const base = path.join(__dirname, 'search-actions-converter_data');
 
-    function expectedSearchResult(testFile: string, result: ActionWithSymbol[], expectedActions: Partial<Action>[]): void {
+    function expectedSearchResult(testFile: string, actionsMap: Map<ts.Symbol, Action>, expectedActions: Partial<Action>[]): void {
 
-        expect(result, 'search result is defined').toBeTruthy();
-        expect(result.length, 'found expected actions count').toBe(expectedActions.length);
-        const resultiterator = result.values();
+        expect(actionsMap, 'search actionsMap is defined').toBeTruthy();
+        expect(actionsMap.size, 'found expected actions count').toBe(expectedActions.length);
+        const resultIterator = actionsMap.entries();
         for (const expectedAction of expectedActions) {
-            const actionWithSymbol = resultiterator.next().value as ActionWithSymbol;
-            expect(actionWithSymbol.action, 'Action equal').toEqual(expectedAction);
-            expect(actionWithSymbol.symbol, 'action contain symbol').toBeTruthy();
-            expect(actionWithSymbol.symbol.escapedName, 'symbol has correct name').toBe(expectedAction.variable);
+            const [symbol, action] = resultIterator.next().value;
+            expect(action, 'Action equal').toEqual(expectedAction);
+            expect(symbol, 'action contain symbol').toBeTruthy();
+            expect(symbol.escapedName, 'symbol has correct name').toBe(expectedAction.variable);
         }
     }
 
+    function createProgram(testFile: string): ts.Program {
+        const program = ts.createProgram([testFile], {});
+        const sourceFile = program.getSourceFile(testFile);
+        expect(sourceFile, 'program returns source file').toBeTruthy();
+        return program;
+    }
+
+
+    function createPathToTestFile(fileName: string): string {
+        return path.join(base, fileName);
+    }
+
+    function convertFile(testFilePath: string, program: ts.Program): Map<ts.Symbol, Action> {
+
+        return new Converter()
+        .convert(
+            new SearchActionsConvertContextFactory(),
+            program,
+            program.getTypeChecker()
+
+        ) as Map<ts.Symbol, Action>;
+    }
+
+    function convertFileTest(testFilePath: string, expectedActions: Partial<Action>[]): void {
+        const program = createProgram(testFilePath);
+        const actionsMap = convertFile(testFilePath, program);
+        expectedSearchResult(testFilePath, actionsMap, expectedActions);
+
+    }
 
     it('Should find one action without props', () => {
-
-        const testFile = path.join(base, 'one-action.actions.ts');
-
-        const program = ts.createProgram([testFile], {});
-        const typeChecker = program.getTypeChecker();
-        const sourceFile = program.getSourceFile(testFile);
-
-        expect(sourceFile, 'program returns source file').toBeTruthy();
-
-        const result = searchActionsInFile(sourceFile!, typeChecker);
+        const testFilePath = createPathToTestFile('one-action.actions.ts');
 
         const expectedActions = [{
             name: '[Book Exists Guard] Load Book',
             props: undefined,
             variable: 'loadBook',
-            filePath: testFile
+            filePath: testFilePath
         }];
 
-        expectedSearchResult(testFile, result, expectedActions);
-
+        convertFileTest(testFilePath, expectedActions);
 
 
     });
 
     it('Should find many actions without props', () => {
 
-        const testFile = path.join(base, 'many-actions.actions.ts');
-
-        const program = ts.createProgram([testFile], {});
-        const typeChecker = program.getTypeChecker();
-        const sourceFile = program.getSourceFile(testFile);
-
-        expect(sourceFile, 'program returns source file').toBeTruthy();
-
-        const result = searchActionsInFile(sourceFile!, typeChecker);
+        const testFilePath = createPathToTestFile('many-actions.actions.ts');
 
         const expectedActions: Partial<Action>[] = [{
             name: '[Books] Remove Book',
             variable: 'removeBook',
-            filePath: testFile
+            filePath: testFilePath
         }, {
             name: '[Collection/Api] Load Collection',
             variable: 'loadCollection',
-            filePath: testFile
+            filePath: testFilePath
         }, {
             name: '[Collection/Api] Add book',
             variable: 'addBook',
-            filePath: testFile
+            filePath: testFilePath
         }];
 
-        expectedSearchResult(testFile, result, expectedActions);
+        convertFileTest(testFilePath, expectedActions);
+
     });
 
 
     it('Should find one action with props', () => {
 
-        const testFile = path.join(base, 'one-action-with-props.actions.ts');
-        const program = ts.createProgram([testFile], {});
-        const typeChecker = program.getTypeChecker();
-        const sourceFile = program.getSourceFile(testFile);
-
-        expect(sourceFile, 'program returns source file').toBeTruthy();
-
-        const result = searchActionsInFile(sourceFile!, typeChecker);
+        const testFilePath = createPathToTestFile('one-action-with-props.actions.ts');
 
         const expectedActions: Partial<Action>[] = [{
             name: '[Heros] Load Heroes Success',
@@ -97,23 +104,15 @@ describe('searchActionsInFile', () => {
                 ])
             ],
             variable: 'loadHeroesSuccess',
-            filePath: testFile
+            filePath: testFilePath
         }];
 
-        expectedSearchResult(testFile, result, expectedActions);
+        convertFileTest(testFilePath, expectedActions);
     });
 
     it('Should find many actions with props', () => {
 
-        const testFile = path.join(base, 'many-actions-with-props.actions.ts');
-
-        const program = ts.createProgram([testFile], {});
-        const typeChecker = program.getTypeChecker();
-        const sourceFile = program.getSourceFile(testFile);
-
-        expect(sourceFile, 'program returns source file').toBeTruthy();
-
-        const result = searchActionsInFile(sourceFile!, typeChecker);
+        const testFilePath = createPathToTestFile('many-actions-with-props.actions.ts');
 
         const expectedActions: Partial<Action>[] = [{
             name: '[Books] Remove Book',
@@ -138,7 +137,7 @@ describe('searchActionsInFile', () => {
                 ])
             ],
             variable: 'removeBook',
-            filePath: testFile
+            filePath: testFilePath
         }, {
             name: '[Collection/Api] Load Collection',
             createActionArgs: [
@@ -150,11 +149,11 @@ describe('searchActionsInFile', () => {
                 ])
             ],
             variable: 'loadCollection',
-            filePath: testFile
+            filePath: testFilePath
         }, {
             name: '[Collection/Api] Add book',
             variable: 'addBook',
-            filePath: testFile,
+            filePath: testFilePath,
             createActionArgs: [
                 new CallExpression('props', [
                     new TypeLiteral([])
@@ -163,24 +162,16 @@ describe('searchActionsInFile', () => {
         }, {
             name: '[Heroes Page] Add Hero',
             variable: 'addHero',
-            filePath: testFile
+            filePath: testFilePath
 
         }];
 
-        expectedSearchResult(testFile, result, expectedActions);
+        convertFileTest(testFilePath, expectedActions);
     });
 
     it('Should find many actions in mixed file', () => {
 
-        const testFile = path.join(base, 'many-actions-mixed-file.actions.ts');
-
-        const program = ts.createProgram([testFile], {});
-        const typeChecker = program.getTypeChecker();
-        const sourceFile = program.getSourceFile(testFile);
-
-        expect(sourceFile, 'program returns source file').toBeTruthy();
-
-        const result = searchActionsInFile(sourceFile!, typeChecker);
+        const testFilePath = createPathToTestFile('many-actions-mixed-file.actions.ts');
 
         const expectedActions: Partial<Action>[] = [{
             name: '[Collection/API] Load Books Success',
@@ -192,7 +183,7 @@ describe('searchActionsInFile', () => {
                     }])])
             ],
             variable: 'loadBooksSuccess',
-            filePath: testFile
+            filePath: testFilePath
         }, {
             name: '[Collection/API] Load Books Failure',
             createActionArgs: [
@@ -204,7 +195,7 @@ describe('searchActionsInFile', () => {
                 ])
             ],
             variable: 'loadBooksFailure',
-            filePath: testFile
+            filePath: testFilePath
         }, {
             name: '[Collection/API] Add Book Success',
             createActionArgs: [
@@ -216,7 +207,7 @@ describe('searchActionsInFile', () => {
                 ])
             ],
             variable: 'addBookSuccess',
-            filePath: testFile
+            filePath: testFilePath
         }, {
             name: '[Collection/API] Add Book Failure',
             createActionArgs: [
@@ -228,7 +219,7 @@ describe('searchActionsInFile', () => {
                 ])
             ],
             variable: 'addBookFailure',
-            filePath: testFile
+            filePath: testFilePath
         }, {
             name: '[Collection/API] Remove Book Success',
             createActionArgs: [
@@ -241,18 +232,18 @@ describe('searchActionsInFile', () => {
             ],
 
             variable: 'removeBookSuccess',
-            filePath: testFile
+            filePath: testFilePath
         }, {
             name: '[Collection/API] Remove Book Failure',
             variable: 'removeBookFailure',
-            filePath: testFile,
+            filePath: testFilePath,
             createActionArgs: [
                 new CallExpression('props', [
                     new TypeLiteral([])
                 ])]
         }];
 
-        expectedSearchResult(testFile, result, expectedActions);
+        convertFileTest(testFilePath, expectedActions);
     });
 
 
@@ -269,81 +260,58 @@ describe('searchActionsInFile', () => {
 
     it('Should find one action with Type in props', () => {
 
-        const testFile = path.join(base, 'one-action-with-type-in-props.actions.ts');
-
-        const program = ts.createProgram([testFile], {});
-
-        const typeChecker = program.getTypeChecker();
-        const sourceFile = program.getSourceFile(testFile);
-
-        expect(sourceFile, 'program returns source file').toBeTruthy();
-
-        const result = searchActionsInFile(sourceFile!, typeChecker);
+        const testFilePath = createPathToTestFile('one-action-with-type-in-props.actions.ts');
 
         const expectedActions = [{
             name: '[Heros] Load Heroes Success',
-            'createActionArgs':  [
-                      {
-                       'kind': 196,
-                       'kindText': 'CallExpression',
-                       'name': 'props',
-                       'typeArguments': [
-                          {
-                           'kind': 169,
-                           'kindText': 'TypeReference',
-                           'name': 'Heroes',
-                         },
-                       ],
-                     },
-                   ],
+            'createActionArgs': [
+                {
+                    'kind': 196,
+                    'kindText': 'CallExpression',
+                    'name': 'props',
+                    'typeArguments': [
+                        {
+                            'kind': 169,
+                            'kindText': 'TypeReference',
+                            'name': 'Heroes',
+                        },
+                    ],
+                },
+            ],
             variable: 'loadHeroesSuccess',
-            filePath: testFile
+            filePath: testFilePath
         }];
 
-        expectedSearchResult(testFile, result, expectedActions);
-
-
+        convertFileTest(testFilePath, expectedActions);
     });
 
 
     it('Should find one action with creator function', () => {
 
-        const testFile = path.join(base, 'one-action-with-creator-function.actions.ts');
-
-        const program = ts.createProgram([testFile], {});
-        const typeChecker = program.getTypeChecker();
-        const sourceFile = program.getSourceFile(testFile);
-
-        expect(sourceFile, 'program returns source file').toBeTruthy();
-
-        const result = searchActionsInFile(sourceFile!, typeChecker);
+        const testFilePath = createPathToTestFile('one-action-with-creator-function.actions.ts');
 
         const expectedActions = [{
             name: '[Heros] Load Heroes Success',
             createActionArgs: [new NamedType('ArrowFunction')],
             variable: 'loadHeroesSuccess',
-            filePath: testFile
+            filePath: testFilePath
         }];
 
-        expectedSearchResult(testFile, result, expectedActions);
+        convertFileTest(testFilePath, expectedActions);
     });
 
     it('Should find ZERO actions', () => {
 
-        const testFile = path.join(base, 'zero.actions.ts');
-
-        const program = ts.createProgram([testFile], {});
-        const typeChecker = program.getTypeChecker();
-        const sourceFile = program.getSourceFile(testFile);
-
-        expect(sourceFile, 'program returns source file').toBeTruthy();
-
-        const result = searchActionsInFile(sourceFile!, typeChecker);
-
+        const testFilePath = createPathToTestFile('zero.actions.ts');
+        const program = createProgram(testFilePath);
+        const actionsMap = convertFile(testFilePath, program);
+        
         const expectedActionsCount = 0;
 
-        expect(result, 'search result is defined').toBeTruthy();
-        expect(result.length, 'found zero actions').toBe(expectedActionsCount);
+        expect(actionsMap, 'search actionsMap is defined').toBeTruthy();
+        expect(actionsMap.size, 'found zero actions').toBe(expectedActionsCount);
 
     });
+
 });
+

@@ -38,7 +38,7 @@ exports.handler = function (argv: any): void {
         filesPattern: argv.files,
         outDir: argv.outDir,
         baseDir: argv.baseDir,
-        tsConfig: argv.tsConfig
+        tsConfigFileName: argv.tsConfig
     }
     );
 };
