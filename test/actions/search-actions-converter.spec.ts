@@ -4,7 +4,9 @@ import ts from 'typescript';
 import { ActionConvertContextFactory } from '../../src/actions/converters/action-convert.context';
 import { Action } from '../../src/actions/models/action.model';
 import { Converter } from '../../src/converters/converter';
-import { CallExpression, NamedType, TypeLiteral } from '../../src/converters/models/type.model';
+import {
+    CallExpression, NamedType, TypeLiteral, TypeReference
+} from '../../src/converters/models/type.model';
 
 describe('SearchActionsConverter', () => {
     const base = path.join(__dirname, 'search-actions-converter_data');
@@ -37,12 +39,12 @@ describe('SearchActionsConverter', () => {
     function convertFile(testFilePath: string, program: ts.Program): Map<ts.Symbol, Action> {
 
         return new Converter()
-        .convert(
-            new ActionConvertContextFactory(),
-            program,
-            program.getTypeChecker()
+            .convert(
+                new ActionConvertContextFactory(),
+                program,
+                program.getTypeChecker()
 
-        ) as Map<ts.Symbol, Action>;
+            ) as Map<ts.Symbol, Action>;
     }
 
     function convertFileTest(testFilePath: string, expectedActions: Partial<Action>[]): void {
@@ -52,15 +54,21 @@ describe('SearchActionsConverter', () => {
 
     }
 
+    function toActions(actions: Partial<Action>[]): Action[] {
+        return actions.map(a => ({
+            ...new Action(a.name || ''),
+            ...a
+        } as Action));
+    }
+
     it('Should find one action without props', () => {
         const testFilePath = createPathToTestFile('one-action.actions.ts');
 
-        const expectedActions = [{
+        const expectedActions = toActions([{
             name: '[Book Exists Guard] Load Book',
-            props: undefined,
             variable: 'loadBook',
             filePath: testFilePath
-        }];
+        }]);
 
         convertFileTest(testFilePath, expectedActions);
 
@@ -71,7 +79,7 @@ describe('SearchActionsConverter', () => {
 
         const testFilePath = createPathToTestFile('many-actions.actions.ts');
 
-        const expectedActions: Partial<Action>[] = [{
+        const expectedActions: Partial<Action>[] = toActions([{
             name: '[Books] Remove Book',
             variable: 'removeBook',
             filePath: testFilePath
@@ -83,7 +91,7 @@ describe('SearchActionsConverter', () => {
             name: '[Collection/Api] Add book',
             variable: 'addBook',
             filePath: testFilePath
-        }];
+        }]);
 
         convertFileTest(testFilePath, expectedActions);
 
@@ -94,7 +102,7 @@ describe('SearchActionsConverter', () => {
 
         const testFilePath = createPathToTestFile('one-action-with-props.actions.ts');
 
-        const expectedActions: Partial<Action>[] = [{
+        const expectedActions: Partial<Action>[] = toActions([{
             name: '[Heros] Load Heroes Success',
             createActionArgs: [
                 new CallExpression('props', [
@@ -103,7 +111,7 @@ describe('SearchActionsConverter', () => {
             ],
             variable: 'loadHeroesSuccess',
             filePath: testFilePath
-        }];
+        }]);
 
         convertFileTest(testFilePath, expectedActions);
     });
@@ -112,7 +120,7 @@ describe('SearchActionsConverter', () => {
 
         const testFilePath = createPathToTestFile('many-actions-with-props.actions.ts');
 
-        const expectedActions: Partial<Action>[] = [{
+        const expectedActions = toActions([{
             name: '[Books] Remove Book',
             createActionArgs: [
                 new CallExpression('props', [
@@ -162,7 +170,7 @@ describe('SearchActionsConverter', () => {
             variable: 'addHero',
             filePath: testFilePath
 
-        }];
+        }]);
 
         convertFileTest(testFilePath, expectedActions);
     });
@@ -171,7 +179,7 @@ describe('SearchActionsConverter', () => {
 
         const testFilePath = createPathToTestFile('many-actions-mixed-file.actions.ts');
 
-        const expectedActions: Partial<Action>[] = [{
+        const expectedActions: Partial<Action>[] = toActions([{
             name: '[Collection/API] Load Books Success',
             createActionArgs: [
                 new CallExpression('props', [
@@ -239,7 +247,7 @@ describe('SearchActionsConverter', () => {
                 new CallExpression('props', [
                     new TypeLiteral([])
                 ])]
-        }];
+        }]);
 
         convertFileTest(testFilePath, expectedActions);
     });
@@ -260,25 +268,14 @@ describe('SearchActionsConverter', () => {
 
         const testFilePath = createPathToTestFile('one-action-with-type-in-props.actions.ts');
 
-        const expectedActions = [{
+        const expectedActions: Partial<Action>[] = toActions([{
             name: '[Heros] Load Heroes Success',
             'createActionArgs': [
-                {
-                    'kind': 196,
-                    'kindText': 'CallExpression',
-                    'name': 'props',
-                    'typeArguments': [
-                        {
-                            'kind': 169,
-                            'kindText': 'TypeReference',
-                            'name': 'Heroes',
-                        },
-                    ],
-                },
+                new CallExpression('props', [new TypeReference('Heroes')])
             ],
             variable: 'loadHeroesSuccess',
             filePath: testFilePath
-        }];
+        }]);
 
         convertFileTest(testFilePath, expectedActions);
     });
@@ -288,12 +285,12 @@ describe('SearchActionsConverter', () => {
 
         const testFilePath = createPathToTestFile('one-action-with-creator-function.actions.ts');
 
-        const expectedActions = [{
+        const expectedActions = toActions([{
             name: '[Heros] Load Heroes Success',
             createActionArgs: [new NamedType('ArrowFunction')],
             variable: 'loadHeroesSuccess',
             filePath: testFilePath
-        }];
+        }]);
 
         convertFileTest(testFilePath, expectedActions);
     });
@@ -303,7 +300,7 @@ describe('SearchActionsConverter', () => {
         const testFilePath = createPathToTestFile('zero.actions.ts');
         const program = createProgram(testFilePath);
         const actionsMap = convertFile(testFilePath, program);
-        
+
         const expectedActionsCount = 0;
 
         expect(actionsMap, 'search actionsMap is defined').toBeTruthy();
