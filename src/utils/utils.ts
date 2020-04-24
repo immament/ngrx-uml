@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import log from 'loglevel';
 import path from 'path';
@@ -31,7 +32,7 @@ export function writeJsonToFile(data: unknown, outDir: string, fileName: string,
 
     const filePath = `${outDir}${fileName}`;
 
-    log.trace('write file', filePath);
+    log.trace('write file:', filePath);
     const fileData = JSON.stringify(data, replacer, 2);
     writeFileSync(filePath, fileData);
 }
@@ -44,7 +45,7 @@ export function writeToFile(content: string, outDir: string, fileName: string): 
 
     const filePath = `${outDir}/${fileName}`;
 
-    log.trace('write file', filePath);
+    log.debug('write file:', chalk.gray(filePath));
     writeFileSync(filePath, content);
 }
 

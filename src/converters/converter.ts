@@ -1,6 +1,9 @@
+import chalk from 'chalk';
+import log from 'loglevel';
 import ts from 'typescript';
 
 import { DefaultConverter } from '../actions/converters/node-converters/default.converter';
+
 import { ContextFactory, ConvertContext } from './convert.context';
 import NodeConverter from './models/node.converter';
 import { ConvertedItem } from './models/type.model';
@@ -16,17 +19,17 @@ export class Converter {
         this.converters = replace ? converters : { ...this.converters, ...converters };
     }
 
-    // convert(contextFactory: ContextFactory, files: string[], baseDir: string, tsConfigFileName: string): unknown {
-    //     const program = createProgram(files, baseDir, tsConfigFileName);
-    //     return this.convertWithProgram(contextFactory, program);
-    // }
-
     convert(contextFactory: ContextFactory, program: ts.Program, typeChecker: ts.TypeChecker): unknown {
 
         const context = contextFactory.create(program, typeChecker, this);
         contextFactory.configureConverter(this);
 
         for (const sourceFile of program.getSourceFiles()) {
+            if(sourceFile.isDeclarationFile) {
+                continue;
+            }
+            log.trace('convert', chalk.cyan(sourceFile.fileName));
+
             sourceFile.forEachChild((node) => this.convertRecursive(context, node));
         }
         return context.result;

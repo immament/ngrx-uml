@@ -7,8 +7,9 @@ import { Action } from '../../../actions/models/action.model';
 import { ConvertContext } from '../../../converters/convert.context';
 import NodeConverter from '../../../converters/models/node.converter';
 import { ConvertedItem } from '../../../converters/models/type.model';
+import { syntaxKindText } from '../../../utils/tsutils';
 import { getFileName } from '../../../utils/utils';
-import { ActionReference } from '../../models/action-reference.model';
+import { ActionReference, Declaration } from '../../models/action-reference.model';
 import { ActionReferenceConvertContext } from '../action-reference-convert.context';
 
 export class ActionReferenceConverter extends NodeConverter {
@@ -23,15 +24,39 @@ export class ActionReferenceConverter extends NodeConverter {
         if (symbol) {
             const action = context.actionsMap.get(symbol);
             if (action) {
-                const fileName = path.basename(node.getSourceFile().fileName );
-                log.trace(`Found Action: "${chalk.yellow(action.name)}" in ${fileName}`);
+                const fileName = path.basename(node.getSourceFile().fileName);
+                log.trace(`Found Action: "${chalk.yellow(action.name)}" in ${chalk.cyan(fileName)}`);
                 log.trace('name:', node.getText());
 
                 const reference = this.serializeActionUse(context, action, node, symbol);
                 context.addResult(reference);
+
                 return reference;
             }
         }
+
+    }
+
+    private declarationContext(node: ts.Node): Declaration[] {
+
+        const context: Declaration[] = [];
+        let currentNode: ts.Node = node;
+        while (currentNode) {
+            switch (currentNode.kind) {
+                case ts.SyntaxKind.ClassDeclaration:
+                case ts.SyntaxKind.PropertyDeclaration:
+                case ts.SyntaxKind.VariableDeclaration:
+                case ts.SyntaxKind.FunctionDeclaration:
+                case ts.SyntaxKind.MethodDeclaration: {
+                    const declaration = currentNode as ts.NamedDeclaration;
+                    context.push({ kindText: syntaxKindText(currentNode), name: declaration.name?.getText() });
+                    break;
+                }
+            }
+            currentNode = currentNode.parent;
+
+        }
+        return context.reverse();
 
     }
 
@@ -48,8 +73,12 @@ export class ActionReferenceConverter extends NodeConverter {
         reference.isCall = this.isActionCall(node);
         reference.action = action;
         reference.filePath = node.getSourceFile().fileName;
-        reference.fileName =  getFileName(reference.filePath);
-            action.addReferece(reference);
+        reference.fileName = getFileName(reference.filePath);
+
+        reference.declarationContext = this.declarationContext(node);
+
+        action.addReference(reference);
+
         return reference;
     }
 

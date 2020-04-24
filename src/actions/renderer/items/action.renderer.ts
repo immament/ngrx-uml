@@ -1,7 +1,6 @@
 
 import { EOL } from 'os';
 
-import { ActionReference } from '../../../action-references/models/action-reference.model';
 import {
     CallExpression, NamedType, TypeKind, TypeLiteral, TypeReference
 } from '../../../converters/models/type.model';
@@ -31,31 +30,13 @@ export class ActionRenderer implements ItemRenderer {
             --
             ${createActionArgs}
         }
-        
+
         `;
-        // if (withReferences) {
-        //     diagramContent += item.referencesToPlantUml();
-        // }
 
         return diagramContent;
-
     }
 
 
-    private referencesToPlantUml(item: Action): string | undefined {
-        if (item.references && item.references.length) {
-            let diagramContent = '';
-            for (const ref of item.references) {
-                diagramContent += ref.toPlantUml() + this.linkToPlantUml(item, ref);
-            }
-            return diagramContent;
-        }
-        return '';
-    }
-
-    private linkToPlantUml(item: Action, ref: ActionReference): string {
-        return `"${item.name}" ${ref.isCall ? '-down->' : '<.down.'} "${ref.fileName} ${ref.isCall ? 'D' : 'L'}"${EOL}`;
-    }
 
     private typeLiteralToText(typeLiteral: TypeLiteral): string | undefined {
         const properties = typeLiteral.properties;

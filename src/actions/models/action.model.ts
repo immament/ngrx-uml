@@ -16,7 +16,7 @@ export class Action implements ConvertedItem {
 
     constructor(public readonly name: string) { }
 
-    addReferece(reference: ActionReference): void {
+    addReference(reference: ActionReference): void {
         if (!this.references) {
             this.references = [];
         }

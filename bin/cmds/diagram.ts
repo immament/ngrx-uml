@@ -35,7 +35,7 @@ exports.builder = (yargs: Argv): unknown => {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 exports.handler = function (argv: any): void {
-    log.debug('Generate diagram..');
+    log.debug('Generate diagram..', argv);
 
     const createDiagramService = new CreateActionsDiagramService(new PlantUmlService, {
         outDir: argv.outDir,
