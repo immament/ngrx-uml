@@ -6,9 +6,9 @@ import ts from 'typescript';
 
 import {
     ActionReferenceConvertContextFactory
-} from '../action-references/action-reference-convert.context';
+} from '../action-references/converters/action-reference-convert.context';
+import { ActionReference } from '../action-references/models/action-reference.model';
 import { ActionConvertContextFactory } from '../actions/converters/action-convert.context';
-import { ActionReference } from '../actions/models/action-reference.model';
 import { Action } from '../actions/models/action.model';
 import { ActionReferenceRenderer } from '../actions/renderer/items/action-reference.renderer';
 import { ActionRenderer } from '../actions/renderer/items/action.renderer';

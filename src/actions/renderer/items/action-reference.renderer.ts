@@ -1,12 +1,13 @@
 import { EOL } from 'os';
 
-import { ActionReference } from '../../models/action-reference.model';
+import { ActionReference } from '../../../action-references/models/action-reference.model';
 import { Action } from '../../models/action.model';
+import { ItemRenderer } from './item.renderer';
 
-export class ActionReferenceRenderer {
+export class ActionReferenceRenderer implements ItemRenderer {
 
 
-    render(item: ActionReference): any {
+    render(item: ActionReference): string  {
         return this.toPlantUml(item);
     }
 

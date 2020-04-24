@@ -1,10 +1,10 @@
 import ts from 'typescript';
 
-import { ActionReference } from '../actions/models/action-reference.model';
-import { Action } from '../actions/models/action.model';
-import { ContextFactory, ConvertContext } from '../converters/convert.context';
-import { Converter } from '../converters/converter';
-import { TypeKind } from '../converters/models/type.model';
+import { Action } from '../../actions/models/action.model';
+import { ContextFactory, ConvertContext } from '../../converters/convert.context';
+import { Converter } from '../../converters/converter';
+import { TypeKind } from '../../converters/models/type.model';
+import { ActionReference } from '../models/action-reference.model';
 import { ActionReferenceConverter } from './node-converters/action-reference.converter';
 
 export class ActionReferenceConvertContext implements ConvertContext {

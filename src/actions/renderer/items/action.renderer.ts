@@ -1,21 +1,19 @@
-import chalk from 'chalk';
+
 import { EOL } from 'os';
 
+import { ActionReference } from '../../../action-references/models/action-reference.model';
 import {
     CallExpression, NamedType, TypeKind, TypeLiteral, TypeReference
 } from '../../../converters/models/type.model';
 import { getFileName } from '../../../utils/utils';
-import { ActionReference } from '../../models/action-reference.model';
 import { Action } from '../../models/action.model';
 import { ItemRenderer } from '../items/item.renderer';
 
 export class ActionRenderer implements ItemRenderer {
 
    
-    render(item: Action): any {
-        if(item instanceof Action) {
+    render(item: Action): string {
             return this.toPlantUml(item);
-        }
     }
 
 

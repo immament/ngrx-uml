@@ -1,4 +1,3 @@
-import chalk from 'chalk';
 import { WriteStream } from 'fs';
 import http from 'http';
 import log from 'loglevel';

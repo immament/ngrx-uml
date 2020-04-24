@@ -3,12 +3,12 @@ import log from 'loglevel';
 import path from 'path';
 import ts from 'typescript';
 
-import { ActionReference } from '../../actions/models/action-reference.model';
-import { Action } from '../../actions/models/action.model';
-import { ConvertContext } from '../../converters/convert.context';
-import NodeConverter from '../../converters/models/node.converter';
-import { ConvertedItem } from '../../converters/models/type.model';
-import { getFileName } from '../../utils/utils';
+import { Action } from '../../../actions/models/action.model';
+import { ConvertContext } from '../../../converters/convert.context';
+import NodeConverter from '../../../converters/models/node.converter';
+import { ConvertedItem } from '../../../converters/models/type.model';
+import { getFileName } from '../../../utils/utils';
+import { ActionReference } from '../../models/action-reference.model';
 import { ActionReferenceConvertContext } from '../action-reference-convert.context';
 
 export class ActionReferenceConverter extends NodeConverter {

@@ -1,7 +1,7 @@
 
 
+import { ActionReference } from '../../action-references/models/action-reference.model';
 import { ConvertedItem, NamedType, TypeKind } from '../../converters/models/type.model';
-import { ActionReference } from './action-reference.model';
 
 export class Action implements ConvertedItem {
 

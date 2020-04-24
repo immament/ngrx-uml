@@ -1,8 +1,7 @@
+import { Action } from '../../actions/models/action.model';
 import { ConvertedItem, TypeKind } from '../../converters/models/type.model';
-import { Action } from './action.model';
-import { PlantItem } from './plant-item.model';
 
-export class ActionReference implements PlantItem, ConvertedItem {
+export class ActionReference implements ConvertedItem {
 
     kind = TypeKind.ActionReference;
     kindText = 'ActionReference';
