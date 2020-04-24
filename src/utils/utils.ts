@@ -70,11 +70,7 @@ export function getCommandFilesExtensionsForEnvironment(): string[] {
 }
 
 
-
-// used to make links clickable in vscode terminal
-const makeClickableInTerminal = true;
-
-export function removeiIlegalCharacters(name: string): string {
+export function removeiIlegalCharacters(name: string, makeClickableInTerminal = false): string {
 
     if (makeClickableInTerminal) {
         name = name.replace(/[\s]/g, '-').replace(/[[\]]/g, '_').replace(/_-/g, '_');

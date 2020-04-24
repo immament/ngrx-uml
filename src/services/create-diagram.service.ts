@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { createWriteStream, WriteStream } from 'fs';
+import { createWriteStream, existsSync, mkdirSync, WriteStream } from 'fs';
 import log from 'loglevel';
 import path from 'path';
 import ts from 'typescript';
@@ -20,6 +20,7 @@ import { createTsProgram } from '../utils/tsutils';
 import {
     getKeyReplacer, removeiIlegalCharacters, writeJsonToFile, writeToFile
 } from '../utils/utils';
+
 import { PlantUmlService } from './plant-uml.service';
 
 export interface CreateActionsDiagramServiceOptions {
@@ -29,9 +30,9 @@ export interface CreateActionsDiagramServiceOptions {
     outDir?: string;
     baseDir?: string;
     tsConfigFileName?: string;
+    clickableLinks?: boolean;
 }
 
-//baseDir = '', tsConfigFileName = 'tsconfig.json' }
 export class CreateActionsDiagramService {
 
     public options: CreateActionsDiagramServiceOptions = {
@@ -40,7 +41,8 @@ export class CreateActionsDiagramService {
         saveWsd: false,
         outDir: '/out',
         baseDir: '',
-        tsConfigFileName: 'tsconfig.json'
+        tsConfigFileName: 'tsconfig.json',
+        clickableLinks: false
     }
 
     constructor(
@@ -125,13 +127,16 @@ export class CreateActionsDiagramService {
 
     private saveDiagram(item: Action, content: string, outDir: string): void {
         const diagram = this.createDiagram(item.name, content);
-        const fileName = removeiIlegalCharacters(item.name);
+        const fileName = removeiIlegalCharacters(item.name, this.options.clickableLinks);
         this.writeWsdToFile(item.name, diagram, path.join(outDir, 'wsd'));
         this.renderToImageFile(outDir, diagram, fileName, 'png');
 
     }
 
     public renderToImageFile(outDir: string, diagram: string, fileName: string, ext: string): void {
+        if (!existsSync(outDir)) {
+            mkdirSync(outDir);
+        }
         const writeStream = this.createWriteStream(outDir, fileName, ext);
         this.plantUmlService.renderImage(ext, diagram, writeStream);
     }
@@ -150,7 +155,7 @@ export class CreateActionsDiagramService {
 
     private writeWsdToFile(name: string, diagram: string, outDir: string): void {
         if (this.options.saveWsd) {
-            writeToFile(diagram, outDir, removeiIlegalCharacters(name) + '.wsd');
+            writeToFile(diagram, outDir, removeiIlegalCharacters(name, this.options.clickableLinks) + '.wsd');
         }
     }
 
