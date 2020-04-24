@@ -4,11 +4,11 @@ import ts from 'typescript';
 import NodeConverter from '../../../converters/models/node.converter';
 import { ActionWithSymbol } from '../../models/action-with-symbol.model';
 import { Action } from '../../models/action.model';
-import { SearchActionsConvertContext } from '../search-actions-convert.context';
+import { ActionConvertContext } from '../action-convert.context';
 
 export class VariableDeclarationConverter extends NodeConverter {
 
-    convert(context: SearchActionsConvertContext, node: ts.VariableDeclaration): Action | undefined {
+    convert(context: ActionConvertContext, node: ts.VariableDeclaration): Action | undefined {
         const sourceFile = node.getSourceFile();
         const initializer = node.initializer;
         if (!initializer || !ts.isCallExpression(initializer)) {

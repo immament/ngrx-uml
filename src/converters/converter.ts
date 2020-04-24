@@ -12,8 +12,8 @@ export class Converter {
 
     nodeFilter?: (node: ts.Node) => boolean;
 
-    registerConverters(converters: { [kind: number]: NodeConverter }): void {
-        this.converters = { ...this.converters,  ...converters};
+    registerConverters(converters: { [kind: number]: NodeConverter }, { replace = false }: { replace?: boolean } ): void {
+        this.converters = replace ? converters : { ...this.converters, ...converters };
     }
 
     // convert(contextFactory: ContextFactory, files: string[], baseDir: string, tsConfigFileName: string): unknown {

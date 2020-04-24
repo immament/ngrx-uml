@@ -1,16 +1,18 @@
 import chalk from 'chalk';
 import log from 'loglevel';
+import ts from 'typescript';
 
+import {
+    ActionReferenceConvertContextFactory
+} from '../action-references/action-reference-convert.context';
 import { Converter } from '../converters/converter';
 import { globSync } from '../utils/glob';
 import { createProgram } from '../utils/tsutils';
 import { getKeyReplacer, writeJsonToFile } from '../utils/utils';
-import { SearchActionsConvertContextFactory } from './converters/search-actions-convert.context';
-import { findActionReferences } from './findActionReferences';
+import { ActionConvertContextFactory } from './converters/action-convert.context';
 import { writeDiagramsToFiles } from './mapToPlantUml';
 import { ActionReference } from './models/action-reference.model';
 import { Action } from './models/action.model';
-import { ActionsMap } from './searchActions';
 
 function saveActions(actions: Action[], outDir: string, fileName: string): void {
     writeJsonToFile(actions,  outDir,  fileName, getKeyReplacer('references'));
@@ -40,18 +42,27 @@ export function generateDiagram(
     const typeChecker = program.getTypeChecker();
     
     const converter = new Converter();
-    const actionsMap = converter.convert(new SearchActionsConvertContextFactory(), program, typeChecker) as ActionsMap;
+    const actionsMap = converter.convert(new ActionConvertContextFactory(), program, typeChecker) as Map<ts.Symbol, Action>;
 
     log.info(chalk.yellow(`Found ${actionsMap.size} actions`));
+    if(!actionsMap || actionsMap.size === 0) {
+        return;            
+    }
+
     const actions = [...actionsMap.values()];
     saveActions(actions, outDir, '/actions.json');
 
-    const actionsReferences = findActionReferences(program.getSourceFiles(), typeChecker, actionsMap);
+    // const converter = new Converter();
+
+    const actionsReferences = converter.convert(new ActionReferenceConvertContextFactory(actionsMap), program, typeChecker) as  ActionReference[];
+    // const actionsReferences = findActionReferences(program.getSourceFiles(), typeChecker, actionsMap);
+    log.info(chalk.yellow(`Found ${actionsReferences.length} action's references`));
+
     saveActions(actions, outDir, '/actions-with-references.json');
+
     saveReferences(actionsReferences, outDir, '/actions-references.json');
 
     writeDiagramsToFiles(actions, outDir);
-    log.info(chalk.yellow(`Found ${actionsReferences.length} action's references`));
 
 }
 

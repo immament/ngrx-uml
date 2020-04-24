@@ -9,7 +9,9 @@ export enum TypeKind {
     TypeReference = ts.SyntaxKind.TypeReference,
     CallExpression = ts.SyntaxKind.CallExpression,
     VariableDeclaration = ts.SyntaxKind.VariableDeclaration,
-    TypeArgument = 1001
+    Identifier = ts.SyntaxKind.Identifier,
+    PropertyAccessExpression = ts.SyntaxKind.PropertyAccessExpression,
+    TypeArgument = 1001,
 }
 
 export class BaseType {

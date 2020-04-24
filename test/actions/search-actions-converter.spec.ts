@@ -1,9 +1,7 @@
 import path from 'path';
 import ts from 'typescript';
 
-import {
-    SearchActionsConvertContextFactory
-} from '../../src/actions/converters/search-actions-convert.context';
+import { ActionConvertContextFactory } from '../../src/actions/converters/action-convert.context';
 import { Action } from '../../src/actions/models/action.model';
 import { Converter } from '../../src/converters/converter';
 import { CallExpression, NamedType, TypeLiteral } from '../../src/converters/models/type.model';
@@ -40,7 +38,7 @@ describe('SearchActionsConverter', () => {
 
         return new Converter()
         .convert(
-            new SearchActionsConvertContextFactory(),
+            new ActionConvertContextFactory(),
             program,
             program.getTypeChecker()
 

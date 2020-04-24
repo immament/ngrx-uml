@@ -10,8 +10,7 @@ import { TypeLiteralConverter } from './node-converters/type-literal.converter';
 import { TypeReferenceConverter } from './node-converters/type-referenceconverter';
 import { VariableDeclarationConverter } from './node-converters/variable-declaration.converter';
 
-export class SearchActionsConvertContext implements ConvertContext {
-
+export class ActionConvertContext implements ConvertContext {
 
     result = new Map<ts.Symbol, Action>();
 
@@ -28,9 +27,9 @@ export class SearchActionsConvertContext implements ConvertContext {
 
 }
 
-export class SearchActionsConvertContextFactory implements ContextFactory {
+export class ActionConvertContextFactory implements ContextFactory {
     create(program: ts.Program, typeChecker: ts.TypeChecker, converter: Converter): ConvertContext {
-        return new SearchActionsConvertContext(program, typeChecker, converter);
+        return new ActionConvertContext(program, typeChecker, converter);
     }
 
     configureConverter(converter: Converter): void {
@@ -39,7 +38,7 @@ export class SearchActionsConvertContextFactory implements ContextFactory {
             [TypeKind.CallExpression]: new CallExpressionConverter,
             [TypeKind.TypeLiteral]: new TypeLiteralConverter,
             [TypeKind.TypeReference]: new TypeReferenceConverter
-        });
+        }, {});
 
         converter.nodeFilter = (node: ts.Node): boolean => ts.isVariableDeclaration(node);
 
