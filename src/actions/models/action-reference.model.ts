@@ -1,7 +1,12 @@
+import { ConvertedItem, TypeKind } from '../../converters/models/type.model';
 import { Action } from './action.model';
 import { PlantItem } from './plant-item.model';
 
-export class ActionReference implements PlantItem {
+export class ActionReference implements PlantItem, ConvertedItem {
+
+    kind = TypeKind.ActionReference;
+    kindText = 'ActionReference';
+
     isCall?: boolean;
     action?: Action;
     filePath?: string;
@@ -22,6 +27,10 @@ export class ActionReference implements PlantItem {
             ..
         }
         `;
+    }
+
+    getChildren(): ConvertedItem[] {
+        return [];
     }
 
 }

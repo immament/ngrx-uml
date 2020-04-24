@@ -3,7 +3,7 @@ import log from 'loglevel';
 import ts from 'typescript';
 
 import { globSync } from '../utils/glob';
-import { createProgram } from '../utils/tsutils';
+import { createTsProgram } from '../utils/tsutils';
 
 function recursivelyPrintVariableDeclarations(
     node: ts.Node, sourceFile: ts.SourceFile, typeChecker: ts.TypeChecker
@@ -29,7 +29,7 @@ export const printAstVariablesInProgram = (source: string,  baseDir: string, con
     log.info('No files found');
     return;
   }
-  const program =   createProgram(files, baseDir, configName);
+  const program =   createTsProgram(files, baseDir, configName);
 
   const fileName = files[0]; 
   log.info(`File: ${chalk.yellow(fileName)}`);

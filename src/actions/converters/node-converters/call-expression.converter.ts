@@ -2,9 +2,8 @@
 import ts from 'typescript';
 
 import { ConvertContext } from '../../../converters/convert.context';
-import { ConvertedItem } from '../../../converters/models/convertet-item.model';
 import NodeConverter from '../../../converters/models/node.converter';
-import { BaseType, CallExpression, TypeArgument } from '../../../converters/models/type.model';
+import { CallExpression, ConvertedItem, TypeArgument } from '../../../converters/models/type.model';
 import { getCallExpressionName } from '../../../utils/tsutils';
 import { Action } from '../../models/action.model';
 
@@ -49,15 +48,15 @@ export class CallExpressionConverter extends NodeConverter {
         return typeArguments;
     }
 
-    extractCreateActionArgs(context: ConvertContext, args: ts.Expression[]): BaseType[] | undefined {
+    extractCreateActionArgs(context: ConvertContext, args: ts.Expression[]): ConvertedItem[] | undefined {
         if (!args) {
             return;
         }
-        const convertedArgs: BaseType[] = [];
+        const convertedArgs: ConvertedItem[] = [];
 
         for (const arg of args) {
             const convertedArg = context.converter.convertNode(context, arg, true);
-            if(convertedArg instanceof BaseType) {
+            if(convertedArg) {
                 convertedArgs.push(convertedArg);
             }
         }

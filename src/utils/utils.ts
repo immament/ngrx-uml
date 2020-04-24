@@ -19,7 +19,7 @@ export function getKeyReplacer(keyToReplace: string) {
         }
         return value;
     };
-    
+
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -59,13 +59,25 @@ export function getFileName(filePath?: string): string | undefined {
 }
 
 
-export function printProgress(progress: string): void{
+export function printProgress(progress: string): void {
     process.stdout.clearLine(0);
     process.stdout.cursorTo(0);
     process.stdout.write(progress);
 }
 
 export function getCommandFilesExtensionsForEnvironment(): string[] {
-    return __filename.endsWith('ts')  ? ['js', 'ts'] : ['js'];
-  }
-  
+    return __filename.endsWith('ts') ? ['js', 'ts'] : ['js'];
+}
+
+
+
+// used to make links clickable in vscode terminal
+const makeClickableInTerminal = true;
+
+export function removeiIlegalCharacters(name: string): string {
+
+    if (makeClickableInTerminal) {
+        name = name.replace(/[\s]/g, '-').replace(/[[\]]/g, '_').replace(/_-/g, '_');
+    }
+    return name.replace(/[<>:"/\\|?*]/g, '-');
+}

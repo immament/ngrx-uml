@@ -1,9 +1,8 @@
 import ts from 'typescript';
 
 import { ConvertContext } from '../../../converters/convert.context';
-import { ConvertedItem } from '../../../converters/models/convertet-item.model';
 import NodeConverter from '../../../converters/models/node.converter';
-import { TypeReference } from '../../../converters/models/type.model';
+import { ConvertedItem, TypeReference } from '../../../converters/models/type.model';
 
 export class TypeReferenceConverter extends NodeConverter {
 

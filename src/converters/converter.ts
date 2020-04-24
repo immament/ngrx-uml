@@ -2,8 +2,8 @@ import ts from 'typescript';
 
 import { DefaultConverter } from '../actions/converters/node-converters/default.converter';
 import { ContextFactory, ConvertContext } from './convert.context';
-import { ConvertedItem } from './models/convertet-item.model';
 import NodeConverter from './models/node.converter';
+import { ConvertedItem } from './models/type.model';
 
 export class Converter {
     private converters: { [kind: number]: NodeConverter } = {};

@@ -1,7 +1,8 @@
 import log from 'loglevel';
 import { Argv } from 'yargs';
 
-import { generateDiagram } from '../../src/actions/actionsDiagramCommand';
+import { CreateActionsDiagramService } from '../../src/services/create-diagram.service';
+import { PlantUmlService } from '../../src/services/plant-uml.service';
 
 exports.command = 'diagram [options]';
 exports.desc = 'Generate plantUML diagram';
@@ -22,6 +23,7 @@ exports.builder = (yargs: Argv): unknown => {
     }).option('baseDir', {
         alias: 'd',
         description: 'Path to project base directory',
+        default: '',
         type: 'string',
     }).option('tsConfig', {
         alias: 'c',
@@ -34,11 +36,12 @@ exports.builder = (yargs: Argv): unknown => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 exports.handler = function (argv: any): void {
     log.debug('Generate diagram..');
-    generateDiagram({
-        filesPattern: argv.files,
+
+    const createDiagramService = new CreateActionsDiagramService(new PlantUmlService, {
         outDir: argv.outDir,
         baseDir: argv.baseDir,
         tsConfigFileName: argv.tsConfig
-    }
-    );
+    });
+
+    createDiagramService.generateDiagram(argv.files);
 };

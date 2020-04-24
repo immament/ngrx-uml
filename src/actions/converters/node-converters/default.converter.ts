@@ -2,9 +2,8 @@
 import ts from 'typescript';
 
 import { ConvertContext } from '../../../converters/convert.context';
-import { ConvertedItem } from '../../../converters/models/convertet-item.model';
 import NodeConverter from '../../../converters/models/node.converter';
-import { NamedType } from '../../../converters/models/type.model';
+import { ConvertedItem, NamedType } from '../../../converters/models/type.model';
 import { syntaxKindText } from '../../../utils/tsutils';
 
 export class DefaultConverter extends NodeConverter {

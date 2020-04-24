@@ -19,7 +19,7 @@ exports.builder = (yargs: Argv): unknown => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 exports.handler = function (argv: any): void {
 
-    log.debug('testplant', argv.outDir);
+    log.debug('testplant');
 
     testPlantServer(argv.outDir);
 };

@@ -26,7 +26,7 @@ function readConfigFile(baseDir: string, configName: string): {
 
 }
 
-export function createProgram(fileNames: string[], baseDir: string, configName: string): ts.Program {
+export function createTsProgram(fileNames: string[], baseDir: string, configName: string): ts.Program {
 
     log.debug(chalk.yellowBright('baseDir:'), baseDir, chalk.yellowBright('configName:'),configName);
     const configFileRef = readConfigFile(baseDir, configName);

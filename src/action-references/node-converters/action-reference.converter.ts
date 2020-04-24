@@ -7,12 +7,13 @@ import { ActionReference } from '../../actions/models/action-reference.model';
 import { Action } from '../../actions/models/action.model';
 import { ConvertContext } from '../../converters/convert.context';
 import NodeConverter from '../../converters/models/node.converter';
+import { ConvertedItem } from '../../converters/models/type.model';
 import { getFileName } from '../../utils/utils';
 import { ActionReferenceConvertContext } from '../action-reference-convert.context';
 
 export class ActionReferenceConverter extends NodeConverter {
 
-    convert(context: ActionReferenceConvertContext, node: ts.VariableDeclaration): boolean | undefined {
+    convert(context: ActionReferenceConvertContext, node: ts.VariableDeclaration): ConvertedItem | undefined {
 
         if (!node.parent || ts.isVariableDeclaration(node.parent)) {
             return;
@@ -25,8 +26,10 @@ export class ActionReferenceConverter extends NodeConverter {
                 const fileName = path.basename(node.getSourceFile().fileName );
                 log.trace(`Found Action: "${chalk.yellow(action.name)}" in ${fileName}`);
                 log.trace('name:', node.getText());
-                context.addResult(this.serializeActionUse(context, action, node, symbol));
-                return true;
+
+                const reference = this.serializeActionUse(context, action, node, symbol);
+                context.addResult(reference);
+                return reference;
             }
         }
 
