@@ -1,6 +1,5 @@
 import chalk from 'chalk';
 import log from 'loglevel';
-import path from 'path';
 import ts from 'typescript';
 
 import { Action } from '../../../actions/models/action.model';
@@ -24,8 +23,8 @@ export class ActionReferenceConverter extends NodeConverter {
         if (symbol) {
             const action = context.actionsMap.get(symbol);
             if (action) {
-                const fileName = path.basename(node.getSourceFile().fileName);
-                log.trace(`Found Action: "${chalk.yellow(action.name)}" in ${chalk.cyan(fileName)}`);
+                // const fileName = path.basename(node.getSourceFile().fileName);
+                log.debug(`Found Action: "${chalk.yellow(action.name)}" in ${chalk.gray(node.getSourceFile().fileName)}`);
                 log.trace('name:', node.getText());
 
                 const reference = this.serializeActionUse(context, action, node, symbol);

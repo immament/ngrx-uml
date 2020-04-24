@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import log from 'loglevel';
 import ts from 'typescript';
 
@@ -22,7 +23,7 @@ export class VariableDeclarationConverter extends NodeConverter {
             if (symbol) {
                 action.variable = node.name.getText(sourceFile);
                 action.filePath = sourceFile.fileName;
-                log.trace('create action', action);
+                log.debug(`Found action  ${chalk.yellow(action.name)} in ${chalk.gray(action.filePath)}`);
                 context.addResult( { symbol, action } as ActionWithSymbol);
                 
             }

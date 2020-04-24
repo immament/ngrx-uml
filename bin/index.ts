@@ -12,14 +12,14 @@ yargs
   .commandDir('cmds', { extensions: getCommandFilesExtensionsForEnvironment() })
   .option('log', {
     alias: 'l',
-    default: 'DEBUG',
+    default: 'INFO',
     choices: ['TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', 'SILENT']
   })
   .help()
   .alias('help', 'h')
-  .example('$0 generate -s "src/**/*.ts"', 'Generate plantUML diagram')
+  .example('$0 diagram -f "src/**/*.ts"', 'Generate plantUML diagram')
   .demandCommand()
-  .wrap(72)
+  .wrap(100)
   .middleware([prepare])
   .argv;
 

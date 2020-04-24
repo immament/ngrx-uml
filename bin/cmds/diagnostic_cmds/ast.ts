@@ -7,8 +7,8 @@ exports.command = 'ast';
 exports.desc = 'Print AST for first file in pattern';
 exports.builder = (yargs: Argv): unknown => {
     return yargs       
-        .option('source', {
-            alias: 's',
+        .option('files', {
+            alias: 'f',
             description: 'Glob-like file pattern specifying the filepath for the source files.',
             type: 'string',
             nargs: 1,
@@ -19,5 +19,5 @@ exports.builder = (yargs: Argv): unknown => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 exports.handler = function (argv: any): void {
     log.debug('AST');
-    printAst(argv.source);
+    printAst(argv.files);
 };
