@@ -1,5 +1,9 @@
 # ngrx-uml
-Generate Plant UML diagram from ngrx/store project
+Generate Plant UML diagram from [ngrx/store](https://ngrx.io) project (version > 7.0).
+
+Generate separete diagram for each Action.
+
+Searches for actions created function [createAction](https://ngrx.io/api/store/createAction) and their use.
 
 ## Installation
 
