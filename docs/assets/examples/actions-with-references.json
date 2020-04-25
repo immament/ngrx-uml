@@ -1,0 +1,131 @@
+[
+  {
+    "name": "[Auth] Logout Confirmation Dismiss",
+    "kind": 1002,
+    "kindText": "Action",
+    "variable": "logoutConfirmationDismiss",
+    "filePath": "/home/user/Documents/typescript/ngrx/ngrx/projects/example-app/src/app/auth/actions/auth.actions.ts",
+    "references": [
+      {
+        "name": "logoutConfirmationDismiss",
+        "kind": 1003,
+        "kindText": "ActionReference",
+        "documentation": "",
+        "type": "ActionCreator<\"[Auth] Logout Confirmation Dismiss\", () => TypedAction<\"[Auth] Logout Confirmation Dismiss\">>",
+        "isCall": true,
+        "filePath": "/home/user/Documents/typescript/ngrx/ngrx/projects/example-app/src/app/auth/effects/auth.effects.ts",
+        "fileName": "auth.effects",
+        "declarationContext": [
+          {
+            "kindText": "ClassDeclaration",
+            "name": "AuthEffects"
+          },
+          {
+            "kindText": "PropertyDeclaration",
+            "name": "logoutConfirmation$"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "[Auth/API] Login Success",
+    "kind": 1002,
+    "kindText": "Action",
+    "createActionArgs": [
+      {
+        "name": "props",
+        "typeArguments": [
+          {
+            "kind": 173,
+            "kindText": "TypeLiteral",
+            "properties": [
+              {
+                "name": "user",
+                "type": "User"
+              }
+            ]
+          }
+        ],
+        "kind": 196,
+        "kindText": "CallExpression"
+      }
+    ],
+    "variable": "loginSuccess",
+    "filePath": "/home/user/Documents/typescript/ngrx/ngrx/projects/example-app/src/app/auth/actions/auth-api.actions.ts",
+    "references": [
+      {
+        "name": "loginSuccess",
+        "kind": 1003,
+        "kindText": "ActionReference",
+        "documentation": "",
+        "type": "ActionCreator<\"[Auth/API] Login Success\", (props: { user: User; }) => { user: User; } & TypedAction<\"[Auth/API] Login Success\">>",
+        "isCall": false,
+        "filePath": "../ngrx/projects/example-app/src/app/auth/reducers/auth.reducer.ts",
+        "fileName": "auth.reducer",
+        "declarationContext": [
+          {
+            "kindText": "VariableDeclaration",
+            "name": "reducer"
+          }
+        ]
+      },
+      {
+        "name": "loginSuccess",
+        "kind": 1003,
+        "kindText": "ActionReference",
+        "documentation": "",
+        "type": "ActionCreator<\"[Auth/API] Login Success\", (props: { user: User; }) => { user: User; } & TypedAction<\"[Auth/API] Login Success\">>",
+        "isCall": false,
+        "filePath": "../ngrx/projects/example-app/src/app/auth/reducers/login-page.reducer.ts",
+        "fileName": "login-page.reducer",
+        "declarationContext": [
+          {
+            "kindText": "VariableDeclaration",
+            "name": "reducer"
+          }
+        ]
+      },
+      {
+        "name": "loginSuccess",
+        "kind": 1003,
+        "kindText": "ActionReference",
+        "documentation": "",
+        "type": "ActionCreator<\"[Auth/API] Login Success\", (props: { user: User; }) => { user: User; } & TypedAction<\"[Auth/API] Login Success\">>",
+        "isCall": true,
+        "filePath": "/home/user/Documents/typescript/ngrx/ngrx/projects/example-app/src/app/auth/effects/auth.effects.ts",
+        "fileName": "auth.effects",
+        "declarationContext": [
+          {
+            "kindText": "ClassDeclaration",
+            "name": "AuthEffects"
+          },
+          {
+            "kindText": "PropertyDeclaration",
+            "name": "login$"
+          }
+        ]
+      },
+      {
+        "name": "loginSuccess",
+        "kind": 1003,
+        "kindText": "ActionReference",
+        "documentation": "",
+        "type": "ActionCreator<\"[Auth/API] Login Success\", (props: { user: User; }) => { user: User; } & TypedAction<\"[Auth/API] Login Success\">>",
+        "isCall": false,
+        "filePath": "/home/user/Documents/typescript/ngrx/ngrx/projects/example-app/src/app/auth/effects/auth.effects.ts",
+        "fileName": "auth.effects",
+        "declarationContext": [
+          {
+            "kindText": "ClassDeclaration",
+            "name": "AuthEffects"
+          },
+          {
+            "kindText": "PropertyDeclaration",
+            "name": "loginSuccess$"
+          }
+        ]
+      }
+    ]
+  }
+]
