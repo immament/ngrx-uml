@@ -2,7 +2,8 @@
   "name": "ngrx-uml",
   "version": "0.0.1",
   "description": "NGRX to PlantUML",
-  "main": "./dist/bin/index.js",
+  "main": "dist/src/index.js",
+  "typings": "dist/src/index.d.ts",
   "bin": {
     "ngrx-uml": "./dist/bin/index.js"
   },
@@ -24,6 +25,11 @@
     "plant",
     "UML",
     "diagram"
+  ],
+  "files": [
+    "dist",
+    "README.md",
+    "dist"
   ],
   "author": "immament",
   "license": "ISC",

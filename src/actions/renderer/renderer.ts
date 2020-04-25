@@ -4,6 +4,7 @@ import { EOL } from 'os';
 import { Subject } from 'rxjs';
 
 import { ConvertedItem } from '../../converters/models/type.model';
+
 import { ItemRenderer } from './items/item.renderer';
 
 export class Renderer {

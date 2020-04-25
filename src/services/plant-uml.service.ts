@@ -8,6 +8,11 @@ export class PlantUmlService {
     plantUmlServerUrl = 'www.plantuml.com';
     remotePathPrefix = '/plantuml/';
 
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    constructor() {
+
+    }
+
     renderImage(extension: string, plantuml: string, resultStream: WriteStream): void {
   
         const encodedPlantuml = encode(plantuml);

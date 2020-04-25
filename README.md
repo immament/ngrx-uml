@@ -42,7 +42,7 @@ ngrx-uml diagram -f '**/*ts' -d ../ngrx/projects/example-app/ -i '../**/*.spec.t
 |  --version    | |              Show version number                                    | boolean |            |
 | --log     | -l |   Log level. [choices: "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "SILENT"] | | "INFO" |
 |  --help   | -h |          Show help                                                    |    boolean | |
-|  --files | -f  |           Glob-like file pattern specifying the filepath for the source files. Relative to baseDir | string  |  "src/**/*.ts" |
+|  --files | -f  |           Glob-like file pattern specifying the filepath for the source files. Relative to baseDir | string  |  "**/*.ts" |
 |  --ignore | -i  |          Glob-like file pattern specifying files to ignore. | array | ["\*\*/*.spec.ts", "\*\*/node_modules/\*\*"] |
 |  --imageFormat | --im |    Image format. To turn off image generation set to off [choices: "eps", "latex", "png", "svg", "txt", "off"] | | "png" |
 |  --outDir | -o   |         Redirect output structure to the directory      |  string | "out"  |
@@ -141,5 +141,31 @@ interface "auth.effects:: AuthEffects D" << (D,orchid) dispatch >> {
 ```
 
 
+## Using from source files
 
 
+### Installation
+
+```bash
+npm install ngrx-uml
+```
+
+### Example
+
+```typescript 
+
+import { CreateActionsDiagramService, PlantUmlService } from 'ngrx-uml';
+const createDiagramService = new CreateActionsDiagramService(
+    new PlantUmlService(), {
+    outDir: 'out',
+    imageFormat: 'svg',
+    ignorePattern: ['**/*.spec.ts'],
+    saveActionsReferencesToJson: true,
+    saveActionsToJson: true,
+    saveWsd: true
+});
+
+const files = '../../ngrx/**/src/**/*.ts';
+
+createDiagramService.generateDiagram(files);
+```

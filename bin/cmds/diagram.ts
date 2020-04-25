@@ -13,7 +13,7 @@ exports.builder = (yargs: Argv<DiagramOptions>): DiagramOptions => {
         description: 'Glob-like file pattern specifying the filepath for the source files. Relative to baseDir',
         type: 'string',
         nargs: 1,
-        default: 'src/**/*.ts'
+        default: '**/*.ts'
     }).option('ignore', {
         alias: 'i',
         description: 'Glob-like file pattern specifying files to ignore.',

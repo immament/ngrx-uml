@@ -5,6 +5,7 @@ import { Converter } from '../../converters/converter';
 import { TypeKind } from '../../converters/models/type.model';
 import { ActionWithSymbol } from '../models/action-with-symbol.model';
 import { Action } from '../models/action.model';
+
 import { CallExpressionConverter } from './node-converters/call-expression.converter';
 import { TypeLiteralConverter } from './node-converters/type-literal.converter';
 import { TypeReferenceConverter } from './node-converters/type-reference.converter';
