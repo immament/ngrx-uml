@@ -31,6 +31,7 @@ export class ActionReferenceRenderer implements ItemRenderer {
             ${item.fileName ? `src: ${item.fileName}` : ''}
             ..
             ${this.declarationContext(item) || ''}
+            __
         }
         `;
 

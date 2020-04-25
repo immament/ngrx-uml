@@ -187,9 +187,9 @@ export class CreateActionsDiagramService {
         @enduml`;
     }
 
-    private saveActions(actions: Action[], outDir: string, fileName: string): void {
+    private saveActions(actions: Action[], outDir: string, fileName: string, ): void {
         if (this.options.saveActionsToJson) {
-            writeJsonToFile(actions, outDir, fileName, getKeyReplacer('references'));
+            writeJsonToFile(actions, outDir, fileName,  getKeyReplacer('action'));
             log.debug(`Actions saved to ${chalk.gray(`${outDir}${fileName}`)}`);
         }
     }

@@ -1,0 +1,56 @@
+@startuml [Auth/API] Login Success
+
+set namespaceSeparator ::
+
+interface "[Auth/API] Login Success" << (A,#FF7700) action >> {
+    variable: loginSuccess
+    src: auth-api.actions
+    --
+    props<{user: User}>
+
+}
+
+interface "auth.reducer:: reducer L" << (L,orchid) listen >> {
+    name: loginSuccess
+    action: [Auth/API] Login Success
+    src: auth.reducer
+    ..
+    Variable: reducer
+    __
+}
+"[Auth/API] Login Success" <.down. "auth.reducer:: reducer L"
+
+interface "login-page.reducer:: reducer L" << (L,orchid) listen >> {
+    name: loginSuccess
+    action: [Auth/API] Login Success
+    src: login-page.reducer
+    ..
+    Variable: reducer
+    __
+}
+"[Auth/API] Login Success" <.down. "login-page.reducer:: reducer L"
+
+interface "auth.effects:: AuthEffects D" << (D,orchid) dispatch >> {
+    name: loginSuccess
+    action: [Auth/API] Login Success
+    src: auth.effects
+    ..
+    Class: AuthEffects
+    Property: login$
+    __
+}
+"[Auth/API] Login Success" -down-> "auth.effects:: AuthEffects D"
+
+interface "auth.effects:: AuthEffects L" << (L,orchid) listen >> {
+    name: loginSuccess
+    action: [Auth/API] Login Success
+    src: auth.effects
+    ..
+    Class: AuthEffects
+    Property: loginSuccess$
+    __
+}
+"[Auth/API] Login Success" <.down. "auth.effects:: AuthEffects L"
+
+
+@enduml
