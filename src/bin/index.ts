@@ -4,7 +4,7 @@
 import log from 'loglevel';
 import yargs from 'yargs';
 
-import { getCommandFilesExtensionsForEnvironment, prepareTraceLogger } from '../src/utils/utils';
+import { getCommandFilesExtensionsForEnvironment, prepareTraceLogger } from '../lib/utils/utils';
 
 yargs
   .usage('Usage: $0 <command> [options]')

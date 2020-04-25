@@ -1,12 +1,14 @@
 import path from 'path';
 import ts from 'typescript';
 
-import { ActionConvertContextFactory } from '../../src/actions/converters/action-convert.context';
-import { Action } from '../../src/actions/models/action.model';
-import { Converter } from '../../src/converters/converter';
+import {
+    ActionConvertContextFactory
+} from '../../src/lib/actions/converters/action-convert.context';
+import { Action } from '../../src/lib/actions/models/action.model';
+import { Converter } from '../../src/lib/converters/converter';
 import {
     CallExpression, NamedType, TypeLiteral, TypeReference
-} from '../../src/converters/models/type.model';
+} from '../../src/lib/converters/models/type.model';
 
 describe('SearchActionsConverter', () => {
     const base = path.join(__dirname, 'search-actions-converter_data');

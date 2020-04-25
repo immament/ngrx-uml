@@ -1,6 +1,6 @@
 import { Argv } from 'yargs';
 
-import { getCommandFilesExtensionsForEnvironment } from '../../src/utils/utils';
+import { getCommandFilesExtensionsForEnvironment } from '../../lib/utils/utils';
 
 exports.command = 'diagnostic';
 exports.desc = 'Diagnostic tools';

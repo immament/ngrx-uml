@@ -5,14 +5,23 @@ import path from 'path';
 import ts from 'typescript';
 
 import {
-    Action, ActionConvertContextFactory, ActionReference, ActionReferenceConvertContextFactory,
-    ActionReferenceRenderer, ActionRenderer, Converter, PlantUmlService, Renderer, TypeKind
-} from '../';
-import { globSync } from '../lib/utils/glob';
-import { createTsProgram } from '../lib/utils/tsutils';
+    ActionReferenceConvertContextFactory
+} from '../action-references/converters/action-reference-convert.context';
+import { ActionReference } from '../action-references/models/action-reference.model';
+import { ActionConvertContextFactory } from '../actions/converters/action-convert.context';
+import { Action } from '../actions/models/action.model';
+import { ActionReferenceRenderer } from '../actions/renderer/items/action-reference.renderer';
+import { ActionRenderer } from '../actions/renderer/items/action.renderer';
+import { Renderer } from '../actions/renderer/renderer';
+import { Converter } from '../converters/converter';
+import { TypeKind } from '../converters/models/type.model';
+import { globSync } from '../utils/glob';
+import { createTsProgram } from '../utils/tsutils';
 import {
     getKeyReplacer, removeiIlegalCharacters, writeJsonToFile, writeToFile
-} from '../lib/utils/utils';
+} from '../utils/utils';
+
+import { PlantUmlService } from './plant-uml.service';
 
 export interface CreateActionsDiagramServiceOptions {
     ignorePattern?: string | string[];
@@ -180,7 +189,7 @@ export class CreateActionsDiagramService {
 
     private saveActions(actions: Action[], outDir: string, fileName: string, ): void {
         if (this.options.saveActionsToJson) {
-            writeJsonToFile(actions, outDir, fileName, getKeyReplacer('action'));
+            writeJsonToFile(actions, outDir, fileName,  getKeyReplacer('action'));
             log.debug(`Actions saved to ${chalk.gray(`${outDir}${fileName}`)}`);
         }
     }

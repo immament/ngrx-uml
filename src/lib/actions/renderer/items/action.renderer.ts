@@ -6,7 +6,8 @@ import {
 } from '../../../converters/models/type.model';
 import { getFileName } from '../../../utils/utils';
 import { Action } from '../../models/action.model';
-import { ItemRenderer } from '../items/item.renderer';
+
+import { ItemRenderer } from './item.renderer';
 
 export class ActionRenderer implements ItemRenderer {
 

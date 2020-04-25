@@ -5,6 +5,7 @@
     "lib": [
       "es2017"
     ],
+    "baseUrl": "src",
     "outDir": "./dist", /* Redirect output structure to the directory. */
     "downlevelIteration": true, /* Provide full support for iterables in 'for-of', spread, and destructuring when targeting 'ES5' or 'ES3'. */
     "strict": true, /* Enable all strict type-checking options. */
@@ -17,7 +18,7 @@
   },
   "include": [
     "src/**/*",
-    "bin/**/*"
+    "src/bin/**/*"
   ],
   "exclude": [
     "node_modules",

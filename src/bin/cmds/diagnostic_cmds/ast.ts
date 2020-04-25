@@ -1,7 +1,7 @@
 import log from 'loglevel';
 import { Argv } from 'yargs';
 
-import { printAst } from '../../../src/diagnostic/printAst';
+import { printAst } from '../../../lib/diagnostic/printAst';
 
 exports.command = 'ast';
 exports.desc = 'Print AST for first file in pattern';

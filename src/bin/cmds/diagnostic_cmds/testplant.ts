@@ -1,7 +1,7 @@
 import log from 'loglevel';
 import { Argv } from 'yargs';
 
-import testPlantServer from '../../../src/diagnostic/testPlantServer';
+import testPlantServer from '../../../lib/diagnostic/testPlantServer';
 
 exports.command = 'testplant';
 exports.desc = 'Generate test diagram using plant server';

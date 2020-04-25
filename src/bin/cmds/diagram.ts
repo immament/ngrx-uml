@@ -1,8 +1,8 @@
 import log from 'loglevel';
 import { Argv } from 'yargs';
 
-import { CreateActionsDiagramService } from '../../src/services/create-diagram.service';
-import { PlantUmlService } from '../../src/services/plant-uml.service';
+import { CreateActionsDiagramService } from '../../lib/services/create-diagram.service';
+import { PlantUmlService } from '../../lib/services/plant-uml.service';
 
 exports.command = 'diagram [options]';
 exports.desc = 'Generate plantUML diagram';

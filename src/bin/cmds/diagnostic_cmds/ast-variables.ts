@@ -1,7 +1,7 @@
 import log from 'loglevel';
 import { Argv } from 'yargs';
 
-import { printAstVariablesInProgram } from '../../../src/diagnostic/printAstInProgram';
+import { printAstVariablesInProgram } from '../../../lib/diagnostic/printAstInProgram';
 
 exports.command = 'ast-variables';
 exports.desc = 'Create typescript program using tsconfig and print AST variables for one file';
