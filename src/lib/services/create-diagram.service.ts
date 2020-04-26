@@ -10,36 +10,25 @@ import {
 import { ActionReference } from '../action-references/models/action-reference.model';
 import { ActionConvertContextFactory } from '../actions/converters/action-convert.context';
 import { Action } from '../actions/models/action.model';
-import { ActionReferenceRenderer } from '../actions/renderer/items/action-reference.renderer';
-import { ActionRenderer } from '../actions/renderer/items/action.renderer';
-import { Renderer } from '../actions/renderer/renderer';
+import { ActionReferenceRenderer, ActionRenderer } from '../actions/renderer/items';
 import { Converter } from '../converters/converter';
-import { TypeKind } from '../converters/models/type.model';
+import { TypeKind } from '../converters/models';
+import { Renderer } from '../renderers';
 import { globSync } from '../utils/glob';
 import { createTsProgram } from '../utils/tsutils';
 import {
     getKeyReplacer, removeiIlegalCharacters, writeJsonToFile, writeToFile
 } from '../utils/utils';
 
+import { GeneratorOptions } from './';
 import { PlantUmlService } from './plant-uml.service';
 
-export interface CreateActionsDiagramServiceOptions {
-    ignorePattern?: string | string[];
-    saveActionsToJson?: boolean;
-    saveActionsReferencesToJson?: boolean;
-    saveWsd?: boolean;
-    outDir?: string;
-    baseDir?: string;
-    tsConfigFileName?: string;
-    clickableLinks?: boolean;
-    imageFormat?: string;
-    generateImages?: boolean;
-
-}
-
+/**
+* @deprecated use .... instead
+*/
 export class CreateActionsDiagramService {
 
-    public options: CreateActionsDiagramServiceOptions = {
+    public options: GeneratorOptions = {
         saveActionsToJson: false,
         saveActionsReferencesToJson: false,
         saveWsd: false,
@@ -53,10 +42,18 @@ export class CreateActionsDiagramService {
 
     constructor(
         private readonly plantUmlService: PlantUmlService,
-        options: CreateActionsDiagramServiceOptions
+        options?: GeneratorOptions,
     ) {
 
-        this.options = { ...this.options, ...options };
+        // eslint-disable-next-line no-console
+        console.warn('CreateActionsDiagramService is depecated! Use .... instead');
+        if (options) {
+            this.options = { ...this.options, ...options };
+        }
+
+        if (this.options.logLevel) {
+            log.setLevel(this.options.logLevel);
+        }
     }
 
     generateDiagram(filesPattern: string): void {
@@ -122,7 +119,6 @@ export class CreateActionsDiagramService {
         const renderer = new Renderer({
             [TypeKind.Action]: new ActionRenderer,
             [TypeKind.ActionReference]: new ActionReferenceRenderer,
-
         });
 
 
@@ -189,7 +185,7 @@ export class CreateActionsDiagramService {
 
     private saveActions(actions: Action[], outDir: string, fileName: string, ): void {
         if (this.options.saveActionsToJson) {
-            writeJsonToFile(actions, outDir, fileName,  getKeyReplacer('action'));
+            writeJsonToFile(actions, outDir, fileName, getKeyReplacer('action'));
             log.debug(`Actions saved to ${chalk.gray(`${outDir}${fileName}`)}`);
         }
     }

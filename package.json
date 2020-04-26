@@ -2,7 +2,7 @@
   "name": "ngrx-uml",
   "version": "0.0.1",
   "description": "NGRX to Plant UML diagram",
-  "homepage": "https://github.com/immament/ngrx-uml/issues",
+  "homepage": "https://github.com/immament/ngrx-uml",
   "bugs": {
     "url": "https://github.com/immament/ngrx-uml/issues"
   },
@@ -10,12 +10,13 @@
     "type": "git",
     "url": "git+https://github.com/immament/ngrx-uml.git"
   },
-  "main": "dist/lib/index.js",
-  "typings": "dist/lib/index.d.ts",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "bin": {
     "ngrx-uml": "./dist/bin/index.js"
   },
   "scripts": {
+    "setup": "npm install",
     "build": "tsc",
     "start:test": "node ./dist/bin -f 'test/test-files/**/*ts'",
     "start": "ts-node ./src/bin ",

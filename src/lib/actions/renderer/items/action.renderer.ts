@@ -4,10 +4,9 @@ import { EOL } from 'os';
 import {
     CallExpression, NamedType, TypeKind, TypeLiteral, TypeReference
 } from '../../../converters/models/type.model';
+import { ItemRenderer } from '../../../renderers/item.renderer';
 import { getFileName } from '../../../utils/utils';
 import { Action } from '../../models/action.model';
-
-import { ItemRenderer } from './item.renderer';
 
 export class ActionRenderer implements ItemRenderer {
 

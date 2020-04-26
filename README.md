@@ -158,18 +158,23 @@ npm install ngrx-uml
 
 ```typescript 
 
-import { CreateActionsDiagramService, PlantUmlService } from 'ngrx-uml';
-const createDiagramService = new CreateActionsDiagramService(
-    new PlantUmlService(), {
-    outDir: 'out',
-    imageFormat: 'svg',
-    ignorePattern: ['**/*.spec.ts'],
-    saveActionsReferencesToJson: true,
-    saveActionsToJson: true,
-    saveWsd: true
-});
+import { GeneratorService, PlantUmlService } from 'ngrx-uml';
 
-const files = '../../ngrx/**/src/**/*.ts';
+const createDiagramService = new GeneratorService(
+    new PlantUmlService(),
+    {
+        outDir: 'out',
+        imageFormat: 'svg',
+        ignorePattern: ['**/*.spec.ts'],
+        saveActionsReferencesToJson: true,
+        saveActionsToJson: true,
+        saveWsd: true,
+        logLevel: 'INFO'
+    });
 
-createDiagramService.generateDiagram(files);
+const files = '../../test/test_data/**/*.ts';
+
+createDiagramService.generate(files);
+
+
 ```

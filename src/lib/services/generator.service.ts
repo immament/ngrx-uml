@@ -5,32 +5,27 @@ import path from 'path';
 import ts from 'typescript';
 
 import {
-    Action, ActionConvertContextFactory, ActionReference, ActionReferenceConvertContextFactory,
-    ActionReferenceRenderer, ActionRenderer, Converter, PlantUmlService, Renderer, TypeKind
-} from '../';
-import { globSync } from '../lib/utils/glob';
-import { createTsProgram } from '../lib/utils/tsutils';
+    ActionReferenceConvertContextFactory
+} from '../action-references/converters/action-reference-convert.context';
+import { ActionReference } from '../action-references/models/action-reference.model';
+import { ActionConvertContextFactory } from '../actions/converters/action-convert.context';
+import { Action } from '../actions/models/action.model';
+import { ActionReferenceRenderer, ActionRenderer } from '../actions/renderer/items';
+import { Converter } from '../converters/converter';
+import { TypeKind } from '../converters/models';
+import { Renderer } from '../renderers';
+import { globSync } from '../utils/glob';
+import { createTsProgram } from '../utils/tsutils';
 import {
     getKeyReplacer, removeiIlegalCharacters, writeJsonToFile, writeToFile
-} from '../lib/utils/utils';
+} from '../utils/utils';
 
-export interface CreateActionsDiagramServiceOptions {
-    ignorePattern?: string | string[];
-    saveActionsToJson?: boolean;
-    saveActionsReferencesToJson?: boolean;
-    saveWsd?: boolean;
-    outDir?: string;
-    baseDir?: string;
-    tsConfigFileName?: string;
-    clickableLinks?: boolean;
-    imageFormat?: string;
-    generateImages?: boolean;
+import { GeneratorOptions } from './generator-options';
+import { PlantUmlService } from './plant-uml.service';
 
-}
+export class GeneratorService {
 
-export class CreateActionsDiagramService {
-
-    public options: CreateActionsDiagramServiceOptions = {
+    public options: GeneratorOptions = {
         saveActionsToJson: false,
         saveActionsReferencesToJson: false,
         saveWsd: false,
@@ -44,13 +39,19 @@ export class CreateActionsDiagramService {
 
     constructor(
         private readonly plantUmlService: PlantUmlService,
-        options: CreateActionsDiagramServiceOptions
+        options?: GeneratorOptions,
     ) {
 
-        this.options = { ...this.options, ...options };
+        if (options) {
+            this.options = { ...this.options, ...options };
+        }
+
+        if (this.options.logLevel) {
+            log.setLevel(this.options.logLevel);
+        }
     }
 
-    generateDiagram(filesPattern: string): void {
+    generate(filesPattern: string): void {
 
         const sourceFilePattern = this.options.baseDir + filesPattern;
         log.debug(chalk.yellow('sourceFilePattern:'), sourceFilePattern);
@@ -83,7 +84,7 @@ export class CreateActionsDiagramService {
 
         this.convertReferences(converter, program, typeChecker, this.options.outDir, actionsMap);
         const actions = [...actionsMap.values()];
-        this.renderDiagrams(actions, this.options.outDir);
+        this.render(actions, this.options.outDir);
     }
 
     private convertActions(converter: Converter, program: ts.Program, typeChecker: ts.TypeChecker, outDir: string): Map<ts.Symbol, Action> | undefined {
@@ -108,18 +109,17 @@ export class CreateActionsDiagramService {
 
     }
 
-    private renderDiagrams(actions: Action[], outDir: string): void {
+    private render(actions: Action[], outDir: string): void {
 
         const renderer = new Renderer({
             [TypeKind.Action]: new ActionRenderer,
             [TypeKind.ActionReference]: new ActionReferenceRenderer,
-
         });
 
 
         renderer.onItemRendered.subscribe(({ item, output }) => {
             if (item instanceof Action) {
-                this.saveDiagram(item, output, outDir);
+                this.save(item, output, outDir);
             }
         });
 
@@ -127,7 +127,7 @@ export class CreateActionsDiagramService {
 
     }
 
-    private saveDiagram(item: Action, content: string, outDir: string): void {
+    private save(item: Action, content: string, outDir: string): void {
         const diagram = this.createDiagram(item.name, content);
         const fileName = removeiIlegalCharacters(item.name, this.options.clickableLinks);
         this.writeWsdToFile(item.name, diagram, path.join(outDir, 'wsd'));
