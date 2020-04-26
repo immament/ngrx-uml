@@ -1,8 +1,7 @@
 import log from 'loglevel';
 import { Argv } from 'yargs';
 
-import { CreateActionsDiagramService } from '../../lib/services/create-diagram.service';
-import { PlantUmlService } from '../../lib/services/plant-uml.service';
+import { GeneratorService, PlantUmlService } from '../../lib/services';
 
 exports.command = 'diagram [options]';
 exports.desc = 'Generate plantUML diagram';
@@ -72,19 +71,22 @@ interface DiagramOptions {
 exports.handler = function (argv: any): void {
     log.trace('Generate diagram..', argv);
 
-    const createDiagramService = new CreateActionsDiagramService(new PlantUmlService, {
-        outDir: argv.outDir,
-        baseDir: argv.baseDir,
-        tsConfigFileName: argv.tsConfig,
-        clickableLinks: argv.clickableLinks,
-        imageFormat: argv.imageFormat,
-        generateImages: argv.imageFormat !== 'off',
-        ignorePattern: argv.ignore,
-        saveActionsReferencesToJson: argv.toJson,
-        saveActionsToJson: argv.toJson,
-        saveWsd: argv.wsd
-        
-    });
+    const plantUmlService = new PlantUmlService();
 
-    createDiagramService.generateDiagram(argv.files);
+    const createDiagramService = new GeneratorService(
+        plantUmlService,
+        {
+            outDir: argv.outDir,
+            baseDir: argv.baseDir,
+            tsConfigFileName: argv.tsConfig,
+            clickableLinks: argv.clickableLinks,
+            imageFormat: argv.imageFormat,
+            generateImages: argv.imageFormat !== 'off',
+            ignorePattern: argv.ignore,
+            saveActionsReferencesToJson: argv.toJson,
+            saveActionsToJson: argv.toJson,
+            saveWsd: argv.wsd
+        });
+
+    createDiagramService.generate(argv.files);
 };

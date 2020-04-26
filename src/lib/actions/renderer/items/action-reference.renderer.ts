@@ -1,9 +1,8 @@
 import { EOL } from 'os';
 
 import { ActionReference } from '../../../action-references/models/action-reference.model';
+import { ItemRenderer } from '../../../renderers/item.renderer';
 import { Action } from '../../models/action.model';
-
-import { ItemRenderer } from './item.renderer';
 
 export class ActionReferenceRenderer implements ItemRenderer {
 

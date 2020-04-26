@@ -3,9 +3,9 @@ import log from 'loglevel';
 import { EOL } from 'os';
 import { Subject } from 'rxjs';
 
-import { ConvertedItem } from '../../converters/models/type.model';
+import { ConvertedItem } from '../converters/models';
 
-import { ItemRenderer } from './items/item.renderer';
+import { ItemRenderer } from './item.renderer';
 
 export class Renderer {
 

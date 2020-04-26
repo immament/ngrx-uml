@@ -1,10 +1,12 @@
-import { CreateActionsDiagramService } from '../services/create-diagram.service';
+
+
+import { GeneratorService } from '../services/generator.service';
 import { PlantUmlService } from '../services/plant-uml.service';
 
 function testPlantServer(outDir = 'out'): void {
 
     const plantUmlService = new PlantUmlService();
-    const createDiagramService = new CreateActionsDiagramService(plantUmlService, {outDir});
+    const generatorService = new GeneratorService(plantUmlService,  {outDir});
 
 
     const diagram = `
@@ -24,7 +26,7 @@ function testPlantServer(outDir = 'out'): void {
     @enduml
     `;
 
-    createDiagramService.renderToImageFile(outDir,  diagram, 'test', 'png' );
+    generatorService.renderToImageFile(outDir,  diagram, 'test', 'png' );
 
    
 }
