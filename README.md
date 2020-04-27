@@ -39,15 +39,15 @@ ng diagram --help
 ```bash
 ngrx-uml diagram -f '**/*ts' -d ../ngrx/projects/example-app/ -i '../**/*.spec.ts' -c tsconfig.app.json
 ```
-
+*** Glob-like file patterns must be in quotation marks ***
 
 | Option | Alias | Description                         | Type | Default |
 | --------| ------| ------------------------------------------------------------------- | -------- | ---------- |
 |  --version    | |              Show version number                                    | boolean |            |
 | --log     | -l |   Log level. [choices: "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "SILENT"] | | "INFO" |
 |  --help   | -h |          Show help                                                    |    boolean | |
-|  --files | -f  |           Glob-like file pattern specifying the filepath for the source files. Relative to baseDir | string  |  "**/*.ts" |
-|  --ignore | -i  |          Glob-like file pattern specifying files to ignore. | array | ["\*\*/*.spec.ts", "\*\*/node_modules/\*\*"] |
+|  --files | -f  |           Glob-like file pattern specifying the filepath for the source files. Relative to baseDir.  ***IMPORTANT!!*** Use with quote (" or \')' | string  |  "**/*.ts" |
+|  --ignore | -i  |          Glob-like file pattern specifying files to ignore. ***IMPORTANT!!*** Use with quote (" or \')' | array | ["\*\*/*.spec.ts", "\*\*/node_modules/\*\*"] |
 |  --imageFormat | --im |    Image format. To turn off image generation set to off [choices: "eps", "latex", "png", "svg", "txt", "off"] | | "png" |
 |  --outDir | -o   |         Redirect output structure to the directory      |  string | "out"  |
 |  --baseDir | -d  |         Path to project base directory                   |   string | "" |
@@ -156,25 +156,70 @@ npm install ngrx-uml
 
 ### Example
 
+
+#### Use GeneratorService
+
 ```typescript 
+import {
+    ActionConvertContextFactory, ActionReferenceConvertContextFactory,
+    ActionsPlantDiagramRenderFactory, GeneratorOptions, GeneratorService, PlantUmlOutputService
+} from 'ngrx-uml';
 
-import { GeneratorService, PlantUmlService } from 'ngrx-uml';
+export function useGeneratorService(): void {
 
-const createDiagramService = new GeneratorService(
-    new PlantUmlService(),
-    {
-        outDir: 'out',
+    const options: GeneratorOptions = {
+        outDir: 'out/generator',
+        imageFormat: 'png',
+        ignorePattern: ['**/*.spec.ts'],
+        saveActionsReferencesToJson: false,
+        saveActionsToJson: false,
+        saveWsd: false,
+        logLevel: 'INFO'
+    };
+
+    const plantUmlService = new PlantUmlOutputService({
+        outDir: options.outDir || 'out',
+        ext: options.imageFormat || 'png',
+        clickableLinks: options.clickableLinks || true,
+        saveWsd: options.saveWsd || false
+    });
+
+
+    const generateService = new GeneratorService(
+        plantUmlService,
+        [
+            new ActionConvertContextFactory,
+            new ActionReferenceConvertContextFactory,
+        ],
+        new ActionsPlantDiagramRenderFactory().create(),
+        [plantUmlService],
+        options
+    );
+
+    const files = '../../test/test_data/**/*.ts';
+    generateService.generate(files);
+
+}
+
+```
+
+#### Use CreateActionsDiagramService
+
+```typescript 
+import { CreateActionsDiagramService, GeneratorOptions } from 'ngrx-uml';
+
+export function useCreateActionsDiagramService(): void {
+    const options: GeneratorOptions = {
+        outDir: 'out/create-actions-diagram-service',
         imageFormat: 'svg',
         ignorePattern: ['**/*.spec.ts'],
         saveActionsReferencesToJson: true,
         saveActionsToJson: true,
         saveWsd: true,
         logLevel: 'INFO'
-    });
-
-const files = '../../test/test_data/**/*.ts';
-
-createDiagramService.generate(files);
-
-
+    };
+    const files = '../../test/test_data/**/*.ts';
+    const createActionsDiagramService = new CreateActionsDiagramService(options);
+    createActionsDiagramService.generateDiagram(files);
+}
 ```

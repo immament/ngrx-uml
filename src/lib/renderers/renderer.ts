@@ -3,10 +3,14 @@ import log from 'loglevel';
 import { EOL } from 'os';
 import { Subject } from 'rxjs';
 
-import { ConvertedItem } from '../converters/models';
+import { ConvertedItem, NamedConvertedItem } from '../converters/models';
 
 import { ItemRenderer } from './item.renderer';
 
+export interface RenderResult {
+    name: string;
+    result: string;
+}
 export class Renderer {
 
     private itemRenderedSubject = new Subject<{ item: ConvertedItem; output: string }>()
@@ -18,23 +22,23 @@ export class Renderer {
         private itemRenderers: { [kind: number]: ItemRenderer },
         private itemFilter?: (item: ConvertedItem) => boolean
     ) {
-  
+
     }
 
-    render(items: ConvertedItem[]): string | undefined {
+    render(items: NamedConvertedItem[]): RenderResult[] | undefined {
 
-        const outputs: string[] = [];
+        const outputs: RenderResult[] = [];
         for (const item of items) {
 
             const output = this.renderRecursive(item);
-            outputs.push(...output);
             if (output) {
+                outputs.push({ name: item.name || this.randomName(), result: output.join(EOL)});
                 this.itemRenderedSubject.next({ item, output: output.join(EOL) });
             }
         }
 
         if (outputs.length) {
-            return outputs.join(EOL);
+            return outputs;
         }
 
     }
@@ -61,7 +65,7 @@ export class Renderer {
 
             const output = this.renderRecursive(child);
             if (output) {
-                outputs.push(...output);
+                outputs.push(output.join(EOL));
             }
             log.trace('render child:', chalk.green(child.kindText));
 
@@ -70,5 +74,9 @@ export class Renderer {
         return outputs;
 
 
+    }
+
+    private randomName(): string {
+        return Math.random().toString(36).substring(7);
     }
 }

@@ -21,6 +21,10 @@ export interface ConvertedItem {
     getChildren(): ConvertedItem[];
 }
 
+export interface NamedConvertedItem extends ConvertedItem  {
+    name?: string;
+}
+
 export class NamedType implements ConvertedItem  {
     readonly kind: TypeKind = TypeKind.Unknown;
     constructor(

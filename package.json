@@ -1,6 +1,6 @@
 {
   "name": "ngrx-uml",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "NGRX to Plant UML diagram",
   "homepage": "https://github.com/immament/ngrx-uml",
   "bugs": {
@@ -18,14 +18,15 @@
   "scripts": {
     "setup": "npm install",
     "build": "tsc",
-    "start:test": "node ./dist/bin -f 'test/test-files/**/*ts'",
     "start": "ts-node ./src/bin ",
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "eslint . --ext .ts",
     "run:diagram": "ts-node ./src/bin diagram -f 'test/test_data/**/*ts'",
     "run:diagram:ngrx": "ts-node ./src/bin diagram -f '**/*ts' -d ../ngrx/projects/example-app/ -i '../**/*.spec.ts' -c tsconfig.app.json",
-    "run:print": "ts-node ./src/bin print -f 'test/test-files/**/*ts'"
+    "run:print": "ts-node ./src/bin print -f 'test/test-files/**/*ts'",
+    "prepublishOnly": "npm run lint && npm run build && npm test",
+    "deployLocal": "npm run build && npm i -g ."
   },
   "keywords": [
     "ngrx",
