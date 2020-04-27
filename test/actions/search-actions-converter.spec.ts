@@ -7,22 +7,25 @@ import {
 import { Action } from '../../src/lib/actions/models/action.model';
 import { Converter } from '../../src/lib/converters/converter';
 import {
-    CallExpression, NamedType, TypeLiteral, TypeReference
+    CallExpression, NamedConvertedItem, NamedType, TypeLiteral, TypeReference
 } from '../../src/lib/converters/models/type.model';
 
 describe('SearchActionsConverter', () => {
     const base = path.join(__dirname, 'search-actions-converter_data');
 
-    function expectedSearchResult(testFile: string, actionsMap: Map<ts.Symbol, Action>, expectedActions: Partial<Action>[]): void {
+    function expectedSearchResult(testFile: string, expectedActions: Partial<Action>[], convertedItems?: NamedConvertedItem[]): void {
 
-        expect(actionsMap, 'search actionsMap is defined').toBeTruthy();
-        expect(actionsMap.size, 'found expected actions count').toBe(expectedActions.length);
-        const resultIterator = actionsMap.entries();
+        expect(convertedItems, 'search actionsMap is defined').toBeTruthy();
+        if (!convertedItems) {
+            return;
+        }
+        expect(convertedItems.length, 'found expected actions count').toBe(expectedActions.length);
+        const resultIterator = convertedItems.values();
         for (const expectedAction of expectedActions) {
-            const [symbol, action] = resultIterator.next().value;
+            const action = resultIterator.next().value;
             expect(action, 'Action equal').toEqual(expectedAction);
-            expect(symbol, 'action contain symbol').toBeTruthy();
-            expect(symbol.escapedName, 'symbol has correct name').toBe(expectedAction.variable);
+            // expect(symbol, 'action contain symbol').toBeTruthy();
+            // expect(symbol.escapedName, 'symbol has correct name').toBe(expectedAction.variable);
         }
     }
 
@@ -38,21 +41,19 @@ describe('SearchActionsConverter', () => {
         return path.join(base, fileName);
     }
 
-    function convertFile(testFilePath: string, program: ts.Program): Map<ts.Symbol, Action> {
+    function convertFile(testFilePath: string, program: ts.Program): NamedConvertedItem[] | undefined {
 
-        return new Converter()
-            .convert(
-                new ActionConvertContextFactory(),
-                program,
-                program.getTypeChecker()
+        const converter = new Converter();
+        const typeChecker = program.getTypeChecker();
+        const context = new ActionConvertContextFactory().create(program, typeChecker, converter, undefined);
 
-            ) as Map<ts.Symbol, Action>;
+        return converter.convert(context, program);
     }
 
     function convertFileTest(testFilePath: string, expectedActions: Partial<Action>[]): void {
         const program = createProgram(testFilePath);
-        const actionsMap = convertFile(testFilePath, program);
-        expectedSearchResult(testFilePath, actionsMap, expectedActions);
+        const convertedItems = convertFile(testFilePath, program);
+        expectedSearchResult(testFilePath, expectedActions, convertedItems);
 
     }
 
@@ -301,12 +302,15 @@ describe('SearchActionsConverter', () => {
 
         const testFilePath = createPathToTestFile('zero.actions.ts');
         const program = createProgram(testFilePath);
-        const actionsMap = convertFile(testFilePath, program);
+        const convertedItems = convertFile(testFilePath, program);
 
         const expectedActionsCount = 0;
 
-        expect(actionsMap, 'search actionsMap is defined').toBeTruthy();
-        expect(actionsMap.size, 'found zero actions').toBe(expectedActionsCount);
+        expect(convertedItems, 'search actionsMap is defined').toBeTruthy();
+        if (!convertedItems) {
+            return;
+        }
+        expect(convertedItems.length, 'found zero actions').toBe(expectedActionsCount);
 
     });
 

@@ -156,25 +156,70 @@ npm install ngrx-uml
 
 ### Example
 
+
+#### Use GeneratorService
+
 ```typescript 
+import {
+    ActionConvertContextFactory, ActionReferenceConvertContextFactory,
+    ActionsPlantDiagramRenderFactory, GeneratorOptions, GeneratorService, PlantUmlOutputService
+} from 'ngrx-uml';
 
-import { GeneratorService, PlantUmlService } from 'ngrx-uml';
+export function useGeneratorService(): void {
 
-const createDiagramService = new GeneratorService(
-    new PlantUmlService(),
-    {
-        outDir: 'out',
+    const options: GeneratorOptions = {
+        outDir: 'out/generator',
+        imageFormat: 'png',
+        ignorePattern: ['**/*.spec.ts'],
+        saveActionsReferencesToJson: false,
+        saveActionsToJson: false,
+        saveWsd: false,
+        logLevel: 'INFO'
+    };
+
+    const plantUmlService = new PlantUmlOutputService({
+        outDir: options.outDir || 'out',
+        ext: options.imageFormat || 'png',
+        clickableLinks: options.clickableLinks || true,
+        saveWsd: options.saveWsd || false
+    });
+
+
+    const generateService = new GeneratorService(
+        plantUmlService,
+        [
+            new ActionConvertContextFactory,
+            new ActionReferenceConvertContextFactory,
+        ],
+        new ActionsPlantDiagramRenderFactory().create(),
+        [plantUmlService],
+        options
+    );
+
+    const files = '../../test/test_data/**/*.ts';
+    generateService.generate(files);
+
+}
+
+```
+
+#### Use CreateActionsDiagramService
+
+```typescript 
+import { CreateActionsDiagramService, GeneratorOptions } from 'ngrx-uml';
+
+export function useCreateActionsDiagramService(): void {
+    const options: GeneratorOptions = {
+        outDir: 'out/create-actions-diagram-service',
         imageFormat: 'svg',
         ignorePattern: ['**/*.spec.ts'],
         saveActionsReferencesToJson: true,
         saveActionsToJson: true,
         saveWsd: true,
         logLevel: 'INFO'
-    });
-
-const files = '../../test/test_data/**/*.ts';
-
-createDiagramService.generate(files);
-
-
+    };
+    const files = '../../test/test_data/**/*.ts';
+    const createActionsDiagramService = new CreateActionsDiagramService(options);
+    createActionsDiagramService.generateDiagram(files);
+}
 ```

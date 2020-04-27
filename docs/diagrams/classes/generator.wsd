@@ -1,0 +1,50 @@
+@startuml Generator 
+
+class Converter {
+    +convert(context: ConvertContext, program: Program): ConvertedItem[] | undefined
+    +convertNode(context: ConvertContext, node: Node, withDefault?: boolean): ConvertedItem | undefined
+    +convertRecursive(context: ConvertContext, node: Node): void
+}
+
+interface ConvertContextFactory {
+    +create(program: Program, typeChecker: TypeChecker, converter: Converter, lastContext?: ConvertContext | undefined): ConvertContext
+    +configureConverter(converter: Converter): void
+}
+
+
+class Renderer {
+    +onItemRendered: Observable<{ item: ConvertedItem; output: string; }>
+    +render(items: ConvertedItem[]): string | undefined
+    +renderItem(item: ConvertedItem): string | undefined
+    +renderRecursive(item: ConvertedItem): string[] | undefined
+}
+
+interface RendererFactory {
+    +create(): Renderer
+}
+
+class GeneratorService {
+    +options: GeneratorOptions
+    -plantUmlService: PlantUmlService
+    -convertFactories: ConvertContextFactory[]
+    +generate(filesPattern: string): void
+    -convert(filesPattern: string): ConvertedItem[] | undefined
+    -render(items: ConvertedItem[], outDir: string): void
+    -save(item: Action, content: string, outDir: string): void
+    +renderToImageFile(outDir: string, diagram: string, fileName: string, ext: string): void
+    -createWriteStream(outDir: string, fileName: string, extension: string): WriteStream
+    -writeWsdToFile(name: string, diagram: string, outDir: string): void
+    -createDiagram(name: string, diagramContent: string): string
+    -saveActions(actions: Action[], outDir: string, fileName: string): void
+    -saveReferences(actionsReferences: ActionReference[], outDir: string, fileName: string): void
+}
+
+class PlantUmlService {
+    +plantUmlServerUrl: string
+    +remotePathPrefix: string
+    +renderImage(extension: string, plantuml: string, resultStream: WriteStream): void
+}
+
+
+
+@enduml

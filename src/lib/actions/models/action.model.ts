@@ -1,9 +1,11 @@
 
 
 import { ActionReference } from '../../action-references/models/action-reference.model';
-import { ConvertedItem, NamedType, TypeKind } from '../../converters/models/type.model';
+import {
+    ConvertedItem, NamedConvertedItem, NamedType, TypeKind
+} from '../../converters/models/type.model';
 
-export class Action implements ConvertedItem {
+export class Action implements NamedConvertedItem {
 
     readonly kind = TypeKind.Action;
     readonly kindText = 'Action';

@@ -1,27 +1,18 @@
 import chalk from 'chalk';
-import { createWriteStream, existsSync, mkdirSync, WriteStream } from 'fs';
 import log from 'loglevel';
-import path from 'path';
 import ts from 'typescript';
 
-import {
-    ActionReferenceConvertContextFactory
-} from '../action-references/converters/action-reference-convert.context';
-import { ActionReference } from '../action-references/models/action-reference.model';
-import { ActionConvertContextFactory } from '../actions/converters/action-convert.context';
-import { Action } from '../actions/models/action.model';
-import { ActionReferenceRenderer, ActionRenderer } from '../actions/renderer/items';
+import { ConvertContext, ConvertContextFactory } from '../converters';
 import { Converter } from '../converters/converter';
-import { TypeKind } from '../converters/models';
-import { Renderer } from '../renderers';
+import { ConvertedItem } from '../converters/models';
+import { Output } from '../outputs/output';
+import { Renderer, RenderResult } from '../renderers';
 import { globSync } from '../utils/glob';
 import { createTsProgram } from '../utils/tsutils';
-import {
-    getKeyReplacer, removeiIlegalCharacters, writeJsonToFile, writeToFile
-} from '../utils/utils';
+import { writeToFile } from '../utils/utils';
 
 import { GeneratorOptions } from './generator-options';
-import { PlantUmlService } from './plant-uml.service';
+import { PlantUmlOutputService } from './plant-uml.service';
 
 export class GeneratorService {
 
@@ -38,7 +29,10 @@ export class GeneratorService {
     }
 
     constructor(
-        private readonly plantUmlService: PlantUmlService,
+        private readonly plantUmlService: PlantUmlOutputService,
+        private readonly convertFactories: ConvertContextFactory[],
+        private readonly renderer: Renderer,
+        private readonly outputs: Output[],
         options?: GeneratorOptions,
     ) {
 
@@ -53,145 +47,72 @@ export class GeneratorService {
 
     generate(filesPattern: string): void {
 
-        const sourceFilePattern = this.options.baseDir + filesPattern;
-        log.debug(chalk.yellow('sourceFilePattern:'), sourceFilePattern);
+        log.debug(chalk.yellow('filePattern:'), filesPattern);
         log.debug(chalk.yellow('baseDir:'), this.options.baseDir);
         log.debug(chalk.yellow('tsConfig:'), this.options.tsConfigFileName);
         log.debug('options', this.options);
 
+        if (this.options.baseDir == null || !this.options.tsConfigFileName || !this.options.outDir) {
+            log.warn(`baseDir [${this.options.baseDir}] & tsConfigFileName [${this.options.tsConfigFileName}] & outDir [${this.options.outDir}] must be specified`);
+            return;
+        }
+        const program = this.createTsProgram(filesPattern, this.options.baseDir, this.options.tsConfigFileName);
+        const convertedItems = this.convert(program, this.options.outDir);
+
+        if (!convertedItems) { return; }
+
+        const renderResult = this.render(convertedItems);
+
+        if (!renderResult) { return; }
+
+        this.transform(renderResult);
+
+    }
+
+
+    private createTsProgram(filesPattern: string, baseDir: string, tsConfigFileName: string): ts.Program {
+        const sourceFilePattern = this.options.baseDir + filesPattern;
         const files = globSync(sourceFilePattern, {
             ignore: this.options.ignorePattern
         });
-
         log.debug('glob result', files);
+        const program = createTsProgram(files, baseDir, tsConfigFileName);
+        return program;
+    }
 
-        if (this.options.baseDir == null || !this.options.tsConfigFileName || !this.options.outDir) {
-            log.warn(`baseDir [${this.options.baseDir}] & tsConfigFileName [${this.options.tsConfigFileName}] & outDir [${this.options.outDir}] must be specified`);
-
-            return;
-        }
-
-        const program = createTsProgram(files, this.options.baseDir, this.options.tsConfigFileName);
-        const typeChecker = program.getTypeChecker();
-
+    private convert(program: ts.Program, outDir: string): ConvertedItem[] | undefined {
         const converter = new Converter();
-
-        const actionsMap = this.convertActions(converter, program, typeChecker, this.options.outDir);
-        if (!actionsMap) {
-            log.info('No actions found');
-            return;
+        const typeChecker = program.getTypeChecker();
+        let converterResult: ConvertedItem[] | undefined = undefined;
+        let lastContext: ConvertContext | undefined = undefined;
+        for (const contextFactory of this.convertFactories) {
+            const context = contextFactory.create(program, typeChecker, converter, lastContext);
+            converterResult = converter.convert(context, program);
+            this.saveConvertResult(context, outDir);
+            lastContext = context;
         }
-
-        this.convertReferences(converter, program, typeChecker, this.options.outDir, actionsMap);
-        const actions = [...actionsMap.values()];
-        this.render(actions, this.options.outDir);
+        return converterResult;
     }
 
-    private convertActions(converter: Converter, program: ts.Program, typeChecker: ts.TypeChecker, outDir: string): Map<ts.Symbol, Action> | undefined {
-        const actionsMap = converter.convert(new ActionConvertContextFactory(), program, typeChecker) as Map<ts.Symbol, Action>;
 
-        log.info(chalk.yellow(`Found ${actionsMap.size} actions`));
-        if (!actionsMap || actionsMap.size === 0) {
-            return;
-        }
-
-        this.saveActions([...actionsMap.values()], outDir, '/actions.json');
-        return actionsMap;
-    }
-
-    private convertReferences(converter: Converter, program: ts.Program, typeChecker: ts.TypeChecker, outDir: string, actionsMap: Map<ts.Symbol, Action>): void {
-        const actionsReferences = converter.convert(new ActionReferenceConvertContextFactory(actionsMap), program, typeChecker) as ActionReference[];
-
-        log.info(chalk.yellow(`Found ${actionsReferences.length} action's references`));
-
-        this.saveActions([...actionsMap.values()], outDir, '/actions-with-references.json');
-        this.saveReferences(actionsReferences, outDir, '/actions-references.json');
-
-    }
-
-    private render(actions: Action[], outDir: string): void {
-
-        const renderer = new Renderer({
-            [TypeKind.Action]: new ActionRenderer,
-            [TypeKind.ActionReference]: new ActionReferenceRenderer,
-        });
-
-
-        renderer.onItemRendered.subscribe(({ item, output }) => {
-            if (item instanceof Action) {
-                this.save(item, output, outDir);
+    private saveConvertResult(context: ConvertContext, outDir: string): void {
+        if (this.options.saveConvertResultToJson) {
+            const resultJson = context.serializeResultToJson();
+            if (resultJson) {
+                writeToFile(resultJson, outDir, context.name + '.json');
+                log.info(`Convert result saved to ${chalk.gray(`${this.options.outDir}/${context.name + '.json'}`)}`);
             }
-        });
-
-        renderer.render(actions);
-
-    }
-
-    private save(item: Action, content: string, outDir: string): void {
-        const diagram = this.createDiagram(item.name, content);
-        const fileName = removeiIlegalCharacters(item.name, this.options.clickableLinks);
-        this.writeWsdToFile(item.name, diagram, path.join(outDir, 'wsd'));
-        if (this.options.imageFormat) {
-            this.renderToImageFile(outDir, diagram, fileName, this.options.imageFormat);
-        }
-
-    }
-
-    public renderToImageFile(outDir: string, diagram: string, fileName: string, ext: string): void {
-        if (!this.options.generateImages) {
-            return;
-        }
-
-        if (!existsSync(outDir)) {
-            mkdirSync(outDir);
-        }
-        const writeStream = this.createWriteStream(outDir, fileName, ext);
-        this.plantUmlService.renderImage(ext, diagram, writeStream);
-    }
-
-    private createWriteStream(outDir: string, fileName: string, extension: string): WriteStream {
-        const filePath = path.format({
-            dir: outDir, name: fileName, ext: '.' + extension
-        });
-        const fileStream: WriteStream = createWriteStream(filePath);
-        fileStream.once('close', () => {
-            log.info(`Diagram image saved: ${chalk.cyan(filePath)} `);
-        });
-        return fileStream;
-
-    }
-
-    private writeWsdToFile(name: string, diagram: string, outDir: string): void {
-        if (this.options.saveWsd) {
-            writeToFile(diagram, outDir, removeiIlegalCharacters(name, this.options.clickableLinks) + '.wsd');
         }
     }
 
-
-    private createDiagram(name: string, diagramContent: string): string {
-        return `@startuml ${name}
-
-        set namespaceSeparator ::
-
-        ${diagramContent} 
-
-        @enduml`;
+    private render(items: ConvertedItem[]): RenderResult[] | undefined {
+        return this.renderer.render(items);
     }
 
-    private saveActions(actions: Action[], outDir: string, fileName: string, ): void {
-        if (this.options.saveActionsToJson) {
-            writeJsonToFile(actions, outDir, fileName, getKeyReplacer('action'));
-            log.debug(`Actions saved to ${chalk.gray(`${outDir}${fileName}`)}`);
+    private transform(input: RenderResult[]): void {
+        for (const output of this.outputs) {
+            output.transform(input);
         }
     }
-
-
-    private saveReferences(actionsReferences: ActionReference[], outDir: string, fileName: string): void {
-        if (this.options.saveActionsReferencesToJson) {
-            writeJsonToFile(actionsReferences, outDir, fileName, getKeyReplacer('action'));
-            log.debug(`Action's references saved to ${chalk.gray(`${outDir}${fileName}`)}`);
-        }
-    }
-
 
 }

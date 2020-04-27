@@ -4,14 +4,14 @@ import ts from 'typescript';
 
 import { DefaultConverter } from '../actions/converters/node-converters/default.converter';
 
-import { ContextFactory, ConvertContext } from './convert.context';
+import { ConvertContext } from './convert.context';
+import { NamedConvertedItem } from './models';
 import NodeConverter from './models/node.converter';
-import { ConvertedItem } from './models/type.model';
 
 export class Converter {
     private converters: { [kind: number]: NodeConverter } = {};
 
-    private defaultConverter = new DefaultConverter();
+    defaultConverter = new DefaultConverter();
 
     nodeFilter?: (node: ts.Node) => boolean;
 
@@ -19,24 +19,21 @@ export class Converter {
         this.converters = replace ? converters : { ...this.converters, ...converters };
     }
 
-    convert(contextFactory: ContextFactory, program: ts.Program, typeChecker: ts.TypeChecker): unknown {
-
-        const context = contextFactory.create(program, typeChecker, this);
-        contextFactory.configureConverter(this);
+    convert(context: ConvertContext, program: ts.Program): NamedConvertedItem[] | undefined {
 
         for (const sourceFile of program.getSourceFiles()) {
             if(sourceFile.isDeclarationFile) {
                 continue;
             }
-            log.trace('convert', chalk.cyan(sourceFile.fileName));
+            log.trace('convert file:', chalk.cyan(sourceFile.fileName));
 
             sourceFile.forEachChild((node) => this.convertRecursive(context, node));
         }
-        return context.result;
+        return context.getResult();
 
     }
 
-    convertNode(context: ConvertContext, node: ts.Node, withDefault = false): ConvertedItem | undefined {
+    convertNode(context: ConvertContext, node: ts.Node, withDefault = false): NamedConvertedItem | undefined {
         if (this.converters[node.kind]) {
             return this.converters[node.kind].convert(context, node);
         } else if (withDefault) {
@@ -55,4 +52,5 @@ export class Converter {
             this.convertRecursive(context, child);
         });
     }
+
 } 

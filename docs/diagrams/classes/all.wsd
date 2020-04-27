@@ -1,0 +1,246 @@
+@startuml Generator
+
+enum TypeKind {
+    Unknown
+    TypeLiteral
+    ExpressionWithTypeArguments
+    TypeReference
+    CallExpression
+    VariableDeclaration
+    Identifier
+    PropertyAccessExpression
+    TypeArgument
+    Action
+    ActionReference
+}
+interface ConvertedItem {
+    +kind: TypeKind
+    +kindText: string
+    +getChildren(): ConvertedItem[]
+}
+class NamedType implements ConvertedItem {
+    +kind: TypeKind
+    +kindText: string
+    +name?: string | undefined
+    +getChildren(): ConvertedItem[]
+}
+interface Property {
+    +name: string
+    +type?: string | undefined
+}
+class TypeArgument implements ConvertedItem {
+    +kind: TypeKind
+    +kindText: string
+    +getChildren(): ConvertedItem[]
+}
+class TypeReference extends TypeArgument {
+    +kind: TypeKind
+    +kindText: string
+    +name: string
+}
+class TypeLiteral extends TypeArgument {
+    +kind: TypeKind
+    +kindText: string
+    +properties?: Property[] | undefined
+}
+class CallExpression implements ConvertedItem {
+    +kind: TypeKind
+    +kindText: string
+    +name?: string | undefined
+    +typeArguments?: TypeArgument[] | undefined
+    +getChildren(): ConvertedItem[]
+}
+interface Declaration {
+    +name?: string | undefined
+    +kindText: string
+}
+class ActionReference implements ConvertedItem {
+    +kind: TypeKind
+    +kindText: string
+    +isCall?: boolean | undefined
+    +action?: Action | undefined
+    +filePath?: string | undefined
+    +fileName?: string | undefined
+    +documentation?: string | undefined
+    +type?: string | undefined
+    +declarationContext?: Declaration[] | undefined
+    +name: string
+    +toPlantUml(): string
+    +getChildren(): ConvertedItem[]
+}
+class Action implements ConvertedItem {
+    +kind: TypeKind
+    +kindText: "Action"
+    +variable?: string | undefined
+    +filePath?: string | undefined
+    +references?: ActionReference[] | undefined
+    +type?: string | undefined
+    +createActionArgs?: NamedType[] | undefined
+    +name: string
+    +addReference(reference: ActionReference): void
+    +getChildren(): ConvertedItem[]
+}
+abstract class default {
+    +{abstract} convert(context: ConvertContext, node: Node): ConvertedItem | undefined
+}
+class DefaultConverter extends NodeConverter {
+    +convert(context: ConvertContext, node: Node): ConvertedItem | undefined
+}
+class Converter {
+    -converters: { [kind: number]: NodeConverter; }
+    +defaultConverter: DefaultConverter
+    +nodeFilter?: ((node: Node) => boolean) | undefined
+    +registerConverters(converters: { [kind: number]: NodeConverter; }, __1: { replace?: boolean | undefined; }): void
+    +convert(context: ConvertContext, program: Program): ConvertedItem[] | undefined
+    +convertNode(context: ConvertContext, node: Node, withDefault?: boolean): ConvertedItem | undefined
+    +convertRecursive(context: ConvertContext, node: Node): void
+}
+interface ConvertContextFactory {
+    +create(program: Program, typeChecker: TypeChecker, converter: Converter, lastContext?: ConvertContext | undefined): ConvertContext
+    +configureConverter(converter: Converter): void
+}
+interface ConvertContext {
+    +getRawResult(): unknown
+    +converter: Converter
+    +typeChecker: TypeChecker
+    +getResult(): ConvertedItem[] | undefined
+}
+class ActionReferenceConverter extends NodeConverter {
+    +convert(context: ActionReferenceConvertContext, node: VariableDeclaration): ConvertedItem | undefined
+    -declarationContext(node: Node): Declaration[]
+    -serializeSymbol(context: ConvertContext, symbol: Symbol): ActionReference
+    -serializeActionUse(context: ConvertContext, action: Action, node: Node, symbol: Symbol): ActionReference
+    -isActionCall(node: Node): boolean
+}
+class ActionReferenceConvertContext implements ConvertContext {
+    +result: ActionReference[]
+    +actionsMap: Map<Symbol, Action>
+    +program: Program
+    +typeChecker: TypeChecker
+    +converter: Converter
+    +getRawResult(): unknown
+    +getResult(): ConvertedItem[] | undefined
+    +addResult(actionReference: ActionReference): void
+}
+class ActionReferenceConvertContextFactory implements ConvertContextFactory {
+    +create(program: Program, typeChecker: TypeChecker, converter: Converter, lastContext: ConvertContext): ConvertContext
+    +configureConverter(converter: Converter): void
+}
+interface ActionWithSymbol {
+    +symbol: Symbol
+    +action: Action
+}
+class CallExpressionConverter extends NodeConverter {
+    +convert(context: ConvertContext, node: CallExpression): ConvertedItem | undefined
+    -isCreateAction(callExpression: CallExpression): boolean
+    -extractTypeArguments(context: ConvertContext, callExpression: CallExpression): TypeArgument[] | undefined
+    +extractCreateActionArgs(context: ConvertContext, args: Expression[]): ConvertedItem[] | undefined
+}
+class TypeLiteralConverter extends NodeConverter {
+    +convert(context: ConvertContext, node: TypeLiteralNode): ConvertedItem | undefined
+    -propertySignatureToProperty(property: PropertySignature): Property
+}
+class TypeReferenceConverter extends NodeConverter {
+    +convert(context: ConvertContext, node: CallExpression): ConvertedItem | undefined
+}
+class VariableDeclarationConverter extends NodeConverter {
+    +convert(context: ActionConvertContext, node: VariableDeclaration): Action | undefined
+}
+class ActionConvertContext implements ConvertContext {
+    +result: Map<Symbol, Action>
+    +program: Program
+    +typeChecker: TypeChecker
+    +converter: Converter
+    +getRawResult(): unknown
+    +getResult(): ConvertedItem[] | undefined
+    +addResult(actionWithSymbol: ActionWithSymbol): void
+}
+class ActionConvertContextFactory implements ConvertContextFactory {
+    +create(program: Program, typeChecker: TypeChecker, converter: Converter, lastContext: ConvertContext): ConvertContext
+    +configureConverter(converter: Converter): void
+}
+interface PlantItem {
+    +name: string
+    +toPlantUml(withReferences: boolean): string
+}
+interface ItemRenderer {
+    +render(item: ConvertedItem): string
+}
+class Renderer {
+    -itemRenderedSubject: Subject<{ item: ConvertedItem; output: string; }>
+    +onItemRendered: Observable<{ item: ConvertedItem; output: string; }>
+    -itemRenderers: { [kind: number]: ItemRenderer; }
+    -itemFilter?: ((item: ConvertedItem) => boolean) | undefined
+    +render(items: ConvertedItem[]): string | undefined
+    +renderItem(item: ConvertedItem): string | undefined
+    +renderRecursive(item: ConvertedItem): string[] | undefined
+}
+interface RendererFactory {
+    +create(): Renderer
+}
+class ActionReferenceRenderer implements ItemRenderer {
+    +render(item: ActionReference): string
+    -getName(item: ActionReference): string | undefined
+    +toPlantUml(item: ActionReference): string
+    -linkToPlantUml(action: Action, ref: ActionReference): string
+    -declarationContext(item: ActionReference): string | undefined
+}
+class ActionRenderer implements ItemRenderer {
+    +render(item: Action): string
+    +toPlantUml(item: Action): string
+    -typeLiteralToText(typeLiteral: TypeLiteral): string | undefined
+    -callExpressionToText(callExpression: CallExpression): string | undefined
+    -createActionArgsToText(item: Action): string | undefined
+}
+class ActionsPlantDiagramRenderFactory implements RendererFactory {
+    +create(): Renderer
+}
+interface GeneratorOptions {
+    +ignorePattern?: string | string[] | undefined
+    +saveActionsToJson?: boolean | undefined
+    +saveActionsReferencesToJson?: boolean | undefined
+    +saveWsd?: boolean | undefined
+    +outDir?: string | undefined
+    +baseDir?: string | undefined
+    +tsConfigFileName?: string | undefined
+    +clickableLinks?: boolean | undefined
+    +imageFormat?: string | undefined
+    +generateImages?: boolean | undefined
+    +logLevel?: 0 | 2 | "TRACE" | "DEBUG" | "INFO" | "WARN" | "ERROR" | "SILENT" | 1 | 3 | 4 | 5 | "trace" | "debug" | "info" | "warn" | "error" | "silent" | undefined
+}
+class PlantUmlService {
+    +plantUmlServerUrl: string
+    +remotePathPrefix: string
+    +renderImage(extension: string, plantuml: string, resultStream: WriteStream): void
+}
+class GeneratorService {
+    +options: GeneratorOptions
+    -plantUmlService: PlantUmlService
+    -convertFactories: ConvertContextFactory[]
+    +generate(filesPattern: string): void
+    -convert(filesPattern: string): ConvertedItem[] | undefined
+    -render(items: ConvertedItem[], outDir: string): void
+    -save(item: Action, content: string, outDir: string): void
+    +renderToImageFile(outDir: string, diagram: string, fileName: string, ext: string): void
+    -createWriteStream(outDir: string, fileName: string, extension: string): WriteStream
+    -writeWsdToFile(name: string, diagram: string, outDir: string): void
+    -createDiagram(name: string, diagramContent: string): string
+    -saveActions(actions: Action[], outDir: string, fileName: string): void
+    -saveReferences(actionsReferences: ActionReference[], outDir: string, fileName: string): void
+}
+class CreateActionsDiagramService {
+    +options: GeneratorOptions
+    -plantUmlService: PlantUmlService
+    +generateDiagram(filesPattern: string): void
+    -convertActions(converter: Converter, program: Program, typeChecker: TypeChecker, outDir: string): Map<Symbol, Action> | undefined
+    -convertReferences(converter: Converter, program: Program, typeChecker: TypeChecker, outDir: string, actionsMap: Map<Symbol, Action>): void
+    -renderDiagrams(actions: Action[], outDir: string): void
+    -saveDiagram(item: Action, content: string, outDir: string): void
+    +renderToImageFile(outDir: string, diagram: string, fileName: string, ext: string): void
+    -createWriteStream(outDir: string, fileName: string, extension: string): WriteStream
+    -writeWsdToFile(name: string, diagram: string, outDir: string): void
+    -createDiagram(name: string, diagramContent: string): string
+    -saveActions(actions: Action[], outDir: string, fileName: string): void
+    -saveReferences(actionsReferences: ActionReference[], outDir: string, fileName: string): void
+}
+@enduml

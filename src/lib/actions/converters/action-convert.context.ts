@@ -1,8 +1,9 @@
 import ts from 'typescript';
 
-import { ContextFactory, ConvertContext } from '../../converters/convert.context';
+import { ConvertContext, ConvertContextFactory } from '../../converters/convert.context';
 import { Converter } from '../../converters/converter';
-import { TypeKind } from '../../converters/models/type.model';
+import { ConvertedItem, TypeKind } from '../../converters/models/type.model';
+import { getKeyReplacer } from '../../utils';
 import { ActionWithSymbol } from '../models/action-with-symbol.model';
 import { Action } from '../models/action.model';
 
@@ -13,24 +14,41 @@ import { VariableDeclarationConverter } from './node-converters/variable-declara
 
 export class ActionConvertContext implements ConvertContext {
 
+    name = 'actions';
     result = new Map<ts.Symbol, Action>();
 
     constructor(
         public program: ts.Program,
         public typeChecker: ts.TypeChecker,
-        public converter: Converter
+        public converter: Converter,
+        _lastContext?: ConvertContext
     ) {
+    }
+
+    getRawResult(): unknown {
+        return this.result;
+    }
+
+    getResult(): ConvertedItem[] | undefined {
+        return [...this.result.values()];
     }
 
     addResult(actionWithSymbol: ActionWithSymbol): void {
         this.result.set(actionWithSymbol.symbol, actionWithSymbol.action);
     }
 
+    serializeResultToJson(): string | undefined {
+        const result = this.getResult();
+        if(result) { 
+            return JSON.stringify(result, getKeyReplacer('action'), 2);
+        }
+    }
 }
 
-export class ActionConvertContextFactory implements ContextFactory {
-    create(program: ts.Program, typeChecker: ts.TypeChecker, converter: Converter): ConvertContext {
-        return new ActionConvertContext(program, typeChecker, converter);
+export class ActionConvertContextFactory implements ConvertContextFactory {
+    create(program: ts.Program, typeChecker: ts.TypeChecker, converter: Converter, lastContext?: ConvertContext): ConvertContext {
+        this.configureConverter(converter);
+        return new ActionConvertContext(program, typeChecker, converter, lastContext);
     }
 
     configureConverter(converter: Converter): void {
