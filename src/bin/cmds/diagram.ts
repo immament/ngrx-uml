@@ -9,13 +9,13 @@ exports.aliases = ['d'];
 exports.builder = (yargs: Argv<DiagramOptions>): DiagramOptions => {
     return yargs.option('files', {
         alias: 'f',
-        description: 'Glob-like file pattern specifying the filepath for the source files. Relative to baseDir',
+        description: 'Glob-like file pattern specifying the filepath for the source files. Relative to baseDir. \nIMPORTANT!! Use with quote (" or \')',
         type: 'string',
         nargs: 1,
         default: '**/*.ts'
     }).option('ignore', {
         alias: 'i',
-        description: 'Glob-like file pattern specifying files to ignore.',
+        description: 'Glob-like file pattern specifying files to ignore. \nIMPORTANT!! Use with quote (" or \')',
         array: true,
         default: ['**/*.spec.ts', '**/node_modules/**']
     }).option('imageFormat', {
@@ -53,7 +53,8 @@ exports.builder = (yargs: Argv<DiagramOptions>): DiagramOptions => {
         description: 'Convert  terminal links to clickable in vs code terminal',
         type: 'boolean',
         default: false
-    }).argv;
+    }).example('$0 diagram -f "src/**/*.ts"', 'Generate plantUML diagram using source files')
+    .argv;
 };
 
 interface DiagramOptions {
@@ -65,10 +66,10 @@ interface DiagramOptions {
     ignore: string[];
     toJson: boolean;
     wsd: boolean;
+    files: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-exports.handler = function (argv: any): void {
+exports.handler = function (argv: DiagramOptions): void {
     log.trace('Generate diagram..', argv);
 
     const options: GeneratorOptions = {
@@ -79,10 +80,8 @@ exports.handler = function (argv: any): void {
         imageFormat: argv.imageFormat,
         generateImages: argv.imageFormat !== 'off',
         ignorePattern: argv.ignore,
-        saveActionsReferencesToJson: argv.toJson,
-        saveActionsToJson: argv.toJson,
         saveWsd: argv.wsd,
-        saveConvertResultToJson: true
+        saveConvertResultToJson: argv.toJson
     };
     
     const createActionsDiagramService = new CreateActionsDiagramService(options);

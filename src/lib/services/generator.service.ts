@@ -17,8 +17,7 @@ import { PlantUmlOutputService } from './plant-uml.service';
 export class GeneratorService {
 
     public options: GeneratorOptions = {
-        saveActionsToJson: false,
-        saveActionsReferencesToJson: false,
+        saveConvertResultToJson: false,
         saveWsd: false,
         outDir: '/out',
         baseDir: '',
@@ -100,7 +99,7 @@ export class GeneratorService {
             const resultJson = context.serializeResultToJson();
             if (resultJson) {
                 writeToFile(resultJson, outDir, context.name + '.json');
-                log.info(`Convert result saved to ${chalk.gray(`${this.options.outDir}/${context.name + '.json'}`)}`);
+                log.info(`Convert result saved to: ${chalk.gray(`${this.options.outDir}/${context.name + '.json'}`)}`);
             }
         }
     }

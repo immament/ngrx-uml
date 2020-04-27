@@ -2,8 +2,6 @@ import log from 'loglevel';
 
 export interface GeneratorOptions {
     ignorePattern?: string | string[];
-    saveActionsToJson?: boolean;
-    saveActionsReferencesToJson?: boolean;
     saveConvertResultToJson?: boolean;
     saveWsd?: boolean;
     outDir?: string;

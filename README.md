@@ -39,15 +39,15 @@ ng diagram --help
 ```bash
 ngrx-uml diagram -f '**/*ts' -d ../ngrx/projects/example-app/ -i '../**/*.spec.ts' -c tsconfig.app.json
 ```
-
+*** Glob-like file patterns must be in quotation marks ***
 
 | Option | Alias | Description                         | Type | Default |
 | --------| ------| ------------------------------------------------------------------- | -------- | ---------- |
 |  --version    | |              Show version number                                    | boolean |            |
 | --log     | -l |   Log level. [choices: "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "SILENT"] | | "INFO" |
 |  --help   | -h |          Show help                                                    |    boolean | |
-|  --files | -f  |           Glob-like file pattern specifying the filepath for the source files. Relative to baseDir | string  |  "**/*.ts" |
-|  --ignore | -i  |          Glob-like file pattern specifying files to ignore. | array | ["\*\*/*.spec.ts", "\*\*/node_modules/\*\*"] |
+|  --files | -f  |           Glob-like file pattern specifying the filepath for the source files. Relative to baseDir.  ***IMPORTANT!!*** Use with quote (" or \')' | string  |  "**/*.ts" |
+|  --ignore | -i  |          Glob-like file pattern specifying files to ignore. ***IMPORTANT!!*** Use with quote (" or \')' | array | ["\*\*/*.spec.ts", "\*\*/node_modules/\*\*"] |
 |  --imageFormat | --im |    Image format. To turn off image generation set to off [choices: "eps", "latex", "png", "svg", "txt", "off"] | | "png" |
 |  --outDir | -o   |         Redirect output structure to the directory      |  string | "out"  |
 |  --baseDir | -d  |         Path to project base directory                   |   string | "" |

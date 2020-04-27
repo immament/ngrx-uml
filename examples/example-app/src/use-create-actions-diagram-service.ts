@@ -5,11 +5,10 @@ export function useCreateActionsDiagramService(): void {
     console.log('#####################################################################');
     console.log('## Use CreateActionsDiagramService');
     const options: GeneratorOptions = {
-        outDir: 'out/create-actions-diagram-service',
+        outDir: 'out/diagram-service',
         imageFormat: 'svg',
         ignorePattern: ['**/*.spec.ts'],
-        saveActionsReferencesToJson: true,
-        saveActionsToJson: true,
+        saveConvertResultToJson: false,
         saveWsd: true,
         logLevel: 'INFO'
     };
