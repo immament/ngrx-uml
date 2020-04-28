@@ -8,8 +8,7 @@ export function useCreateActionsDiagramService(): void {
         outDir: 'out/create-actions-diagram-service',
         imageFormat: 'svg',
         ignorePattern: ['**/*.spec.ts'],
-        saveActionsReferencesToJson: true,
-        saveActionsToJson: true,
+        saveConvertResultToJson: true,
         saveWsd: true,
         logLevel: 'INFO'
     };
