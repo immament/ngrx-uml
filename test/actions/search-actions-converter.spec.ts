@@ -3,24 +3,34 @@ import ts from 'typescript';
 
 import {
     ActionConvertContextFactory
-} from '../../src/lib/actions/converters/action-convert.context';
+} from '../../src/lib/actions/converters/action-convert-context.factory';
 import { Action } from '../../src/lib/actions/models/action.model';
 import { Converter } from '../../src/lib/converters/converter';
 import {
-    CallExpression, NamedConvertedItem, NamedType, TypeLiteral, TypeReference
+    CallExpression, NamedConvertedItem, NamedType, TypeKind, TypeLiteral, TypeReference
 } from '../../src/lib/converters/models/type.model';
 
 describe('SearchActionsConverter', () => {
     const base = path.join(__dirname, 'search-actions-converter_data');
 
-    function expectedSearchResult(testFile: string, expectedActions: Partial<Action>[], convertedItems?: NamedConvertedItem[]): void {
+    function expectedSearchResult(
+        testFile: string,
+        expectedActions: Partial<Action>[],
+        convertedItemsMap?: Map<TypeKind, NamedConvertedItem[]>
+    ): void {
 
-        expect(convertedItems, 'search actionsMap is defined').toBeTruthy();
-        if (!convertedItems) {
+        expect(convertedItemsMap, 'search actionsMap is defined').toBeTruthy();
+        if (!convertedItemsMap) {
             return;
         }
-        expect(convertedItems.length, 'found expected actions count').toBe(expectedActions.length);
-        const resultIterator = convertedItems.values();
+        const convertedActions = convertedItemsMap.get(TypeKind.Action);
+
+        expect(convertedActions, 'search actions is defined').toBeTruthy();
+        if (!convertedActions) {
+            return;
+        }
+        expect(convertedActions.length, 'found expected actions count').toBe(expectedActions.length);
+        const resultIterator = convertedActions.values();
         for (const expectedAction of expectedActions) {
             const action = resultIterator.next().value;
             expect(action, 'Action equal').toEqual(expectedAction);
@@ -41,7 +51,7 @@ describe('SearchActionsConverter', () => {
         return path.join(base, fileName);
     }
 
-    function convertFile(testFilePath: string, program: ts.Program): NamedConvertedItem[] | undefined {
+    function convertFile(testFilePath: string, program: ts.Program): Map<TypeKind, NamedConvertedItem[]> | undefined {
 
         const converter = new Converter();
         const typeChecker = program.getTypeChecker();
@@ -52,8 +62,8 @@ describe('SearchActionsConverter', () => {
 
     function convertFileTest(testFilePath: string, expectedActions: Partial<Action>[]): void {
         const program = createProgram(testFilePath);
-        const convertedItems = convertFile(testFilePath, program);
-        expectedSearchResult(testFilePath, expectedActions, convertedItems);
+        const convertedItemsMap = convertFile(testFilePath, program);
+        expectedSearchResult(testFilePath, expectedActions, convertedItemsMap);
 
     }
 
@@ -302,15 +312,16 @@ describe('SearchActionsConverter', () => {
 
         const testFilePath = createPathToTestFile('zero.actions.ts');
         const program = createProgram(testFilePath);
-        const convertedItems = convertFile(testFilePath, program);
+        const convertedItemsMap = convertFile(testFilePath, program);
 
-        const expectedActionsCount = 0;
-
-        expect(convertedItems, 'search actionsMap is defined').toBeTruthy();
-        if (!convertedItems) {
+        expect(convertedItemsMap, 'search actionsMap is defined').toBeTruthy();
+        if (!convertedItemsMap) {
             return;
         }
-        expect(convertedItems.length, 'found zero actions').toBe(expectedActionsCount);
+
+        const convertedActions = convertedItemsMap.get(TypeKind.Action);
+
+        expect(convertedActions, 'found zero actions').toBeUndefined();
 
     });
 

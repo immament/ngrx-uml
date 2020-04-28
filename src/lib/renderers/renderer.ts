@@ -3,9 +3,11 @@ import log from 'loglevel';
 import { EOL } from 'os';
 import { Subject } from 'rxjs';
 
-import { ConvertedItem, NamedConvertedItem } from '../converters/models';
+import { ConvertedItem, NamedConvertedItem, TypeKind } from '../converters/models';
 
 import { ItemRenderer } from './item.renderer';
+
+export type RenderersMap = { [kind: number]: ItemRenderer };
 
 export interface RenderResult {
     name: string;
@@ -19,21 +21,29 @@ export class Renderer {
 
 
     constructor(
-        private itemRenderers: { [kind: number]: ItemRenderer },
+        private itemRenderers: { [kind: number]: RenderersMap },
         private itemFilter?: (item: ConvertedItem) => boolean
     ) {
 
     }
 
-    render(items: NamedConvertedItem[]): RenderResult[] | undefined {
-
+    render(collections: Map<TypeKind, NamedConvertedItem[]>): RenderResult[] | undefined {
+        
         const outputs: RenderResult[] = [];
-        for (const item of items) {
 
-            const output = this.renderRecursive(item);
-            if (output) {
-                outputs.push({ name: item.name || this.randomName(), result: output.join(EOL)});
-                this.itemRenderedSubject.next({ item, output: output.join(EOL) });
+        for (const [kind, items] of collections) {
+
+            const kindRenderers  = this.itemRenderers[kind];
+            if(!kindRenderers) {
+                log.warn('No renderer for kind', TypeKind[kind]);
+                continue;
+            }
+            for (const item of items) {
+                const output = this.renderRecursive(item, kindRenderers);
+                if (output) {
+                    outputs.push({ name: item.getExportName() || this.randomName(), result: output.join(EOL) });
+                    this.itemRenderedSubject.next({ item, output: output.join(EOL) });
+                }
             }
         }
 
@@ -43,18 +53,18 @@ export class Renderer {
 
     }
 
-    renderItem(item: ConvertedItem): string | undefined {
-        if (this.itemRenderers[item.kind]) {
-            return this.itemRenderers[item.kind].render(item);
+    private renderItem(item: ConvertedItem, renderers: RenderersMap): string | undefined {
+        if (renderers[item.kind]) {
+            return renderers[item.kind].render(item);
         }
     }
 
 
-    renderRecursive(item: ConvertedItem): string[] | undefined {
+    private renderRecursive(item: ConvertedItem, renderers: RenderersMap): string[] | undefined {
         const outputs: string[] = [];
         if (!this.itemFilter || this.itemFilter(item)) {
 
-            const output = this.renderItem(item);
+            const output = this.renderItem(item, renderers);
             if (output) {
                 outputs.push(output);
             }
@@ -63,7 +73,7 @@ export class Renderer {
 
         item.getChildren().forEach(child => {
 
-            const output = this.renderRecursive(child);
+            const output = this.renderRecursive(child, renderers);
             if (output) {
                 outputs.push(output.join(EOL));
             }

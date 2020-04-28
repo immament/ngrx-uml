@@ -1,11 +1,13 @@
+import path from 'path';
+
 import { Action } from '../../actions/models/action.model';
-import { ConvertedItem, TypeKind } from '../../converters/models/type.model';
+import { ConvertedItem, NamedConvertedItem, TypeKind } from '../../converters/models/type.model';
 
 export interface Declaration {
     name?: string;
     kindText: string;
 }
-export class ActionReference implements ConvertedItem {
+export class ActionReference implements NamedConvertedItem {
 
     kind = TypeKind.ActionReference;
     kindText = 'ActionReference';
@@ -18,19 +20,14 @@ export class ActionReference implements ConvertedItem {
     type?: string;
     declarationContext?: Declaration[];
 
-    constructor(public readonly name: string) { }
+    constructor(public name: string) { }
 
-    toPlantUml(): string {
+    setName(name: string): void {
+        this.name = name; 
+    }
 
-        const stereotyp = this.isCall ? '<< (D,orchid) dispatch >>' : '<< (L,orchid) listen >>';
-
-        return `interface "${this.fileName} ${this.isCall ? 'D' : 'L'}" ${stereotyp} {
-            name: ${this.name}ng 
-            action: ${this.action && this.action.name}
-            ${this.fileName ? `src: ${this.fileName}` : ''}
-            ..
-        }
-        `;
+    getExportName(): string {
+        return  `${this.filePath && path.basename(this.filePath)}_${this.name}`;
     }
 
     getChildren(): ConvertedItem[] {

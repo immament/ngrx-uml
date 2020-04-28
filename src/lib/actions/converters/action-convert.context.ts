@@ -1,66 +1,69 @@
 import ts from 'typescript';
 
-import { ConvertContext, ConvertContextFactory } from '../../converters/convert.context';
+import { ConvertContext } from '../../converters/convert.context';
 import { Converter } from '../../converters/converter';
-import { ConvertedItem, TypeKind } from '../../converters/models/type.model';
-import { getKeyReplacer } from '../../utils';
-import { ActionWithSymbol } from '../models/action-with-symbol.model';
-import { Action } from '../models/action.model';
-
-import { CallExpressionConverter } from './node-converters/call-expression.converter';
-import { TypeLiteralConverter } from './node-converters/type-literal.converter';
-import { TypeReferenceConverter } from './node-converters/type-reference.converter';
-import { VariableDeclarationConverter } from './node-converters/variable-declaration.converter';
+import { NamedConvertedItem, TypeKind } from '../../converters/models/type.model';
+import { getKeyReplacer, serializeConvertedItemsMapToJson } from '../../utils';
+import { ItemWithSymbol } from '../models/action-with-symbol.model';
 
 export class ActionConvertContext implements ConvertContext {
 
-    name = 'actions';
-    result = new Map<ts.Symbol, Action>();
+    private result: Map<TypeKind, Map<unknown, NamedConvertedItem>>;
 
     constructor(
+        public name: string,
         public program: ts.Program,
         public typeChecker: ts.TypeChecker,
         public converter: Converter,
-        _lastContext?: ConvertContext
+        public rootKinds: TypeKind[],
+        lastContext?: ConvertContext
     ) {
+        if (lastContext) {
+            this.result = lastContext.getRawResult() as Map<TypeKind, Map<unknown, NamedConvertedItem>>;
+        } else {
+            this.result = new Map<TypeKind, Map<unknown, NamedConvertedItem>>();
+        }
+
     }
 
-    getRawResult(): unknown {
+    getRawResult(): Map<TypeKind, Map<unknown, NamedConvertedItem>> {
         return this.result;
     }
 
-    getResult(): ConvertedItem[] | undefined {
-        return [...this.result.values()];
+
+    getResult(): Map<TypeKind, NamedConvertedItem[]> | undefined {
+        const resultMap = new Map<TypeKind, NamedConvertedItem[]>();
+        for (const [kind, map] of this.result.entries()) {
+            resultMap.set(kind, [...map.values()]);
+        }
+        return resultMap;
     }
 
-    addResult(actionWithSymbol: ActionWithSymbol): void {
-        this.result.set(actionWithSymbol.symbol, actionWithSymbol.action);
+    addResult(actionWithSymbol: ItemWithSymbol): void {
+
+        let map = this.result.get(actionWithSymbol.item.kind);
+        if (!map) {
+            map = new Map<ts.Symbol, NamedConvertedItem>();
+            this.result.set(actionWithSymbol.item.kind, map);
+        }
+        map.set(actionWithSymbol.symbol, actionWithSymbol.item);
     }
 
-    serializeResultToJson(): string | undefined {
-        const result = this.getResult();
-        if(result) { 
-            return JSON.stringify(result, getKeyReplacer('action'), 2);
+    getItem<T extends NamedConvertedItem>(kind: TypeKind, symbol: ts.Symbol): T | undefined {
+
+        const reducersMap = this.result.get(kind);
+
+        if (reducersMap) {
+            return reducersMap.get(symbol) as T;
         }
     }
-}
 
-export class ActionConvertContextFactory implements ConvertContextFactory {
-    create(program: ts.Program, typeChecker: ts.TypeChecker, converter: Converter, lastContext?: ConvertContext): ConvertContext {
-        this.configureConverter(converter);
-        return new ActionConvertContext(program, typeChecker, converter, lastContext);
+    serializeResultToJson(): { kind: string; json: string }[] | undefined {
+        return serializeConvertedItemsMapToJson(this.getResult(), getKeyReplacer('action'));
     }
 
-    configureConverter(converter: Converter): void {
-        converter.registerConverters({
-            [TypeKind.VariableDeclaration]: new VariableDeclarationConverter,
-            [TypeKind.CallExpression]: new CallExpressionConverter,
-            [TypeKind.TypeLiteral]: new TypeLiteralConverter,
-            [TypeKind.TypeReference]: new TypeReferenceConverter
-        }, {});
-
-        converter.nodeFilter = (node: ts.Node): boolean => ts.isVariableDeclaration(node);
-
+    isRootKind(kind: TypeKind): boolean {
+        return this.rootKinds.includes(kind);
     }
-
 }
+

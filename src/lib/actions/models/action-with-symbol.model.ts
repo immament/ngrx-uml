@@ -1,8 +1,10 @@
 import ts from 'typescript';
 
-import { Action } from './action.model';
+import { NamedConvertedItem } from '../../converters/models';
 
-export interface ActionWithSymbol {
+
+
+export interface ItemWithSymbol {
     symbol: ts.Symbol;
-    action: Action;
+    item: NamedConvertedItem;
 }

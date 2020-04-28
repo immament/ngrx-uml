@@ -1,35 +1,31 @@
-import chalk from 'chalk';
-import log from 'loglevel';
 import ts from 'typescript';
 
+import { ConvertContext } from '../../../converters';
+import { NamedConvertedItem } from '../../../converters/models';
 import NodeConverter from '../../../converters/models/node.converter';
-import { ActionWithSymbol } from '../../models/action-with-symbol.model';
-import { Action } from '../../models/action.model';
-import { ActionConvertContext } from '../action-convert.context';
+import { ItemWithSymbol } from '../../models';
 
 export class VariableDeclarationConverter extends NodeConverter {
 
-    convert(context: ActionConvertContext, node: ts.VariableDeclaration): Action | undefined {
+    convert(context: ConvertContext, node: ts.VariableDeclaration): NamedConvertedItem | undefined {
         const sourceFile = node.getSourceFile();
         const initializer = node.initializer;
         if (!initializer || !ts.isCallExpression(initializer)) {
             return;
         }
 
-        const action = context.converter.convertNode(context, initializer);
+        const item = context.converter.convertNode(context, initializer) as NamedConvertedItem;
 
-        if (action instanceof Action) {
+        if (item && context.isRootKind(item.kind)) {
             const symbol = context.typeChecker.getSymbolAtLocation(node.name);
             if (symbol) {
-                action.variable = node.name.getText(sourceFile);
-                action.filePath = sourceFile.fileName;
-                log.debug(`Found action  ${chalk.yellow(action.name)} in ${chalk.gray(action.filePath)}`);
-                context.addResult( { symbol, action } as ActionWithSymbol);
-                
+                item.setName(node.name.getText(sourceFile));
+                item.filePath = sourceFile.fileName;
+                context.addResult({ symbol, item } as ItemWithSymbol);
             }
-            return action;
+            return item;
         }
-       
+
     }
 
 

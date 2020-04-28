@@ -3,6 +3,8 @@ import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import log from 'loglevel';
 import path from 'path';
 
+import { ConvertedItem, TypeKind } from '../converters/models';
+
 export function objectFlter<T>(key: string, value: T): T | undefined {
     if (!key) {
         return value;
@@ -37,7 +39,7 @@ export function writeJsonToFile(data: unknown, outDir: string, fileName: string,
     writeFileSync(filePath, fileData);
 }
 
-export function writeToFile(content: string, outDir: string, fileName: string): void {
+export function writeToFile(content: string, outDir: string, fileName: string): string {
 
     if (!existsSync(outDir)) {
         mkdirSync(outDir);
@@ -47,6 +49,8 @@ export function writeToFile(content: string, outDir: string, fileName: string): 
 
     log.trace('write file:', chalk.gray(filePath));
     writeFileSync(filePath, content);
+
+    return filePath;
 }
 
 export function prepareTraceLogger(): void {
@@ -77,4 +81,19 @@ export function removeiIlegalCharacters(name: string, makeClickableInTerminal = 
         name = name.replace(/[\s]/g, '-').replace(/[[\]]/g, '_').replace(/_-/g, '_');
     }
     return name.replace(/[<>:"/\\|?*]/g, '-');
+}
+
+export function serializeConvertedItemsMapToJson(
+    map?: Map<TypeKind, ConvertedItem[]>,
+    replacer?: ((this: unknown, key: string, value: unknown) => unknown) | undefined
+): { kind: string; json: string }[] | undefined {
+    if (map) {
+        const result: { kind: string; json: string }[] = [];
+        for (const [kind, items] of map) {
+            if (items && items.length) {
+                result.push({ kind: TypeKind[kind], json: JSON.stringify(items, replacer, 2) });
+            }
+        }
+        return result;
+    }
 }

@@ -1,5 +1,5 @@
 import { Renderer } from './renderer';
 
-export interface RendererFactory{
+export interface RendererFactory {
     create(): Renderer;
 }

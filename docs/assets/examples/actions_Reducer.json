@@ -1,0 +1,38 @@
+[
+  {
+    "kind": 1004,
+    "kindText": "Reducer",
+    "filePath": "../ngrx/projects/example-app/src/app/core/reducers/layout.reducer.ts",
+    "name": "reducer"
+  },
+  {
+    "kind": 1004,
+    "kindText": "Reducer",
+    "filePath": "../ngrx/projects/example-app/src/app/auth/reducers/auth.reducer.ts",
+    "name": "reducer"
+  },
+  {
+    "kind": 1004,
+    "kindText": "Reducer",
+    "filePath": "../ngrx/projects/example-app/src/app/auth/reducers/login-page.reducer.ts",
+    "name": "reducer"
+  },
+  {
+    "kind": 1004,
+    "kindText": "Reducer",
+    "filePath": "../ngrx/projects/example-app/src/app/books/reducers/search.reducer.ts",
+    "name": "reducer"
+  },
+  {
+    "kind": 1004,
+    "kindText": "Reducer",
+    "filePath": "../ngrx/projects/example-app/src/app/books/reducers/books.reducer.ts",
+    "name": "reducer"
+  },
+  {
+    "kind": 1004,
+    "kindText": "Reducer",
+    "filePath": "../ngrx/projects/example-app/src/app/books/reducers/collection.reducer.ts",
+    "name": "reducer"
+  }
+]

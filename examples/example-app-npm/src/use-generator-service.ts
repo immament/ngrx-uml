@@ -21,7 +21,7 @@ export function useGeneratorService(): void {
     const plantUmlService = new PlantUmlOutputService({
         outDir: options.outDir || 'out',
         ext: options.imageFormat || 'png',
-        clickableLinks: options.clickableLinks || true,
+        clickableLinks: options.clickableLinks || false,
         saveWsd: options.saveWsd || false
     });
 

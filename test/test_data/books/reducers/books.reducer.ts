@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Book } from '@example-app/books/models';
 import { createEntityAdapter, EntityAdapter, EntityState } from '@ngrx/entity';
 import { createReducer, on } from '@ngrx/store';

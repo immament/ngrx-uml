@@ -1,13 +1,13 @@
-import { ActionReferenceConvertContextFactory } from '../action-references';
-import { ActionConvertContextFactory } from '../actions/converters';
+import { ActionConvertContextFactory, ActionReferenceConvertContextFactory } from '../..';
 import {
     ActionsPlantDiagramRenderFactory
 } from '../actions/renderer/actions-plant-diagram-renderer.factory';
 
 import { GeneratorOptions, GeneratorService } from './';
+import { DiagramService } from './diagram.service';
 import { PlantUmlOutputService } from './plant-uml.service';
 
-export class CreateActionsDiagramService {
+export class CreateActionsDiagramService implements DiagramService {
 
     constructor(private options: GeneratorOptions) {
     }
@@ -18,7 +18,7 @@ export class CreateActionsDiagramService {
         const plantUmlService = new PlantUmlOutputService({
             outDir: this.options.outDir || 'out',
             ext: this.options.imageFormat || 'png',
-            clickableLinks: this.options.clickableLinks || true,
+            clickableLinks: this.options.clickableLinks  || false,
             saveWsd:  this.options.saveWsd || false
         });
        

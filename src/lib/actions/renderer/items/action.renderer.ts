@@ -15,8 +15,6 @@ export class ActionRenderer implements ItemRenderer {
             return this.toPlantUml(item);
     }
 
-
-
     toPlantUml(item: Action): string {
 
         const fileName = getFileName(item.filePath);

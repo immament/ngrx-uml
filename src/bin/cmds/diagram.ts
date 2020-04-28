@@ -54,7 +54,7 @@ exports.builder = (yargs: Argv<DiagramOptions>): DiagramOptions => {
         type: 'boolean',
         default: false
     }).example('$0 diagram -f "src/**/*.ts"', 'Generate plantUML diagram using source files')
-    .argv;
+        .argv;
 };
 
 interface DiagramOptions {
@@ -83,7 +83,9 @@ exports.handler = function (argv: DiagramOptions): void {
         saveWsd: argv.wsd,
         saveConvertResultToJson: argv.toJson
     };
-    
-    const createActionsDiagramService = new CreateActionsDiagramService(options);
-    createActionsDiagramService.generateDiagram(argv.files);
+
+    const diagramService = new CreateActionsDiagramService(options);
+
+    diagramService.generateDiagram(argv.files);
+
 };

@@ -1,0 +1,233 @@
+[
+  {
+    "name": "[Auth] Logout",
+    "kind": 1002,
+    "kindText": "Action",
+    "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/auth/actions/auth.actions.ts",
+    "variable": "logout"
+  },
+  {
+    "name": "[Auth] Logout Confirmation",
+    "kind": 1002,
+    "kindText": "Action",
+    "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/auth/actions/auth.actions.ts",
+    "variable": "logoutConfirmation"
+  },
+  {
+    "name": "[Auth] Logout Confirmation Dismiss",
+    "kind": 1002,
+    "kindText": "Action",
+    "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/auth/actions/auth.actions.ts",
+    "variable": "logoutConfirmationDismiss"
+  },
+  {
+    "name": "[Auth/API] Login Success",
+    "kind": 1002,
+    "kindText": "Action",
+    "createActionArgs": [
+      {
+        "name": "props",
+        "typeArguments": [
+          {
+            "kind": 173,
+            "kindText": "TypeLiteral",
+            "properties": [
+              {
+                "name": "user",
+                "type": "User"
+              }
+            ]
+          }
+        ],
+        "kind": 196,
+        "kindText": "CallExpression"
+      }
+    ],
+    "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/auth/actions/auth-api.actions.ts",
+    "variable": "loginSuccess"
+  },
+  {
+    "name": "[Auth/API] Login Failure",
+    "kind": 1002,
+    "kindText": "Action",
+    "createActionArgs": [
+      {
+        "name": "props",
+        "typeArguments": [
+          {
+            "kind": 173,
+            "kindText": "TypeLiteral",
+            "properties": [
+              {
+                "name": "error",
+                "type": "any"
+              }
+            ]
+          }
+        ],
+        "kind": 196,
+        "kindText": "CallExpression"
+      }
+    ],
+    "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/auth/actions/auth-api.actions.ts",
+    "variable": "loginFailure"
+  },
+  {
+    "name": "[Auth/API] Login Redirect",
+    "kind": 1002,
+    "kindText": "Action",
+    "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/auth/actions/auth-api.actions.ts",
+    "variable": "loginRedirect"
+  },
+  {
+    "name": "[Login Page] Login",
+    "kind": 1002,
+    "kindText": "Action",
+    "createActionArgs": [
+      {
+        "name": "props",
+        "typeArguments": [
+          {
+            "kind": 173,
+            "kindText": "TypeLiteral",
+            "properties": [
+              {
+                "name": "credentials",
+                "type": "Credentials"
+              }
+            ]
+          }
+        ],
+        "kind": 196,
+        "kindText": "CallExpression"
+      }
+    ],
+    "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/auth/actions/login-page.actions.ts",
+    "variable": "login"
+  },
+  {
+    "name": "[Layout] Open Sidenav",
+    "kind": 1002,
+    "kindText": "Action",
+    "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/core/actions/layout.actions.ts",
+    "variable": "openSidenav"
+  },
+  {
+    "name": "[Layout] Close Sidenav",
+    "kind": 1002,
+    "kindText": "Action",
+    "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/core/actions/layout.actions.ts",
+    "variable": "closeSidenav"
+  },
+  {
+    "name": "[User] Idle Timeout",
+    "kind": 1002,
+    "kindText": "Action",
+    "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/core/actions/user.actions.ts",
+    "variable": "idleTimeout"
+  },
+  {
+    "name": "[Book Exists Guard] Load Book",
+    "kind": 1002,
+    "kindText": "Action",
+    "createActionArgs": [
+      {
+        "name": "props",
+        "typeArguments": [
+          {
+            "kind": 173,
+            "kindText": "TypeLiteral",
+            "properties": [
+              {
+                "name": "book",
+                "type": "Book"
+              }
+            ]
+          }
+        ],
+        "kind": 196,
+        "kindText": "CallExpression"
+      }
+    ],
+    "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/books/actions/book.actions.ts",
+    "variable": "loadBook"
+  },
+  {
+    "name": "[Books/API] Search Success",
+    "kind": 1002,
+    "kindText": "Action",
+    "createActionArgs": [
+      {
+        "name": "props",
+        "typeArguments": [
+          {
+            "kind": 173,
+            "kindText": "TypeLiteral",
+            "properties": [
+              {
+                "name": "books",
+                "type": "Book[]"
+              }
+            ]
+          }
+        ],
+        "kind": 196,
+        "kindText": "CallExpression"
+      }
+    ],
+    "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/books/actions/books-api.actions.ts",
+    "variable": "searchSuccess"
+  },
+  {
+    "name": "[Books/API] Search Failure",
+    "kind": 1002,
+    "kindText": "Action",
+    "createActionArgs": [
+      {
+        "name": "props",
+        "typeArguments": [
+          {
+            "kind": 173,
+            "kindText": "TypeLiteral",
+            "properties": [
+              {
+                "name": "errorMsg",
+                "type": "string"
+              }
+            ]
+          }
+        ],
+        "kind": 196,
+        "kindText": "CallExpression"
+      }
+    ],
+    "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/books/actions/books-api.actions.ts",
+    "variable": "searchFailure"
+  },
+  {
+    "name": "[Collection/API] Add Book Success",
+    "kind": 1002,
+    "kindText": "Action",
+    "createActionArgs": [
+      {
+        "name": "props",
+        "typeArguments": [
+          {
+            "kind": 173,
+            "kindText": "TypeLiteral",
+            "properties": [
+              {
+                "name": "book",
+                "type": "Book"
+              }
+            ]
+          }
+        ],
+        "kind": 196,
+        "kindText": "CallExpression"
+      }
+    ],
+    "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/books/actions/collection-api.actions.ts",
+    "variable": "addBookSuccess"
+  }
+]

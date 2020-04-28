@@ -8,8 +8,14 @@ import { ActionReferenceRenderer, ActionRenderer } from './items';
 export class ActionsPlantDiagramRenderFactory implements RendererFactory {
     create(): Renderer {
         return new Renderer({
-            [TypeKind.Action]: new ActionRenderer,
-            [TypeKind.ActionReference]: new ActionReferenceRenderer,
+            [TypeKind.Action]: {
+                [TypeKind.Action]: new ActionRenderer,
+                [TypeKind.ActionReference]: new ActionReferenceRenderer,
+            },
+            [TypeKind.Reducer]: {
+                [TypeKind.Action]: new ActionRenderer,
+                [TypeKind.ActionReference]: new ActionReferenceRenderer,
+            }
         });
 
     }

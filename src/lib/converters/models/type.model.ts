@@ -12,6 +12,7 @@ export enum TypeKind {
     TypeArgument = 1001,
     Action = 1002,
     ActionReference = 1003,
+    Reducer = 1004
 }
 
 export interface ConvertedItem {
@@ -23,6 +24,10 @@ export interface ConvertedItem {
 
 export interface NamedConvertedItem extends ConvertedItem  {
     name?: string;
+    filePath?: string;
+
+    setName(name: string): void;
+    getExportName(): string;
 }
 
 export class NamedType implements ConvertedItem  {
@@ -67,9 +72,12 @@ export class TypeLiteral extends TypeArgument {
 }
 
 
-export class CallExpression implements ConvertedItem {
+export class CallExpression implements NamedConvertedItem {
     readonly kind = TypeKind.CallExpression;
     kindText = 'CallExpression';
+
+    createdVariableName?: string;
+    filePath?: string | undefined;
 
     constructor(
         public name?: string,
@@ -79,5 +87,13 @@ export class CallExpression implements ConvertedItem {
 
     getChildren(): ConvertedItem[] {
         return [];
+    }
+
+    getExportName(): string {
+       return this.name || this.kindText;
+    }
+
+    setName(name: string): void {
+        this.createdVariableName = name;
     }
 }

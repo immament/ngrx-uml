@@ -22,9 +22,7 @@ export class PlantUmlOutputService implements Output {
     plantUmlServerUrl = 'www.plantuml.com';
     remotePathPrefix = '/plantuml/';
 
-    constructor(private options: PlantUmlOutputOptions) {
-
-    }
+    constructor(private options: PlantUmlOutputOptions) { }
 
     transform(inputs: RenderResult[]): void {
         for (const input of inputs) {
@@ -36,7 +34,9 @@ export class PlantUmlOutputService implements Output {
         const diagram = this.createDiagram(name, input);
         const fileBaseName = removeiIlegalCharacters(name, this.options.clickableLinks);
         this.writeWsdToFile(diagram, this.options.outDir, fileBaseName);
-        this.renderToImageFile(diagram, this.options.outDir, fileBaseName, this.options.ext);
+        if (this.options.ext !== 'off') {
+            this.renderToImageFile(diagram, this.options.outDir, fileBaseName, this.options.ext);
+        }
     }
 
     renderImage(extension: string, plantuml: string, resultStream: Writable): void {
@@ -63,11 +63,16 @@ export class PlantUmlOutputService implements Output {
     private createDiagram(name: string, diagramContent: string): string {
         return `@startuml ${name}
 
-        set namespaceSeparator ::
+set namespaceSeparator ::
+skinparam class {
+    BackgroundColor<<listen>> HoneyDew
+    BackgroundColor<<action>> Wheat
+    BackgroundColor<<dispatch>> Technology
+}
 
-        ${diagramContent} 
+${diagramContent} 
 
-        @enduml`;
+@enduml`;
     }
 
     private renderToImageFile(input: string, outDir: string, fileName: string, ext: string): void {
@@ -93,8 +98,8 @@ export class PlantUmlOutputService implements Output {
     private writeWsdToFile(diagram: string, outDir: string, name: string): void {
         if (this.options.saveWsd) {
             const fileName = name + '.wsd';
-            writeToFile(diagram, outDir, fileName);
-            log.info(`Wsd saved to: ${chalk.gray(`${outDir}/${fileName}`)}`);
+            const filePath = writeToFile(diagram, outDir + '/wsd', fileName);
+            log.info(`Wsd saved to: ${chalk.gray(filePath)}`);
         }
     }
 

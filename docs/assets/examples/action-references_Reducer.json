@@ -1,0 +1,874 @@
+[
+  {
+    "kind": 1004,
+    "kindText": "Reducer",
+    "filePath": "../ngrx/projects/example-app/src/app/core/reducers/layout.reducer.ts",
+    "name": "reducer",
+    "actions": [
+      {
+        "name": "[Layout] Close Sidenav",
+        "kind": 1002,
+        "kindText": "Action",
+        "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/core/actions/layout.actions.ts",
+        "variable": "closeSidenav",
+        "references": [
+          {
+            "name": "closeSidenav",
+            "kind": 1003,
+            "kindText": "ActionReference",
+            "documentation": "",
+            "type": "ActionCreator<\"[Layout] Close Sidenav\", () => TypedAction<\"[Layout] Close Sidenav\">>",
+            "isCall": false,
+            "filePath": "../ngrx/projects/example-app/src/app/core/reducers/layout.reducer.ts",
+            "fileName": "layout.reducer",
+            "declarationContext": [
+              {
+                "kindText": "VariableDeclaration",
+                "name": "reducer"
+              }
+            ]
+          },
+          {
+            "name": "closeSidenav",
+            "kind": 1003,
+            "kindText": "ActionReference",
+            "documentation": "",
+            "type": "ActionCreator<\"[Layout] Close Sidenav\", () => TypedAction<\"[Layout] Close Sidenav\">>",
+            "isCall": true,
+            "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/core/containers/app.component.ts",
+            "fileName": "app.component",
+            "declarationContext": [
+              {
+                "kindText": "ClassDeclaration",
+                "name": "AppComponent"
+              },
+              {
+                "kindText": "MethodDeclaration",
+                "name": "closeSidenav"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "[Layout] Open Sidenav",
+        "kind": 1002,
+        "kindText": "Action",
+        "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/core/actions/layout.actions.ts",
+        "variable": "openSidenav",
+        "references": [
+          {
+            "name": "openSidenav",
+            "kind": 1003,
+            "kindText": "ActionReference",
+            "documentation": "",
+            "type": "ActionCreator<\"[Layout] Open Sidenav\", () => TypedAction<\"[Layout] Open Sidenav\">>",
+            "isCall": false,
+            "filePath": "../ngrx/projects/example-app/src/app/core/reducers/layout.reducer.ts",
+            "fileName": "layout.reducer",
+            "declarationContext": [
+              {
+                "kindText": "VariableDeclaration",
+                "name": "reducer"
+              }
+            ]
+          },
+          {
+            "name": "openSidenav",
+            "kind": 1003,
+            "kindText": "ActionReference",
+            "documentation": "",
+            "type": "ActionCreator<\"[Layout] Open Sidenav\", () => TypedAction<\"[Layout] Open Sidenav\">>",
+            "isCall": true,
+            "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/core/containers/app.component.ts",
+            "fileName": "app.component",
+            "declarationContext": [
+              {
+                "kindText": "ClassDeclaration",
+                "name": "AppComponent"
+              },
+              {
+                "kindText": "MethodDeclaration",
+                "name": "openSidenav"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "[Auth] Logout Confirmation",
+        "kind": 1002,
+        "kindText": "Action",
+        "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/auth/actions/auth.actions.ts",
+        "variable": "logoutConfirmation",
+        "references": [
+          {
+            "name": "logoutConfirmation",
+            "kind": 1003,
+            "kindText": "ActionReference",
+            "documentation": "",
+            "type": "ActionCreator<\"[Auth] Logout Confirmation\", () => TypedAction<\"[Auth] Logout Confirmation\">>",
+            "isCall": false,
+            "filePath": "../ngrx/projects/example-app/src/app/core/reducers/layout.reducer.ts",
+            "fileName": "layout.reducer",
+            "declarationContext": [
+              {
+                "kindText": "VariableDeclaration",
+                "name": "reducer"
+              }
+            ]
+          },
+          {
+            "name": "logoutConfirmation",
+            "kind": 1003,
+            "kindText": "ActionReference",
+            "documentation": "",
+            "type": "ActionCreator<\"[Auth] Logout Confirmation\", () => TypedAction<\"[Auth] Logout Confirmation\">>",
+            "isCall": true,
+            "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/core/containers/app.component.ts",
+            "fileName": "app.component",
+            "declarationContext": [
+              {
+                "kindText": "ClassDeclaration",
+                "name": "AppComponent"
+              },
+              {
+                "kindText": "MethodDeclaration",
+                "name": "logout"
+              }
+            ]
+          },
+          {
+            "name": "logoutConfirmation",
+            "kind": 1003,
+            "kindText": "ActionReference",
+            "documentation": "",
+            "type": "ActionCreator<\"[Auth] Logout Confirmation\", () => TypedAction<\"[Auth] Logout Confirmation\">>",
+            "isCall": false,
+            "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/auth/effects/auth.effects.ts",
+            "fileName": "auth.effects",
+            "declarationContext": [
+              {
+                "kindText": "ClassDeclaration",
+                "name": "AuthEffects"
+              },
+              {
+                "kindText": "PropertyDeclaration",
+                "name": "logoutConfirmation$"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "kind": 1004,
+    "kindText": "Reducer",
+    "filePath": "../ngrx/projects/example-app/src/app/auth/reducers/auth.reducer.ts",
+    "name": "reducer",
+    "actions": [
+      {
+        "name": "[Auth/API] Login Success",
+        "kind": 1002,
+        "kindText": "Action",
+        "createActionArgs": [
+          {
+            "name": "props",
+            "typeArguments": [
+              {
+                "kind": 173,
+                "kindText": "TypeLiteral",
+                "properties": [
+                  {
+                    "name": "user",
+                    "type": "User"
+                  }
+                ]
+              }
+            ],
+            "kind": 196,
+            "kindText": "CallExpression"
+          }
+        ],
+        "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/auth/actions/auth-api.actions.ts",
+        "variable": "loginSuccess",
+        "references": [
+          {
+            "name": "loginSuccess",
+            "kind": 1003,
+            "kindText": "ActionReference",
+            "documentation": "",
+            "type": "ActionCreator<\"[Auth/API] Login Success\", (props: { user: User; }) => { user: User; } & TypedAction<\"[Auth/API] Login Success\">>",
+            "isCall": false,
+            "filePath": "../ngrx/projects/example-app/src/app/auth/reducers/auth.reducer.ts",
+            "fileName": "auth.reducer",
+            "declarationContext": [
+              {
+                "kindText": "VariableDeclaration",
+                "name": "reducer"
+              }
+            ]
+          },
+          {
+            "name": "loginSuccess",
+            "kind": 1003,
+            "kindText": "ActionReference",
+            "documentation": "",
+            "type": "ActionCreator<\"[Auth/API] Login Success\", (props: { user: User; }) => { user: User; } & TypedAction<\"[Auth/API] Login Success\">>",
+            "isCall": false,
+            "filePath": "../ngrx/projects/example-app/src/app/auth/reducers/login-page.reducer.ts",
+            "fileName": "login-page.reducer",
+            "declarationContext": [
+              {
+                "kindText": "VariableDeclaration",
+                "name": "reducer"
+              }
+            ]
+          },
+          {
+            "name": "loginSuccess",
+            "kind": 1003,
+            "kindText": "ActionReference",
+            "documentation": "",
+            "type": "ActionCreator<\"[Auth/API] Login Success\", (props: { user: User; }) => { user: User; } & TypedAction<\"[Auth/API] Login Success\">>",
+            "isCall": true,
+            "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/auth/effects/auth.effects.ts",
+            "fileName": "auth.effects",
+            "declarationContext": [
+              {
+                "kindText": "ClassDeclaration",
+                "name": "AuthEffects"
+              },
+              {
+                "kindText": "PropertyDeclaration",
+                "name": "login$"
+              }
+            ]
+          },
+          {
+            "name": "loginSuccess",
+            "kind": 1003,
+            "kindText": "ActionReference",
+            "documentation": "",
+            "type": "ActionCreator<\"[Auth/API] Login Success\", (props: { user: User; }) => { user: User; } & TypedAction<\"[Auth/API] Login Success\">>",
+            "isCall": false,
+            "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/auth/effects/auth.effects.ts",
+            "fileName": "auth.effects",
+            "declarationContext": [
+              {
+                "kindText": "ClassDeclaration",
+                "name": "AuthEffects"
+              },
+              {
+                "kindText": "PropertyDeclaration",
+                "name": "loginSuccess$"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "[Auth] Logout",
+        "kind": 1002,
+        "kindText": "Action",
+        "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/auth/actions/auth.actions.ts",
+        "variable": "logout",
+        "references": [
+          {
+            "name": "logout",
+            "kind": 1003,
+            "kindText": "ActionReference",
+            "documentation": "",
+            "type": "ActionCreator<\"[Auth] Logout\", () => TypedAction<\"[Auth] Logout\">>",
+            "isCall": false,
+            "filePath": "../ngrx/projects/example-app/src/app/auth/reducers/auth.reducer.ts",
+            "fileName": "auth.reducer",
+            "declarationContext": [
+              {
+                "kindText": "VariableDeclaration",
+                "name": "reducer"
+              }
+            ]
+          },
+          {
+            "name": "logout",
+            "kind": 1003,
+            "kindText": "ActionReference",
+            "documentation": "",
+            "type": "ActionCreator<\"[Auth] Logout\", () => TypedAction<\"[Auth] Logout\">>",
+            "isCall": false,
+            "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/auth/effects/auth.effects.ts",
+            "fileName": "auth.effects",
+            "declarationContext": [
+              {
+                "kindText": "ClassDeclaration",
+                "name": "AuthEffects"
+              },
+              {
+                "kindText": "PropertyDeclaration",
+                "name": "loginRedirect$"
+              }
+            ]
+          },
+          {
+            "name": "logout",
+            "kind": 1003,
+            "kindText": "ActionReference",
+            "documentation": "",
+            "type": "ActionCreator<\"[Auth] Logout\", () => TypedAction<\"[Auth] Logout\">>",
+            "isCall": true,
+            "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/auth/effects/auth.effects.ts",
+            "fileName": "auth.effects",
+            "declarationContext": [
+              {
+                "kindText": "ClassDeclaration",
+                "name": "AuthEffects"
+              },
+              {
+                "kindText": "PropertyDeclaration",
+                "name": "logoutConfirmation$"
+              }
+            ]
+          },
+          {
+            "name": "logout",
+            "kind": 1003,
+            "kindText": "ActionReference",
+            "documentation": "",
+            "type": "ActionCreator<\"[Auth] Logout\", () => TypedAction<\"[Auth] Logout\">>",
+            "isCall": true,
+            "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/auth/effects/auth.effects.ts",
+            "fileName": "auth.effects",
+            "declarationContext": [
+              {
+                "kindText": "ClassDeclaration",
+                "name": "AuthEffects"
+              },
+              {
+                "kindText": "PropertyDeclaration",
+                "name": "logoutIdleUser$"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "kind": 1004,
+    "kindText": "Reducer",
+    "filePath": "../ngrx/projects/example-app/src/app/auth/reducers/login-page.reducer.ts",
+    "name": "reducer",
+    "actions": [
+      {
+        "name": "[Login Page] Login",
+        "kind": 1002,
+        "kindText": "Action",
+        "createActionArgs": [
+          {
+            "name": "props",
+            "typeArguments": [
+              {
+                "kind": 173,
+                "kindText": "TypeLiteral",
+                "properties": [
+                  {
+                    "name": "credentials",
+                    "type": "Credentials"
+                  }
+                ]
+              }
+            ],
+            "kind": 196,
+            "kindText": "CallExpression"
+          }
+        ],
+        "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/auth/actions/login-page.actions.ts",
+        "variable": "login",
+        "references": [
+          {
+            "name": "login",
+            "kind": 1003,
+            "kindText": "ActionReference",
+            "documentation": "",
+            "type": "ActionCreator<\"[Login Page] Login\", (props: { credentials: Credentials; }) => { credentials: Credentials; } & TypedAction<\"[Login Page] Login\">>",
+            "isCall": false,
+            "filePath": "../ngrx/projects/example-app/src/app/auth/reducers/login-page.reducer.ts",
+            "fileName": "login-page.reducer",
+            "declarationContext": [
+              {
+                "kindText": "VariableDeclaration",
+                "name": "reducer"
+              }
+            ]
+          },
+          {
+            "name": "login",
+            "kind": 1003,
+            "kindText": "ActionReference",
+            "documentation": "",
+            "type": "ActionCreator<\"[Login Page] Login\", (props: { credentials: Credentials; }) => { credentials: Credentials; } & TypedAction<\"[Login Page] Login\">>",
+            "isCall": true,
+            "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/auth/containers/login-page.component.ts",
+            "fileName": "login-page.component",
+            "declarationContext": [
+              {
+                "kindText": "ClassDeclaration",
+                "name": "LoginPageComponent"
+              },
+              {
+                "kindText": "MethodDeclaration",
+                "name": "onSubmit"
+              }
+            ]
+          },
+          {
+            "name": "login",
+            "kind": 1003,
+            "kindText": "ActionReference",
+            "documentation": "",
+            "type": "ActionCreator<\"[Login Page] Login\", (props: { credentials: Credentials; }) => { credentials: Credentials; } & TypedAction<\"[Login Page] Login\">>",
+            "isCall": false,
+            "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/auth/effects/auth.effects.ts",
+            "fileName": "auth.effects",
+            "declarationContext": [
+              {
+                "kindText": "ClassDeclaration",
+                "name": "AuthEffects"
+              },
+              {
+                "kindText": "PropertyDeclaration",
+                "name": "login$"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "[Auth/API] Login Success",
+        "kind": 1002,
+        "kindText": "Action",
+        "createActionArgs": [
+          {
+            "name": "props",
+            "typeArguments": [
+              {
+                "kind": 173,
+                "kindText": "TypeLiteral",
+                "properties": [
+                  {
+                    "name": "user",
+                    "type": "User"
+                  }
+                ]
+              }
+            ],
+            "kind": 196,
+            "kindText": "CallExpression"
+          }
+        ],
+        "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/auth/actions/auth-api.actions.ts",
+        "variable": "loginSuccess",
+        "references": [
+          {
+            "name": "loginSuccess",
+            "kind": 1003,
+            "kindText": "ActionReference",
+            "documentation": "",
+            "type": "ActionCreator<\"[Auth/API] Login Success\", (props: { user: User; }) => { user: User; } & TypedAction<\"[Auth/API] Login Success\">>",
+            "isCall": false,
+            "filePath": "../ngrx/projects/example-app/src/app/auth/reducers/auth.reducer.ts",
+            "fileName": "auth.reducer",
+            "declarationContext": [
+              {
+                "kindText": "VariableDeclaration",
+                "name": "reducer"
+              }
+            ]
+          },
+          {
+            "name": "loginSuccess",
+            "kind": 1003,
+            "kindText": "ActionReference",
+            "documentation": "",
+            "type": "ActionCreator<\"[Auth/API] Login Success\", (props: { user: User; }) => { user: User; } & TypedAction<\"[Auth/API] Login Success\">>",
+            "isCall": false,
+            "filePath": "../ngrx/projects/example-app/src/app/auth/reducers/login-page.reducer.ts",
+            "fileName": "login-page.reducer",
+            "declarationContext": [
+              {
+                "kindText": "VariableDeclaration",
+                "name": "reducer"
+              }
+            ]
+          },
+          {
+            "name": "loginSuccess",
+            "kind": 1003,
+            "kindText": "ActionReference",
+            "documentation": "",
+            "type": "ActionCreator<\"[Auth/API] Login Success\", (props: { user: User; }) => { user: User; } & TypedAction<\"[Auth/API] Login Success\">>",
+            "isCall": true,
+            "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/auth/effects/auth.effects.ts",
+            "fileName": "auth.effects",
+            "declarationContext": [
+              {
+                "kindText": "ClassDeclaration",
+                "name": "AuthEffects"
+              },
+              {
+                "kindText": "PropertyDeclaration",
+                "name": "login$"
+              }
+            ]
+          },
+          {
+            "name": "loginSuccess",
+            "kind": 1003,
+            "kindText": "ActionReference",
+            "documentation": "",
+            "type": "ActionCreator<\"[Auth/API] Login Success\", (props: { user: User; }) => { user: User; } & TypedAction<\"[Auth/API] Login Success\">>",
+            "isCall": false,
+            "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/auth/effects/auth.effects.ts",
+            "fileName": "auth.effects",
+            "declarationContext": [
+              {
+                "kindText": "ClassDeclaration",
+                "name": "AuthEffects"
+              },
+              {
+                "kindText": "PropertyDeclaration",
+                "name": "loginSuccess$"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "[Auth/API] Login Failure",
+        "kind": 1002,
+        "kindText": "Action",
+        "createActionArgs": [
+          {
+            "name": "props",
+            "typeArguments": [
+              {
+                "kind": 173,
+                "kindText": "TypeLiteral",
+                "properties": [
+                  {
+                    "name": "error",
+                    "type": "any"
+                  }
+                ]
+              }
+            ],
+            "kind": 196,
+            "kindText": "CallExpression"
+          }
+        ],
+        "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/auth/actions/auth-api.actions.ts",
+        "variable": "loginFailure",
+        "references": [
+          {
+            "name": "loginFailure",
+            "kind": 1003,
+            "kindText": "ActionReference",
+            "documentation": "",
+            "type": "ActionCreator<\"[Auth/API] Login Failure\", (props: { error: any; }) => { error: any; } & TypedAction<\"[Auth/API] Login Failure\">>",
+            "isCall": false,
+            "filePath": "../ngrx/projects/example-app/src/app/auth/reducers/login-page.reducer.ts",
+            "fileName": "login-page.reducer",
+            "declarationContext": [
+              {
+                "kindText": "VariableDeclaration",
+                "name": "reducer"
+              }
+            ]
+          },
+          {
+            "name": "loginFailure",
+            "kind": 1003,
+            "kindText": "ActionReference",
+            "documentation": "",
+            "type": "ActionCreator<\"[Auth/API] Login Failure\", (props: { error: any; }) => { error: any; } & TypedAction<\"[Auth/API] Login Failure\">>",
+            "isCall": true,
+            "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/auth/effects/auth.effects.ts",
+            "fileName": "auth.effects",
+            "declarationContext": [
+              {
+                "kindText": "ClassDeclaration",
+                "name": "AuthEffects"
+              },
+              {
+                "kindText": "PropertyDeclaration",
+                "name": "login$"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "kind": 1004,
+    "kindText": "Reducer",
+    "filePath": "../ngrx/projects/example-app/src/app/books/reducers/search.reducer.ts",
+    "name": "reducer",
+    "actions": [
+      {
+        "name": "[Find Book Page] Search Books",
+        "kind": 1002,
+        "kindText": "Action",
+        "createActionArgs": [
+          {
+            "name": "props",
+            "typeArguments": [
+              {
+                "kind": 173,
+                "kindText": "TypeLiteral",
+                "properties": [
+                  {
+                    "name": "query",
+                    "type": "string"
+                  }
+                ]
+              }
+            ],
+            "kind": 196,
+            "kindText": "CallExpression"
+          }
+        ],
+        "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/books/actions/find-book-page.actions.ts",
+        "variable": "searchBooks",
+        "references": [
+          {
+            "name": "searchBooks",
+            "kind": 1003,
+            "kindText": "ActionReference",
+            "documentation": "",
+            "type": "ActionCreator<\"[Find Book Page] Search Books\", (props: { query: string; }) => { query: string; } & TypedAction<\"[Find Book Page] Search Books\">>",
+            "isCall": false,
+            "filePath": "../ngrx/projects/example-app/src/app/books/reducers/search.reducer.ts",
+            "fileName": "search.reducer",
+            "declarationContext": [
+              {
+                "kindText": "VariableDeclaration",
+                "name": "reducer"
+              }
+            ]
+          },
+          {
+            "name": "searchBooks",
+            "kind": 1003,
+            "kindText": "ActionReference",
+            "documentation": "",
+            "type": "ActionCreator<\"[Find Book Page] Search Books\", (props: { query: string; }) => { query: string; } & TypedAction<\"[Find Book Page] Search Books\">>",
+            "isCall": true,
+            "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/books/containers/find-book-page.component.ts",
+            "fileName": "find-book-page.component",
+            "declarationContext": [
+              {
+                "kindText": "ClassDeclaration",
+                "name": "FindBookPageComponent"
+              },
+              {
+                "kindText": "MethodDeclaration",
+                "name": "search"
+              }
+            ]
+          },
+          {
+            "name": "searchBooks",
+            "kind": 1003,
+            "kindText": "ActionReference",
+            "documentation": "",
+            "type": "ActionCreator<\"[Find Book Page] Search Books\", (props: { query: string; }) => { query: string; } & TypedAction<\"[Find Book Page] Search Books\">>",
+            "isCall": false,
+            "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/books/effects/book.effects.ts",
+            "fileName": "book.effects",
+            "declarationContext": [
+              {
+                "kindText": "ClassDeclaration",
+                "name": "BookEffects"
+              },
+              {
+                "kindText": "PropertyDeclaration",
+                "name": "search$"
+              }
+            ]
+          },
+          {
+            "name": "searchBooks",
+            "kind": 1003,
+            "kindText": "ActionReference",
+            "documentation": "",
+            "type": "ActionCreator<\"[Find Book Page] Search Books\", (props: { query: string; }) => { query: string; } & TypedAction<\"[Find Book Page] Search Books\">>",
+            "isCall": false,
+            "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/books/effects/book.effects.ts",
+            "fileName": "book.effects",
+            "declarationContext": [
+              {
+                "kindText": "ClassDeclaration",
+                "name": "BookEffects"
+              },
+              {
+                "kindText": "PropertyDeclaration",
+                "name": "search$"
+              },
+              {
+                "kindText": "VariableDeclaration",
+                "name": "nextSearch$"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "[Books/API] Search Success",
+        "kind": 1002,
+        "kindText": "Action",
+        "createActionArgs": [
+          {
+            "name": "props",
+            "typeArguments": [
+              {
+                "kind": 173,
+                "kindText": "TypeLiteral",
+                "properties": [
+                  {
+                    "name": "books",
+                    "type": "Book[]"
+                  }
+                ]
+              }
+            ],
+            "kind": 196,
+            "kindText": "CallExpression"
+          }
+        ],
+        "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/books/actions/books-api.actions.ts",
+        "variable": "searchSuccess",
+        "references": [
+          {
+            "name": "searchSuccess",
+            "kind": 1003,
+            "kindText": "ActionReference",
+            "documentation": "",
+            "type": "ActionCreator<\"[Books/API] Search Success\", (props: { books: Book[]; }) => { books: Book[]; } & TypedAction<\"[Books/API] Search Success\">>",
+            "isCall": false,
+            "filePath": "../ngrx/projects/example-app/src/app/books/reducers/search.reducer.ts",
+            "fileName": "search.reducer",
+            "declarationContext": [
+              {
+                "kindText": "VariableDeclaration",
+                "name": "reducer"
+              }
+            ]
+          },
+          {
+            "name": "searchSuccess",
+            "kind": 1003,
+            "kindText": "ActionReference",
+            "documentation": "",
+            "type": "ActionCreator<\"[Books/API] Search Success\", (props: { books: Book[]; }) => { books: Book[]; } & TypedAction<\"[Books/API] Search Success\">>",
+            "isCall": false,
+            "filePath": "../ngrx/projects/example-app/src/app/books/reducers/books.reducer.ts",
+            "fileName": "books.reducer",
+            "declarationContext": [
+              {
+                "kindText": "VariableDeclaration",
+                "name": "reducer"
+              }
+            ]
+          },
+          {
+            "name": "searchSuccess",
+            "kind": 1003,
+            "kindText": "ActionReference",
+            "documentation": "",
+            "type": "ActionCreator<\"[Books/API] Search Success\", (props: { books: Book[]; }) => { books: Book[]; } & TypedAction<\"[Books/API] Search Success\">>",
+            "isCall": true,
+            "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/books/effects/book.effects.ts",
+            "fileName": "book.effects",
+            "declarationContext": [
+              {
+                "kindText": "ClassDeclaration",
+                "name": "BookEffects"
+              },
+              {
+                "kindText": "PropertyDeclaration",
+                "name": "search$"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "[Books/API] Search Failure",
+        "kind": 1002,
+        "kindText": "Action",
+        "createActionArgs": [
+          {
+            "name": "props",
+            "typeArguments": [
+              {
+                "kind": 173,
+                "kindText": "TypeLiteral",
+                "properties": [
+                  {
+                    "name": "errorMsg",
+                    "type": "string"
+                  }
+                ]
+              }
+            ],
+            "kind": 196,
+            "kindText": "CallExpression"
+          }
+        ],
+        "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/books/actions/books-api.actions.ts",
+        "variable": "searchFailure",
+        "references": [
+          {
+            "name": "searchFailure",
+            "kind": 1003,
+            "kindText": "ActionReference",
+            "documentation": "",
+            "type": "ActionCreator<\"[Books/API] Search Failure\", (props: { errorMsg: string; }) => { errorMsg: string; } & TypedAction<\"[Books/API] Search Failure\">>",
+            "isCall": false,
+            "filePath": "../ngrx/projects/example-app/src/app/books/reducers/search.reducer.ts",
+            "fileName": "search.reducer",
+            "declarationContext": [
+              {
+                "kindText": "VariableDeclaration",
+                "name": "reducer"
+              }
+            ]
+          },
+          {
+            "name": "searchFailure",
+            "kind": 1003,
+            "kindText": "ActionReference",
+            "documentation": "",
+            "type": "ActionCreator<\"[Books/API] Search Failure\", (props: { errorMsg: string; }) => { errorMsg: string; } & TypedAction<\"[Books/API] Search Failure\">>",
+            "isCall": true,
+            "filePath": "/home/tofik-tuptus/Documents/android/ngrx/projects/example-app/src/app/books/effects/book.effects.ts",
+            "fileName": "book.effects",
+            "declarationContext": [
+              {
+                "kindText": "ClassDeclaration",
+                "name": "BookEffects"
+              },
+              {
+                "kindText": "PropertyDeclaration",
+                "name": "search$"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

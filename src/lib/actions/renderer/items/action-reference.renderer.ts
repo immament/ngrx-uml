@@ -23,11 +23,11 @@ export class ActionReferenceRenderer implements ItemRenderer {
     toPlantUml(item: ActionReference): string {
 
         const stereotyp = item.isCall ? '<< (D,orchid) dispatch >>' : '<< (L,orchid) listen >>';
+        // ${item.fileName ? `src: ${item.fileName}` : ''}
 
         let content = `interface "${this.getName(item)}" ${stereotyp} {
             name: ${item.name}
             action: ${item.action && item.action.name}
-            ${item.fileName ? `src: ${item.fileName}` : ''}
             ..
             ${this.declarationContext(item) || ''}
             __

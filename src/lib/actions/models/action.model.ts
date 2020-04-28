@@ -18,6 +18,14 @@ export class Action implements NamedConvertedItem {
 
     constructor(public readonly name: string) { }
 
+    setName(variableName: string): void {
+        this.variable = variableName;
+    }
+
+    getExportName(): string {
+        return this.name;
+    }
+
     addReference(reference: ActionReference): void {
         if (!this.references) {
             this.references = [];

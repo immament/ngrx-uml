@@ -1,9 +1,11 @@
 # ngrx-uml
 Generate Plant UML diagram from [ngrx/store](https://ngrx.io) project (version > 7.0).
 
-Generate separete diagram for each Action.
+Generate separete diagram for each `Action` or/and `Reducer/State`.
 
-Searches for actions created function [createAction](https://ngrx.io/api/store/createAction) and their use.
+Searches for:
+- actions created function [createAction](https://ngrx.io/api/store/createAction) and their use
+- reducers created function  [createReducer](https://ngrx.io/api/store/createReducer)
 
 ## Installation
 
@@ -39,7 +41,7 @@ ng diagram --help
 ```bash
 ngrx-uml diagram -f '**/*ts' -d ../ngrx/projects/example-app/ -i '../**/*.spec.ts' -c tsconfig.app.json
 ```
-*** Glob-like file patterns must be in quotation marks ***
+Important: ***Glob-like file patterns must be in quotation marks***
 
 | Option | Alias | Description                         | Type | Default |
 | --------| ------| ------------------------------------------------------------------- | -------- | ---------- |
@@ -61,44 +63,75 @@ ngrx-uml diagram -f '**/*ts' -d ../ngrx/projects/example-app/ -i '../**/*.spec.t
 
 Generated from source code [ngrx/store example app](https://github.com/ngrx/platform/tree/master/projects/example-app) 
 
-### Png
+### Action diagram (png)
 
-![Png diagram](docs/assets/examples/_Auth-API_Login-Success.png)
+![Action diagram](docs/assets/examples/_Auth-API_Login-Success.png)
 
-### wsd 
+### Auth Reducer diagram (png)
+
+![Reducer diagram](docs/assets/examples/auth.reducer_reducer.png)
+
+### Action diagram (wsd) 
 
 ```pascal
 @startuml [Auth/API] Login Success
 
 set namespaceSeparator ::
-
-interface "[Auth/API] Login Success" << (A,#FF7700) action >> {
-        variable: loginSuccess
-        src: auth-api.actions
-        --
-        props<{user: User}>
+skinparam class {
+    BackgroundColor<<listen>> HoneyDew
+    BackgroundColor<<action>> Wheat
+    BackgroundColor<<dispatch>> Technology
 }
 
+interface "[Auth/API] Login Success" << (A,#FF7700) action >> {
+    variable: loginSuccess
+    src: auth-api.actions
+    --
+    props<{user: User}>
+}
+
+
 interface "auth.reducer:: reducer L" << (L,orchid) listen >> {
-        name: loginSuccess
-        action: [Auth/API] Login Success
-        src: auth.reducer
-        ..
-        Variable: reducer
+    name: loginSuccess
+    action: [Auth/API] Login Success
+    ..
+    Variable: reducer
+    __
 }
 
 "[Auth/API] Login Success" <.down. "auth.reducer:: reducer L"
 
+interface "login-page.reducer:: reducer L" << (L,orchid) listen >> {
+    name: loginSuccess
+    action: [Auth/API] Login Success
+    ..
+    Variable: reducer
+    __
+}
+
+"[Auth/API] Login Success" <.down. "login-page.reducer:: reducer L"
+
 interface "auth.effects:: AuthEffects D" << (D,orchid) dispatch >> {
-        name: loginSuccess
-        action: [Auth/API] Login Success
-        src: auth.effects
-        ..
-        Class: AuthEffects
-        Property: login$
+    name: loginSuccess
+    action: [Auth/API] Login Success
+    ..
+    Class: AuthEffects
+    Property: login$
+    __
 }
 
 "[Auth/API] Login Success" -down-> "auth.effects:: AuthEffects D"
+
+interface "auth.effects:: AuthEffects L" << (L,orchid) listen >> {
+    name: loginSuccess
+    action: [Auth/API] Login Success
+    ..
+    Class: AuthEffects
+    Property: loginSuccess$
+    __
+}
+
+"[Auth/API] Login Success" <.down. "auth.effects:: AuthEffects L"
 
 @enduml
 ```
@@ -107,11 +140,13 @@ interface "auth.effects:: AuthEffects D" << (D,orchid) dispatch >> {
 
 ### JSON 
 
-[Actions JSON](docs/assets/examples/actions.json)
+[Actions JSON](docs/assets/examples/actions_Action.json)
 
-[Actions with references JSON](docs/assets/examples/actions-with-references.json)
+[Actions with references JSON](docs/assets/examples/action-references_Action.json)
 
-[Action's references JSON](docs/assets/examples/actions-references.json)
+[Reducers JSON](docs/assets/examples/actions_Reducer.json)
+
+[Reducers with references JSON](docs/assets/examples/action-references_Reducer.json)
 
 ```JSON
 {

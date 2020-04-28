@@ -4,7 +4,7 @@ import ts from 'typescript';
 
 import { ConvertContext, ConvertContextFactory } from '../converters';
 import { Converter } from '../converters/converter';
-import { ConvertedItem } from '../converters/models';
+import { NamedConvertedItem, TypeKind } from '../converters/models';
 import { Output } from '../outputs/output';
 import { Renderer, RenderResult } from '../renderers';
 import { globSync } from '../utils/glob';
@@ -79,10 +79,10 @@ export class GeneratorService {
         return program;
     }
 
-    private convert(program: ts.Program, outDir: string): ConvertedItem[] | undefined {
+    private convert(program: ts.Program, outDir: string): Map<TypeKind, NamedConvertedItem[]> | undefined {
         const converter = new Converter();
         const typeChecker = program.getTypeChecker();
-        let converterResult: ConvertedItem[] | undefined = undefined;
+        let converterResult: Map<TypeKind, NamedConvertedItem[]> | undefined = undefined;
         let lastContext: ConvertContext | undefined = undefined;
         for (const contextFactory of this.convertFactories) {
             const context = contextFactory.create(program, typeChecker, converter, lastContext);
@@ -96,15 +96,18 @@ export class GeneratorService {
 
     private saveConvertResult(context: ConvertContext, outDir: string): void {
         if (this.options.saveConvertResultToJson) {
-            const resultJson = context.serializeResultToJson();
-            if (resultJson) {
-                writeToFile(resultJson, outDir, context.name + '.json');
-                log.info(`Convert result saved to: ${chalk.gray(`${this.options.outDir}/${context.name + '.json'}`)}`);
+            const result = context.serializeResultToJson();
+            if (result) {
+                for (const {kind, json} of result) {
+                    const filePath = writeToFile(json, outDir, `${context.name}_${kind}.json`);
+                    log.info(`Convert result saved to: ${chalk.gray(filePath)}`);
+
+                }
             }
         }
     }
 
-    private render(items: ConvertedItem[]): RenderResult[] | undefined {
+    private render(items: Map<TypeKind, NamedConvertedItem[]>): RenderResult[] | undefined {
         return this.renderer.render(items);
     }
 
