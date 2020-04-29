@@ -8,7 +8,7 @@ script:
 - npm run build
 - npm test
 deploy:
-  -provider: npm
+  - provider: npm
     email: immament@gmail.com
     api_key:
       secure: WQimG5ALMI68dIMi9dAUn93QhlUm14G3kwN4xD6rh+DJnMOLZjBitMS/TyApvpYcDIaEUda1cfN3RZgNj5HRPLFRLrgscYVpARWEIsBR5MyWoMCIM2ozTi8gcvfZKSOIJ6maft4zbKMl+vjOHBxX4QnVdNfNJqrEptG4jF23abzNmJUHsScEBgy2mN5RXKR5bBQ9sOS9bHIzPFuAnoelAzORL1oajt1JdLAx/IPDXhVyNMGcJ1baISXHffQ8kuEfOA/A7OWdM2/JorqFZol9xCrv9+JrU+R4tYI9pMuQXvknL69KRtihZ2Tp0CuhUnaT8IdKo82mDSjhw2MtBVA0+u4hfKMxqgDKqY+1deIuCzNoYQFlufJRmP6nhR0HrWnikeSGnkb4kP6+Fjjc9M53iPHApU9Ib4APD0n9ZrX0muwiEJcHv2hDCnE4D5P1jVx5MvKPaDRxT1pBeL2HJK/ynsSkeTQZe07lyhANprw6dogqyaconOcvSBfdwXWNhPTOhA3UDhnTo0Icju+Rpb94x4V6rrYqSEdGx5Yd1pNKPDdoNwWoyLrCPUFJvXRWHMADMEOFWIgDYSYd8R4i8zOBThyBN4OcSXTwnOM5KP0SyHu/B6waekep4Ox/jFNJF88QC6kDwO91aro2VOIRcGKnTrhiO+OjhpmM5nXdYlCiePo=
