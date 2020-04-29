@@ -1,0 +1,27 @@
+language: node_js
+node_js:
+- 12
+before_script:
+- npm run setup
+script:
+- npm run lint
+- npm run build
+- npm test
+deploy:
+  -provider: npm
+    email: immament@gmail.com
+    api_key:
+      secure: WQimG5ALMI68dIMi9dAUn93QhlUm14G3kwN4xD6rh+DJnMOLZjBitMS/TyApvpYcDIaEUda1cfN3RZgNj5HRPLFRLrgscYVpARWEIsBR5MyWoMCIM2ozTi8gcvfZKSOIJ6maft4zbKMl+vjOHBxX4QnVdNfNJqrEptG4jF23abzNmJUHsScEBgy2mN5RXKR5bBQ9sOS9bHIzPFuAnoelAzORL1oajt1JdLAx/IPDXhVyNMGcJ1baISXHffQ8kuEfOA/A7OWdM2/JorqFZol9xCrv9+JrU+R4tYI9pMuQXvknL69KRtihZ2Tp0CuhUnaT8IdKo82mDSjhw2MtBVA0+u4hfKMxqgDKqY+1deIuCzNoYQFlufJRmP6nhR0HrWnikeSGnkb4kP6+Fjjc9M53iPHApU9Ib4APD0n9ZrX0muwiEJcHv2hDCnE4D5P1jVx5MvKPaDRxT1pBeL2HJK/ynsSkeTQZe07lyhANprw6dogqyaconOcvSBfdwXWNhPTOhA3UDhnTo0Icju+Rpb94x4V6rrYqSEdGx5Yd1pNKPDdoNwWoyLrCPUFJvXRWHMADMEOFWIgDYSYd8R4i8zOBThyBN4OcSXTwnOM5KP0SyHu/B6waekep4Ox/jFNJF88QC6kDwO91aro2VOIRcGKnTrhiO+OjhpmM5nXdYlCiePo=
+    on:
+      tags: true
+      repo: immament/ngrx-uml
+      branch: master
+    skip_cleanup: 'true'
+  - provider: releases
+    api_key:
+      secure: tAButlHYgT1+4j8S8zhmUM6MqACOLfQJlLNO4lGiK4kN34xKsd6FwaoAka/9SQtX6kVCbH/veWOfOA1+Z+MiUIR7pkMTiPUczPRHHaMJGTwemlOId+8nO03LU2ZVOO4ESkwrtJmTbtYKlFvFEXvqQG2JA/4IIkEWJMOrqSXByLFDqzq2IJxCS166TA7OdWjT2u6jbTaR8IXjK2YK9/XqyHyup2/Uy76KvG5IWwOMQhVMk3pmcn/ZiwNR8thPL/uQDQObRFJFZnswEdb1m4EDi6/oKPSeDGOf6RYwacUSl27AMaSCVbm7IHoYbBLjBH9o4+a7/xUa42pbYrEk27pCkhUvj3/SEJ6+90XbDy5HReuYPziXk4jYy+iXRdmd8vP2WmvmXp5Nu8c+tYQRDoKYgoAGV0HJ6BSH7/wBHk7pdN7EPV1vVeLcepKTJf0N1zk4Yi27xEN8YYtKU6SlYeaLB6ZK/rQiNU1eCzeij0Tgo5NPN1hfFytPSOMLm4YViEEsOyshHDFjTnIFVYOQfHAgK+j1lQEjKz0ls6cOayOgOnndTCZOv0TIITybUfZ13CMd53B+9VeMhnZFYpOxhPnwgMovnBOHEfNvjWI6bybu58eC3PGPOC/yVGdl6MAp5lDnCw3yh6WyV8RhlyjNKWqhMEMm1TUT7jI3Suld6tAZMkk=
+    on:
+      repo: immament/ngrx-uml
+      tags: true
+    branch: master
+    skip_cleanup: 'true'
