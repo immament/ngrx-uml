@@ -1,7 +1,7 @@
 # ngrx-uml
-Generate Plant UML diagram from [ngrx/store](https://ngrx.io) project (version > 7.0).
+Generate Plant UML diagram from [ngrx/store](https://ngrx.io) project (version >= 7.0).
 
-Generate separete diagram for each `Action` or/and `Reducer/State`.
+Generate separete diagram for each [Action](https://ngrx.io/guide/store/actions) or/and [Reducer/State](https://ngrx.io/guide/store/reducers).
 
 Searches for:
 - actions created function [createAction](https://ngrx.io/api/store/createAction) and their use
@@ -9,7 +9,7 @@ Searches for:
 
 ## Installation
 
-#### Node Package [Node.js](http://nodejs.org/) 
+#### Node Package [npm](https://www.npmjs.com/package/ngrx-uml)
 
 To download and install the ngrx-um run the following command:
 
@@ -48,12 +48,12 @@ Important: ***Glob-like file patterns must be in quotation marks***
 |  --version    | |              Show version number                                    | boolean |            |
 | --log     | -l |   Log level. [choices: "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "SILENT"] | | "INFO" |
 |  --help   | -h |          Show help                                                    |    boolean | |
-|  --files | -f  |           Glob-like file pattern specifying the filepath for the source files. Relative to baseDir.  ***IMPORTANT!!*** Use with quote (" or \')' | string  |  "**/*.ts" |
-|  --ignore | -i  |          Glob-like file pattern specifying files to ignore. ***IMPORTANT!!*** Use with quote (" or \')' | array | ["\*\*/*.spec.ts", "\*\*/node_modules/\*\*"] |
+|  --files | -f  |           Glob-like file pattern specifying the filepath for the source files. Relative to baseDir.  **IMPORTANT!!** Use with quote " or ' | string  |  "**/*.ts" |
+|  --ignore | -i  |          Glob-like file pattern specifying files to ignore. **IMPORTANT!!** Use with quote " or ' | array | ["\*\*/*.spec.ts", "\*\*/node_modules/\*\*"] |
 |  --imageFormat | --im |    Image format. To turn off image generation set to off [choices: "eps", "latex", "png", "svg", "txt", "off"] | | "png" |
 |  --outDir | -o   |         Redirect output structure to the directory      |  string | "out"  |
 |  --baseDir | -d  |         Path to project base directory                   |   string | "" |
-|  --tsConfig | -c |         tsconfig.json file name with relative path from baseDir | string |  "tsconfig.json |
+|  --tsConfig | -c |         tsconfig.json file name with relative path from baseDir | string |  "tsconfig.json" |
 |  --toJson | --js |         Generate intermediate files to json             | boolean  |  false |
 |  --wsd    | |               Generate plant uml file (.wsd)                | boolean  | false |
 |  --clickableLinks | --cl | Convert  terminal links to clickable in vs code terminal | boolean | false |
@@ -180,7 +180,7 @@ interface "auth.effects:: AuthEffects L" << (L,orchid) listen >> {
 ```
 
 
-## Using from source files
+## Using from source code
 
 
 ### Installation
