@@ -7,6 +7,9 @@ Searches for:
 - actions created function [createAction](https://ngrx.io/api/store/createAction) and their use
 - reducers created function  [createReducer](https://ngrx.io/api/store/createReducer)
 
+
+[![Build Status](https://travis-ci.org/immament/ngrx-uml.svg?branch=master)](https://travis-ci.org/immament/ngrx-uml)
+
 ## Installation
 
 #### Node Package [npm](https://www.npmjs.com/package/ngrx-uml)
