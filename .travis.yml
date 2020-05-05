@@ -15,7 +15,7 @@ deploy:
     on:
       tags: true
       repo: immament/ngrx-uml
-      branch: master
+      branch: dev
     skip_cleanup: 'true'
   - provider: releases
     api_key:
@@ -23,5 +23,5 @@ deploy:
     on:
       repo: immament/ngrx-uml
       tags: true
-    branch: master
+      branch: master
     skip_cleanup: 'true'
