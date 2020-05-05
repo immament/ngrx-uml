@@ -29,7 +29,7 @@ export function getKeyReplacer(keyToReplace: string) {
 export function writeJsonToFile(data: unknown, outDir: string, fileName: string, replacer?: (key: string, value: any) => any): void {
 
     if (!existsSync(outDir)) {
-        mkdirSync(outDir);
+        mkdirSync(outDir, {recursive: true});
     }
 
     const filePath = `${outDir}/${fileName}`;
@@ -42,7 +42,7 @@ export function writeJsonToFile(data: unknown, outDir: string, fileName: string,
 export function writeToFile(content: string, outDir: string, fileName: string): string {
 
     if (!existsSync(outDir)) {
-        mkdirSync(outDir);
+        mkdirSync(outDir, {recursive: true});
     }
 
     const filePath = `${outDir}/${fileName}`;

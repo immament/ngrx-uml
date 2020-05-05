@@ -19,7 +19,8 @@ export class CreateActionsDiagramService implements DiagramService {
             outDir: this.options.outDir || 'out',
             ext: this.options.imageFormat || 'png',
             clickableLinks: this.options.clickableLinks  || false,
-            saveWsd:  this.options.saveWsd || false
+            saveWsd:  this.options.saveWsd || false,
+            generateDiagramsImages: this.options.generateImages || true
         });
        
 

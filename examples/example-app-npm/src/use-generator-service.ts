@@ -12,7 +12,6 @@ export function useGeneratorService(): void {
         outDir: 'out/generator',
         imageFormat: 'png',
         ignorePattern: ['**/*.spec.ts'],
-        saveConvertResultToJson: false,
         saveWsd: false,
         logLevel: 'INFO'
     };

@@ -46,6 +46,7 @@ export class GeneratorService {
 
     generate(filesPattern: string): void {
 
+        log.info('Starting...');
         log.debug(chalk.yellow('filePattern:'), filesPattern);
         log.debug(chalk.yellow('baseDir:'), this.options.baseDir);
         log.debug(chalk.yellow('tsConfig:'), this.options.tsConfigFileName);
@@ -55,17 +56,22 @@ export class GeneratorService {
             log.warn(`baseDir [${this.options.baseDir}] & tsConfigFileName [${this.options.tsConfigFileName}] & outDir [${this.options.outDir}] must be specified`);
             return;
         }
+
+        if (!this.options.baseDir.endsWith('/')) {
+            this.options.baseDir += '/';
+        }
         const program = this.createTsProgram(filesPattern, this.options.baseDir, this.options.tsConfigFileName);
         const convertedItems = this.convert(program, this.options.outDir);
+        log.info('Items converted');
 
         if (!convertedItems) { return; }
 
         const renderResult = this.render(convertedItems);
+        log.info('Items rendered');
 
         if (!renderResult) { return; }
 
         this.transform(renderResult);
-
     }
 
 
@@ -74,7 +80,7 @@ export class GeneratorService {
         const files = globSync(sourceFilePattern, {
             ignore: this.options.ignorePattern
         });
-        log.debug('glob result', files);
+        log.debug('Glob result', files);
         const program = createTsProgram(files, baseDir, tsConfigFileName);
         return program;
     }
@@ -98,7 +104,7 @@ export class GeneratorService {
         if (this.options.saveConvertResultToJson) {
             const result = context.serializeResultToJson();
             if (result) {
-                for (const {kind, json} of result) {
+                for (const { kind, json } of result) {
                     const filePath = writeToFile(json, outDir, `${context.name}_${kind}.json`);
                     log.info(`Convert result saved to: ${chalk.gray(filePath)}`);
 

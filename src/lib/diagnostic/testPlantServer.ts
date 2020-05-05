@@ -4,7 +4,7 @@ import { PlantUmlOutputService } from '../services/plant-uml.service';
 
 function testPlantServer(outDir = 'out'): void {
 
-    const plantUmlService = new PlantUmlOutputService({ outDir, ext: 'txt', clickableLinks: true, saveWsd: true });
+    const plantUmlService = new PlantUmlOutputService({ outDir, ext: 'txt', clickableLinks: true, saveWsd: true,  generateDiagramsImages: true });
 
     const diagram = `
 
