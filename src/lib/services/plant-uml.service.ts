@@ -15,6 +15,7 @@ export interface PlantUmlOutputOptions {
     ext: string;
     clickableLinks: boolean;
     saveWsd: boolean;
+    generateDiagramsImages: boolean;
 }
 
 export class PlantUmlOutputService implements Output {
@@ -77,7 +78,7 @@ ${diagramContent}
 
     private renderToImageFile(input: string, outDir: string, fileName: string, ext: string): void {
         if (!existsSync(outDir)) {
-            mkdirSync(outDir);
+            mkdirSync(outDir, {recursive: true});
         }
         const writeStream = this.createWriteStream(outDir, fileName, ext);
         this.renderImage(ext, input, writeStream);

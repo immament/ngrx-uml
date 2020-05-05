@@ -39,7 +39,7 @@ ng diagram --help
 #### Usage:
 
 ```bash
-ngrx-uml diagram -f '**/*ts' -d ../ngrx/projects/example-app/ -i '../**/*.spec.ts' -c tsconfig.app.json
+ngrx-uml diagram -f '**/*.ts' -d ../ngrx/projects/example-app/ -i '../**/*.spec.ts' -c tsconfig.app.json
 ```
 Important: ***Glob-like file patterns must be in quotation marks***
 
