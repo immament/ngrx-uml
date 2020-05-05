@@ -11,7 +11,7 @@ deploy:
   - provider: npm
     email: immament@gmail.com
     api_key:
-      secure: WQimG5ALMI68dIMi9dAUn93QhlUm14G3kwN4xD6rh+DJnMOLZjBitMS/TyApvpYcDIaEUda1cfN3RZgNj5HRPLFRLrgscYVpARWEIsBR5MyWoMCIM2ozTi8gcvfZKSOIJ6maft4zbKMl+vjOHBxX4QnVdNfNJqrEptG4jF23abzNmJUHsScEBgy2mN5RXKR5bBQ9sOS9bHIzPFuAnoelAzORL1oajt1JdLAx/IPDXhVyNMGcJ1baISXHffQ8kuEfOA/A7OWdM2/JorqFZol9xCrv9+JrU+R4tYI9pMuQXvknL69KRtihZ2Tp0CuhUnaT8IdKo82mDSjhw2MtBVA0+u4hfKMxqgDKqY+1deIuCzNoYQFlufJRmP6nhR0HrWnikeSGnkb4kP6+Fjjc9M53iPHApU9Ib4APD0n9ZrX0muwiEJcHv2hDCnE4D5P1jVx5MvKPaDRxT1pBeL2HJK/ynsSkeTQZe07lyhANprw6dogqyaconOcvSBfdwXWNhPTOhA3UDhnTo0Icju+Rpb94x4V6rrYqSEdGx5Yd1pNKPDdoNwWoyLrCPUFJvXRWHMADMEOFWIgDYSYd8R4i8zOBThyBN4OcSXTwnOM5KP0SyHu/B6waekep4Ox/jFNJF88QC6kDwO91aro2VOIRcGKnTrhiO+OjhpmM5nXdYlCiePo=
+      secure: v1/Yu5ufdqJMhZ4KelIXZSSjnL+Ac1E6eUSW23kXKLAOAV8IxROwENnH6VRO93pzhCOo4pZ1LUl3mr3KKw2ZNujEl28HilGsW5qgcmNiJJ+guK0mtk2TKDUfq3z35PP2+yXJYJ/1Z7kvU7fNfGHrAr7HHu3w1ulTgqtV5eZrgJw9FHFkqDQWj1Adc0OybvsxTNbvletizTt0Bg+791WPKp+rLz1x++jmvLUTcPjJ4c5OdEu5gNa4YCfPSoEwTAtx9VyxnlJ8BMLpYZVGTASiKFWS5CSrzi+9z/jNJdhFuhYkZCKNDsKNxELlQB+BMe9ndefS7D4szElthdBxXTO1zDmBiXmsoLPKH/RFfROA8hmtSROA8ZsFsdqIq2oXrEElRzgqL23y1ra/cxT4p/mga4A4S5mKQZutI97aM6wxKjzbnSjl+zrtR1pqh0qj17Uas7Z2j6GgA9khJGHmzBt9GiwXrOSx2TAKuvqlz1H+i2lp/JSsmr/09rf6Zg6wNCwfEP+lilyipAjD9RdDDV45ZKsCCKqp9io/fYhg+gMi10s8plRjBxAaEskmAEFviRF77cI67s00+v+DXmxiw4cXX29kjoOQ9m2Y7QNcBeRFIxLIcFL/xaXFuNeGPHRcv4qU1WQ6w+QfsLSrHhuVCFd2aMJN9sWHvoY9rvwjnkepv34=
     on:
       tags: true
       repo: immament/ngrx-uml
@@ -23,5 +23,5 @@ deploy:
     on:
       repo: immament/ngrx-uml
       tags: true
-    branch: master
+      branch: master
     skip_cleanup: 'true'
