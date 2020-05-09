@@ -44,7 +44,7 @@ export class GeneratorService {
         }
     }
 
-    generate(filesPattern: string): void {
+   async generate(filesPattern: string): Promise<void> {
 
         log.info('Starting...');
         log.debug(chalk.yellow('filePattern:'), filesPattern);
@@ -57,9 +57,10 @@ export class GeneratorService {
             return;
         }
 
-        if (!this.options.baseDir.endsWith('/')) {
+        if (this.options.baseDir !== '' && !this.options.baseDir.endsWith('/')) {
             this.options.baseDir += '/';
         }
+
         const program = this.createTsProgram(filesPattern, this.options.baseDir, this.options.tsConfigFileName);
         const convertedItems = this.convert(program, this.options.outDir);
         log.info('Items converted');
@@ -71,7 +72,8 @@ export class GeneratorService {
 
         if (!renderResult) { return; }
 
-        this.transform(renderResult);
+        await this.transform(renderResult);
+        log.info('Items transformed');
     }
 
 
@@ -117,9 +119,9 @@ export class GeneratorService {
         return this.renderer.render(items);
     }
 
-    private transform(input: RenderResult[]): void {
+    private async transform(input: RenderResult[]): Promise<void> {
         for (const output of this.outputs) {
-            output.transform(input);
+            await output.transform(input);
         }
     }
 

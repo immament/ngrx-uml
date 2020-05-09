@@ -9,7 +9,6 @@ export interface ConvertContextFactory {
     configureConverter(converter: Converter): void;
 }
 
-
 export interface ConvertContext {
     getRawResult(): unknown;
     name: string;

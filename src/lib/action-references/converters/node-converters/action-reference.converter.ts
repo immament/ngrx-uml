@@ -6,7 +6,7 @@ import { ActionConvertContext } from '../../../actions/converters';
 import { Action } from '../../../actions/models/action.model';
 import { ConvertContext } from '../../../converters/convert.context';
 import { TypeKind } from '../../../converters/models';
-import NodeConverter from '../../../converters/models/node.converter';
+import { NodeConverter } from '../../../converters/models/node.converter';
 import { Reducer } from '../../../reducers/converters/models/reducer.model';
 import { syntaxKindText } from '../../../utils/tsutils';
 import { getFileName } from '../../../utils/utils';

@@ -6,7 +6,7 @@ import { DefaultConverter } from '../actions/converters/node-converters/default.
 
 import { ConvertContext } from './convert.context';
 import { ConvertedItem, NamedConvertedItem, TypeKind } from './models';
-import NodeConverter from './models/node.converter';
+import { NodeConverter } from './models/node.converter';
 
 export class Converter {
     private converters: { [kind: number]: NodeConverter[] } = {};

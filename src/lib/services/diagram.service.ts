@@ -1,3 +1,3 @@
 export interface DiagramService {
-    generateDiagram(filesPattern: string): void;
+    generateDiagram(filesPattern: string): Promise<void>;
 } 
