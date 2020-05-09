@@ -1,14 +1,13 @@
-import ts, { TypeChecker } from 'typescript';
+import { Program, TypeChecker } from 'typescript';
 
 import { Converter } from './converter';
 import { NamedConvertedItem, TypeKind } from './models';
 
 export interface ConvertContextFactory {
 
-    create(program: ts.Program, typeChecker: ts.TypeChecker, converter: Converter, lastContext?: ConvertContext): ConvertContext;
+    create(program: Program, typeChecker: TypeChecker, converter: Converter, lastContext?: ConvertContext): ConvertContext;
     configureConverter(converter: Converter): void;
 }
-
 
 export interface ConvertContext {
     getRawResult(): unknown;

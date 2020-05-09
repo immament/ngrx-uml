@@ -1,6 +1,6 @@
 {
   "name": "ngrx-uml",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "description": "NGRX to Plant UML diagram",
   "homepage": "https://github.com/immament/ngrx-uml",
   "bugs": {
@@ -17,7 +17,7 @@
   },
   "scripts": {
     "setup": "npm install",
-    "build": "tsc",
+    "build": "tsc --declaration",
     "start": "ts-node ./src/bin ",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -39,8 +39,7 @@
   ],
   "files": [
     "dist",
-    "README.md",
-    "dist"
+    "README.md"
   ],
   "author": "immament",
   "license": "ISC",
@@ -50,7 +49,6 @@
     "loglevel": "^1.6.8",
     "plantuml-encoder": "^1.4.0",
     "rxjs": "^6.5.5",
-    "tsutils": "^3.17.1",
     "typescript": "^3.8.3",
     "yargs": "^15.3.1"
   },

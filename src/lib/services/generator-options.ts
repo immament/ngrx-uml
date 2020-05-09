@@ -1,4 +1,4 @@
-import log from 'loglevel';
+import { LogLevelDesc } from 'loglevel';
 
 export interface GeneratorOptions {
     ignorePattern?: string | string[];
@@ -10,5 +10,5 @@ export interface GeneratorOptions {
     clickableLinks?: boolean;
     imageFormat?: string;
     generateImages?: boolean;
-    logLevel?: log.LogLevelDesc;
+    logLevel?: LogLevelDesc;
 }

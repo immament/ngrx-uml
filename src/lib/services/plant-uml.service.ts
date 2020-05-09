@@ -16,50 +16,89 @@ export interface PlantUmlOutputOptions {
     clickableLinks: boolean;
     saveWsd: boolean;
     generateDiagramsImages: boolean;
+    plantUmlServerUrl?: string;
+    remotePathPrefix?: string;
+
 }
 
+const defaultOptions = {
+    plantUmlServerUrl: 'www.plantuml.com',
+    remotePathPrefix: '/plantuml/'
+};
+
 export class PlantUmlOutputService implements Output {
+    private readonly options: PlantUmlOutputOptions;
 
-    plantUmlServerUrl = 'www.plantuml.com';
-    remotePathPrefix = '/plantuml/';
+    constructor(options: PlantUmlOutputOptions) {
+        this.options = { ...defaultOptions, ...options };
+    }
 
-    constructor(private options: PlantUmlOutputOptions) { }
-
-    transform(inputs: RenderResult[]): void {
+    async transform(inputs: RenderResult[]): Promise<void> {
         for (const input of inputs) {
-            this.transformFromString(input.name, input.result);
+            await this.transformFromString(input.name, input.result);
         }
     }
 
-    transformFromString(name: string, input: string): void {
+    async transformFromString(name: string, input: string): Promise<void> {
         const diagram = this.createDiagram(name, input);
         const fileBaseName = removeiIlegalCharacters(name, this.options.clickableLinks);
         this.writeWsdToFile(diagram, this.options.outDir, fileBaseName);
         if (this.options.ext !== 'off') {
-            this.renderToImageFile(diagram, this.options.outDir, fileBaseName, this.options.ext);
+            return this.renderToImageFile(diagram, this.options.outDir, fileBaseName, this.options.ext);
         }
     }
 
-    renderImage(extension: string, plantuml: string, resultStream: Writable): void {
+    // #region IMAGE
+
+    private renderToImageFile(input: string, outDir: string, fileName: string, ext: string): Promise<void> {
+        if (!existsSync(outDir)) {
+            mkdirSync(outDir, { recursive: true });
+        }
+        const writeStream = this.createWriteStream(outDir, fileName, ext);
+
+        return this.renderImage(ext, input, writeStream);
+    }
+
+    private renderImage(extension: string, plantuml: string, resultStream: Writable): Promise<void> {
 
         const encodedPlantuml = encode(plantuml);
 
-        const remotePath = `${this.remotePathPrefix}${extension}/${encodedPlantuml}`;
+        const remotePath = `${this.options.remotePathPrefix}${extension}/${encodedPlantuml}`;
 
-        http.get({
-            host: this.plantUmlServerUrl,
-            path: remotePath
-        }, (res: http.IncomingMessage): void => {
+        return new Promise((resolve, reject) => {
+            http.get({
+                host: this.options.plantUmlServerUrl,
+                path: remotePath
+            }, (res: http.IncomingMessage): void => {
 
-            res.pipe(resultStream);
+                res.pipe(resultStream);
+                resultStream.on('close', () => {
+                    resolve();
+                });
 
-            res.on('error', (err: Error): void => {
-                log.warn('mapToPlantUml', `problem with request ${err.message}`);
-                throw err;
+                res.on('error', (err: Error): void => {
+                    log.warn('mapToPlantUml', `problem with request ${err.message}`);
+                    reject(err);
+                });
+
             });
-
         });
     }
+
+    private createWriteStream(outDir: string, fileName: string, extension: string): WriteStream {
+        const filePath = path.format({
+            dir: outDir, name: fileName, ext: '.' + extension
+        });
+        const fileStream: WriteStream = createWriteStream(filePath);
+        fileStream.once('close', () => {
+            log.info(`Diagram image saved: ${chalk.cyan(filePath)} `);
+        });
+        return fileStream;
+    }
+
+    // #endregion
+
+    // #region WSD
 
     private createDiagram(name: string, diagramContent: string): string {
         return `@startuml ${name}
@@ -76,32 +115,14 @@ ${diagramContent}
 @enduml`;
     }
 
-    private renderToImageFile(input: string, outDir: string, fileName: string, ext: string): void {
-        if (!existsSync(outDir)) {
-            mkdirSync(outDir, {recursive: true});
-        }
-        const writeStream = this.createWriteStream(outDir, fileName, ext);
-        this.renderImage(ext, input, writeStream);
-    }
-
-
-    private createWriteStream(outDir: string, fileName: string, extension: string): WriteStream {
-        const filePath = path.format({
-            dir: outDir, name: fileName, ext: '.' + extension
-        });
-        const fileStream: WriteStream = createWriteStream(filePath);
-        fileStream.once('close', () => {
-            log.info(`Diagram image saved: ${chalk.cyan(filePath)} `);
-        });
-        return fileStream;
-    }
-
     private writeWsdToFile(diagram: string, outDir: string, name: string): void {
         if (this.options.saveWsd) {
             const fileName = name + '.wsd';
-            const filePath = writeToFile(diagram, outDir + '/wsd', fileName);
+            const filePath = writeToFile(diagram, path.join(outDir, 'wsd'), fileName);
             log.info(`Wsd saved to: ${chalk.gray(filePath)}`);
         }
     }
+
+    // #endregion
 
 }

@@ -1,4 +1,6 @@
-import ts from 'typescript';
+
+
+import ts, { Program, TypeChecker } from 'typescript';
 
 import { ConvertContext, ConvertContextFactory } from '../../converters/convert.context';
 import { Converter } from '../../converters/converter';
@@ -14,7 +16,7 @@ import { VariableDeclarationConverter } from './node-converters/variable-declara
 
 export class ActionConvertContextFactory implements ConvertContextFactory {
 
-    create(program: ts.Program, typeChecker: ts.TypeChecker, converter: Converter, _lastContext?: ConvertContext): ConvertContext {
+    create(program: Program, typeChecker: TypeChecker, converter: Converter, _lastContext?: ConvertContext): ConvertContext {
         this.configureConverter(converter);
         return new ActionConvertContext(
             'actions',

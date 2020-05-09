@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es6",
     "module": "commonjs", /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */
     "lib": [
       "es2017"
@@ -17,8 +17,7 @@
     "declaration": true
   },
   "include": [
-    "src/**/*",
-    "src/bin/**/*"
+    "src/**/*"
   ],
   "exclude": [
     "node_modules",

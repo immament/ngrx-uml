@@ -12,8 +12,7 @@ export class CreateActionsDiagramService implements DiagramService {
     constructor(private options: GeneratorOptions) {
     }
 
-    generateDiagram(filesPattern: string): void {
-
+    generateDiagram(filesPattern: string): Promise<void> {
 
         const plantUmlService = new PlantUmlOutputService({
             outDir: this.options.outDir || 'out',
@@ -35,7 +34,7 @@ export class CreateActionsDiagramService implements DiagramService {
             this.options
         );
 
-        generateService.generate(filesPattern);
+        return generateService.generate(filesPattern);
     }
 
 

@@ -1,4 +1,4 @@
-import ts from 'typescript';
+import { Program, TypeChecker } from 'typescript';
 
 import { ActionConvertContext } from '../../actions/converters';
 import { ConvertContext, ConvertContextFactory } from '../../converters/convert.context';
@@ -9,7 +9,7 @@ import { ActionReferenceConverter } from './node-converters/action-reference.con
 
 export class ActionReferenceConvertContextFactory implements ConvertContextFactory {
 
-    create(program: ts.Program, typeChecker: ts.TypeChecker, converter: Converter, lastContext: ConvertContext): ConvertContext {
+    create(program: Program, typeChecker: TypeChecker, converter: Converter, lastContext: ConvertContext): ConvertContext {
         this.configureConverter(converter);
         return new ActionConvertContext(
             'action-references',
