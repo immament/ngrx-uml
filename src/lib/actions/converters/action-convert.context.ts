@@ -1,4 +1,4 @@
-import ts from 'typescript';
+import { Program, Symbol, TypeChecker } from 'typescript';
 
 import { ConvertContext } from '../../converters/convert.context';
 import { Converter } from '../../converters/converter';
@@ -12,8 +12,8 @@ export class ActionConvertContext implements ConvertContext {
 
     constructor(
         public name: string,
-        public program: ts.Program,
-        public typeChecker: ts.TypeChecker,
+        public program: Program,
+        public typeChecker: TypeChecker,
         public converter: Converter,
         public rootKinds: TypeKind[],
         lastContext?: ConvertContext
@@ -43,13 +43,15 @@ export class ActionConvertContext implements ConvertContext {
 
         let map = this.result.get(actionWithSymbol.item.kind);
         if (!map) {
-            map = new Map<ts.Symbol, NamedConvertedItem>();
+            // eslint-disable-next-line @typescript-eslint/ban-types
+            map = new Map<Symbol, NamedConvertedItem>();
             this.result.set(actionWithSymbol.item.kind, map);
         }
         map.set(actionWithSymbol.symbol, actionWithSymbol.item);
     }
 
-    getItem<T extends NamedConvertedItem>(kind: TypeKind, symbol: ts.Symbol): T | undefined {
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    getItem<T extends NamedConvertedItem>(kind: TypeKind, symbol: Symbol): T | undefined {
 
         const reducersMap = this.result.get(kind);
 
