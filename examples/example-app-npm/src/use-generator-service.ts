@@ -19,8 +19,10 @@ export function useGeneratorService(): void {
     const plantUmlService = new PlantUmlOutputService({
         outDir: options.outDir || 'out',
         ext: options.imageFormat || 'png',
-        clickableLinks: options.clickableLinks || false,
-        saveWsd: options.saveWsd || false
+        clickableLinks: options.clickableLinks != null ?  options.clickableLinks: false,
+        saveWsd: options.saveWsd != null ? options.saveWsd: false,
+        generateDiagramsImages: options.generateImages != null ? options.generateImages: true
+
     });
 
 
