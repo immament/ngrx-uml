@@ -18,6 +18,10 @@ To download and install the ngrx-um run the following command:
 
 ```bash
 npm install -g ngrx-uml
+``` 
+or install locally to use in source code
+```bash
+npm install ngrx-uml
 ```
 
 ## Commands
@@ -198,19 +202,22 @@ npm install ngrx-uml
 #### Use GeneratorService
 
 ```typescript 
+/* eslint-disable no-console */
 import {
     ActionConvertContextFactory, ActionReferenceConvertContextFactory,
     ActionsPlantDiagramRenderFactory, GeneratorOptions, GeneratorService, PlantUmlOutputService
 } from 'ngrx-uml';
 
-export function useGeneratorService(): void {
+export function useGeneratorService(): Promise<void> {
 
+    console.log('## Use GenerateService ####################################################################');
     const options: GeneratorOptions = {
         outDir: 'out/generator',
         imageFormat: 'png',
         ignorePattern: ['**/*.spec.ts'],
-        saveActionsReferencesToJson: false,
-        saveActionsToJson: false,
+        saveConvertResultToJson: false,
+        // tsConfigFileName: 'tsconfig.app.json',
+        clickableLinks: true,
         saveWsd: false,
         logLevel: 'INFO'
     };
@@ -218,8 +225,9 @@ export function useGeneratorService(): void {
     const plantUmlService = new PlantUmlOutputService({
         outDir: options.outDir || 'out',
         ext: options.imageFormat || 'png',
-        clickableLinks: options.clickableLinks || true,
-        saveWsd: options.saveWsd || false
+        clickableLinks: options.clickableLinks != null ? options.clickableLinks : false,
+        saveWsd: options.saveWsd != null ? options.saveWsd : false,
+        generateDiagramsImages: options.generateImages != null ? options.generateImages : true
     });
 
 
@@ -235,7 +243,11 @@ export function useGeneratorService(): void {
     );
 
     const files = '../../test/test_data/**/*.ts';
-    generateService.generate(files);
+    return generateService.generate(files)
+        .then(() => console.log('Success use GenerateService'))
+        .catch((err) => {
+            console.error('Error in GenerateService', err);
+        });
 
 }
 
@@ -246,18 +258,23 @@ export function useGeneratorService(): void {
 ```typescript 
 import { CreateActionsDiagramService, GeneratorOptions } from 'ngrx-uml';
 
-export function useCreateActionsDiagramService(): void {
+export function useCreateActionsDiagramService(): Promise<void>  {
+    console.log('## Use CreateActionsDiagramService ####################################################################');
     const options: GeneratorOptions = {
-        outDir: 'out/create-actions-diagram-service',
+        outDir: 'out/diagram-service',
         imageFormat: 'svg',
         ignorePattern: ['**/*.spec.ts'],
-        saveActionsReferencesToJson: true,
-        saveActionsToJson: true,
+        saveConvertResultToJson: false,
         saveWsd: true,
         logLevel: 'INFO'
     };
+
     const files = '../../test/test_data/**/*.ts';
     const createActionsDiagramService = new CreateActionsDiagramService(options);
-    createActionsDiagramService.generateDiagram(files);
+    return createActionsDiagramService.generateDiagram(files)
+        .then(() => console.log('Success use CreateActionsDiagramService'))
+        .catch((err) => {
+            console.error('Error in CreateActionsDiagramService', err);
+        });
 }
 ```
