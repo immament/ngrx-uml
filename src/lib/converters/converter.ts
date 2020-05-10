@@ -33,6 +33,7 @@ export class Converter {
 
             sourceFile.forEachChild((node) => this.convertRecursive(context, node));
         }
+        context.finish();
         return context.getResult();
 
     }

@@ -16,7 +16,8 @@ export class ActionConvertContext implements ConvertContext {
         public typeChecker: TypeChecker,
         public converter: Converter,
         public rootKinds: TypeKind[],
-        lastContext?: ConvertContext
+        lastContext?: ConvertContext,
+        private onFinish?: (context: ActionConvertContext) => void
     ) {
         if (lastContext) {
             this.result = lastContext.getRawResult() as Map<TypeKind, Map<unknown, NamedConvertedItem>>;
@@ -24,6 +25,11 @@ export class ActionConvertContext implements ConvertContext {
             this.result = new Map<TypeKind, Map<unknown, NamedConvertedItem>>();
         }
 
+    }
+    finish(): void {
+        if(this.onFinish) {
+            this.onFinish(this);
+        }
     }
 
     getRawResult(): Map<TypeKind, Map<unknown, NamedConvertedItem>> {

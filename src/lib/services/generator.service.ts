@@ -1,5 +1,6 @@
 import chalk from 'chalk';
 import log from 'loglevel';
+import path from 'path';
 import ts from 'typescript';
 
 import { ConvertContext, ConvertContextFactory } from '../converters';
@@ -82,7 +83,7 @@ export class GeneratorService {
         const files = globSync(sourceFilePattern, {
             ignore: this.options.ignorePattern
         });
-        log.debug('Glob result', files);
+        log.debug('Used source files', files);
         const program = createTsProgram(files, baseDir, tsConfigFileName);
         return program;
     }
@@ -107,7 +108,7 @@ export class GeneratorService {
             const result = context.serializeResultToJson();
             if (result) {
                 for (const { kind, json } of result) {
-                    const filePath = writeToFile(json, outDir, `${context.name}_${kind}.json`);
+                    const filePath = writeToFile(json, path.join(outDir, 'json'), `${context.name}_${kind}.json`);
                     log.info(`Convert result saved to: ${chalk.gray(filePath)}`);
 
                 }

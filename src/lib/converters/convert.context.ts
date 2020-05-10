@@ -18,4 +18,5 @@ export interface ConvertContext {
     addResult(convertedItem: unknown): void; 
     serializeResultToJson(): { kind: string; json: string }[] | undefined;
     isRootKind(kind: TypeKind): boolean;
+    finish(): void;
 }
