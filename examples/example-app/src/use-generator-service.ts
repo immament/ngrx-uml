@@ -13,6 +13,7 @@ export function useGeneratorService(): Promise<void> {
         ignorePattern: ['**/*.spec.ts'],
         saveConvertResultToJson: false,
         // tsConfigFileName: 'tsconfig.json',
+        clickableLinks: true,
         saveWsd: false,
         logLevel: 'INFO'
     };
