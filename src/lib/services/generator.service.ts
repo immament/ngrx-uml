@@ -1,5 +1,6 @@
 import chalk from 'chalk';
 import log from 'loglevel';
+import path from 'path';
 import ts from 'typescript';
 
 import { ConvertContext, ConvertContextFactory } from '../converters';
@@ -44,7 +45,7 @@ export class GeneratorService {
         }
     }
 
-    generate(filesPattern: string): void {
+   async generate(filesPattern: string): Promise<void> {
 
         log.info('Starting...');
         log.debug(chalk.yellow('filePattern:'), filesPattern);
@@ -57,9 +58,10 @@ export class GeneratorService {
             return;
         }
 
-        if (!this.options.baseDir.endsWith('/')) {
+        if (this.options.baseDir !== '' && !this.options.baseDir.endsWith('/')) {
             this.options.baseDir += '/';
         }
+
         const program = this.createTsProgram(filesPattern, this.options.baseDir, this.options.tsConfigFileName);
         const convertedItems = this.convert(program, this.options.outDir);
         log.info('Items converted');
@@ -71,7 +73,8 @@ export class GeneratorService {
 
         if (!renderResult) { return; }
 
-        this.transform(renderResult);
+        await this.transform(renderResult);
+        log.info('Items transformed');
     }
 
 
@@ -80,7 +83,7 @@ export class GeneratorService {
         const files = globSync(sourceFilePattern, {
             ignore: this.options.ignorePattern
         });
-        log.debug('Glob result', files);
+        log.debug('Used source files', files);
         const program = createTsProgram(files, baseDir, tsConfigFileName);
         return program;
     }
@@ -105,7 +108,7 @@ export class GeneratorService {
             const result = context.serializeResultToJson();
             if (result) {
                 for (const { kind, json } of result) {
-                    const filePath = writeToFile(json, outDir, `${context.name}_${kind}.json`);
+                    const filePath = writeToFile(json, path.join(outDir, 'json'), `${context.name}_${kind}.json`);
                     log.info(`Convert result saved to: ${chalk.gray(filePath)}`);
 
                 }
@@ -117,9 +120,9 @@ export class GeneratorService {
         return this.renderer.render(items);
     }
 
-    private transform(input: RenderResult[]): void {
+    private async transform(input: RenderResult[]): Promise<void> {
         for (const output of this.outputs) {
-            output.transform(input);
+            await output.transform(input);
         }
     }
 

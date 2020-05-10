@@ -1,7 +1,7 @@
 import ts from 'typescript';
 
 import { ConvertContext } from '../../../converters/convert.context';
-import NodeConverter from '../../../converters/models/node.converter';
+import { NodeConverter } from '../../../converters/models/node.converter';
 import { ConvertedItem, Property, TypeLiteral } from '../../../converters/models/type.model';
 
 export class TypeLiteralConverter extends NodeConverter {

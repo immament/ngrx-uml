@@ -18,10 +18,12 @@ function readConfigFile(baseDir: string, configName: string): {
     const configFileName = ts.findConfigFile(baseDir, ts.sys.fileExists, configName);
 
     if (!configFileName) {
-        log.error(`Can't file config file`);
-        throw new Error(`Can't file config file`);
+        const errMsg = `Can't find ts-config file: '${configName}', baseDir: '${baseDir}'`;
+        log.error('Error', chalk.red(errMsg));
+        throw new Error(errMsg);
     }
-
+    log.info(chalk.yellow(`Use ts-config file: ${configFileName}`));
+    
     return ts.readConfigFile(configFileName, ts.sys.readFile);
 
 }

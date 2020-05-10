@@ -1,6 +1,6 @@
 {
   "name": "ngrx-uml",
-  "version": "0.1.3",
+  "version": "1.0.0",
   "description": "NGRX to Plant UML diagram",
   "homepage": "https://github.com/immament/ngrx-uml",
   "bugs": {
@@ -17,14 +17,15 @@
   },
   "scripts": {
     "setup": "npm install",
-    "build": "tsc",
+    "build": "tsc --declaration",
+    "dev": "tsc --watch",
     "start": "ts-node ./src/bin ",
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "eslint . --ext .ts",
     "run:diagram": "ts-node ./src/bin diagram -f 'test/test_data/**/*ts'",
     "run:d": "ts-node ./src/bin diagram -f 'test/test_data/**/books*ts'",
-    "run:diagram:ngrx": "ts-node ./src/bin diagram -f '**/*ts' -d ../ngrx/projects/example-app/ -i '../**/*.spec.ts' -c tsconfig.app.json",
+    "run:diagram:ngrx": "ts-node ./src/bin diagram -f '**/*ts' -d ../ngrx/projects/example-app/ -i '../**/*.spec.ts' -c tsconfig.json --js",
     "run:print": "ts-node ./src/bin print -f 'test/test-files/**/*ts'",
     "prepublishOnly": "npm run lint && npm run build && npm test",
     "deployLocal": "npm run build && npm i -g ."
@@ -39,8 +40,7 @@
   ],
   "files": [
     "dist",
-    "README.md",
-    "dist"
+    "README.md"
   ],
   "author": "immament",
   "license": "ISC",
@@ -50,7 +50,6 @@
     "loglevel": "^1.6.8",
     "plantuml-encoder": "^1.4.0",
     "rxjs": "^6.5.5",
-    "tsutils": "^3.17.1",
     "typescript": "^3.8.3",
     "yargs": "^15.3.1"
   },

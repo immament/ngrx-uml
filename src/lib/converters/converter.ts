@@ -1,19 +1,19 @@
 import chalk from 'chalk';
 import log from 'loglevel';
-import ts from 'typescript';
+import { Node, Program } from 'typescript';
 
 import { DefaultConverter } from '../actions/converters/node-converters/default.converter';
 
 import { ConvertContext } from './convert.context';
 import { ConvertedItem, NamedConvertedItem, TypeKind } from './models';
-import NodeConverter from './models/node.converter';
+import { NodeConverter } from './models/node.converter';
 
 export class Converter {
     private converters: { [kind: number]: NodeConverter[] } = {};
 
     defaultConverter = new DefaultConverter();
 
-    nodeFilter?: (node: ts.Node) => boolean;
+    nodeFilter?: (node: Node) => boolean;
 
     registerConverters(
         converters: { [kind: number]: NodeConverter[] },
@@ -23,7 +23,7 @@ export class Converter {
     }
 
 
-    convert(context: ConvertContext, program: ts.Program): Map<TypeKind, NamedConvertedItem[]> | undefined {
+    convert(context: ConvertContext, program: Program): Map<TypeKind, NamedConvertedItem[]> | undefined {
 
         for (const sourceFile of program.getSourceFiles()) {
             if (sourceFile.isDeclarationFile) {
@@ -33,11 +33,12 @@ export class Converter {
 
             sourceFile.forEachChild((node) => this.convertRecursive(context, node));
         }
+        context.finish();
         return context.getResult();
 
     }
 
-    convertNode(context: ConvertContext, node: ts.Node, withDefault = false): ConvertedItem | undefined {
+    convertNode(context: ConvertContext, node: Node, withDefault = false): ConvertedItem | undefined {
 
         const nodeConverters: NodeConverter[] = this.converters[node.kind];
 
@@ -53,7 +54,7 @@ export class Converter {
         }
     }
 
-    convertRecursive(context: ConvertContext, node: ts.Node): void {
+    convertRecursive(context: ConvertContext, node: Node): void {
         if (!this.nodeFilter || this.nodeFilter(node)) {
             if (this.convertNode(context, node)) {
                 return;

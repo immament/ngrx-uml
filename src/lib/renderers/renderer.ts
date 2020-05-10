@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import log from 'loglevel';
 import { EOL } from 'os';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 import { ConvertedItem, NamedConvertedItem, TypeKind } from '../converters/models';
 
@@ -13,28 +13,31 @@ export interface RenderResult {
     name: string;
     result: string;
 }
+
+export type ItemRenderedEventArg = { item: ConvertedItem; output: string };
+
 export class Renderer {
 
-    private itemRenderedSubject = new Subject<{ item: ConvertedItem; output: string }>()
+    private itemRenderedSubject = new Subject<ItemRenderedEventArg>()
 
-    onItemRendered = this.itemRenderedSubject.asObservable();
-
+    private _onItemRendered = this.itemRenderedSubject.asObservable();
+    public get onItemRendered(): Observable<ItemRenderedEventArg> {
+        return this._onItemRendered;
+    }
 
     constructor(
         private itemRenderers: { [kind: number]: RenderersMap },
         private itemFilter?: (item: ConvertedItem) => boolean
-    ) {
-
-    }
+    ) { }
 
     render(collections: Map<TypeKind, NamedConvertedItem[]>): RenderResult[] | undefined {
-        
+
         const outputs: RenderResult[] = [];
 
         for (const [kind, items] of collections) {
 
-            const kindRenderers  = this.itemRenderers[kind];
-            if(!kindRenderers) {
+            const kindRenderers = this.itemRenderers[kind];
+            if (!kindRenderers) {
                 log.warn('No renderer for kind', TypeKind[kind]);
                 continue;
             }

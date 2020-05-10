@@ -1,4 +1,2 @@
-import Nodeconverter from './node.converter';
-
-export { Nodeconverter };
+export { NodeConverter } from './node.converter';
 export * from './type.model';

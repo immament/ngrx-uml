@@ -2,7 +2,7 @@
 import ts from 'typescript';
 
 import { ConvertContext } from '../../../converters/convert.context';
-import NodeConverter from '../../../converters/models/node.converter';
+import { NodeConverter } from '../../../converters/models/node.converter';
 import { CallExpression, ConvertedItem, TypeArgument } from '../../../converters/models/type.model';
 import { getCallExpressionName } from '../../../utils/tsutils';
 
