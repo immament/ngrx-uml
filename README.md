@@ -232,7 +232,6 @@ export function useGeneratorService(): Promise<void> {
 
 
     const generateService = new GeneratorService(
-        plantUmlService,
         [
             new ActionConvertContextFactory,
             new ActionReferenceConvertContextFactory,

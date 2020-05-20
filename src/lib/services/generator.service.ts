@@ -3,17 +3,16 @@ import log from 'loglevel';
 import path from 'path';
 import ts from 'typescript';
 
-import { ConvertContext, ConvertContextFactory } from '../converters';
-import { Converter } from '../converters/converter';
-import { NamedConvertedItem, TypeKind } from '../converters/models';
-import { Output } from '../outputs/output';
-import { Renderer, RenderResult } from '../renderers';
+import { ConvertContext, ConvertContextFactory } from '../core/converters';
+import { Converter } from '../core/converters/converter';
+import { NamedConvertedItem, TypeKind } from '../core/converters/models';
+import { Output } from '../core/outputs/output';
+import { Renderer, RenderResult } from '../core/renderers';
 import { globSync } from '../utils/glob';
 import { createTsProgram } from '../utils/tsutils';
 import { writeToFile } from '../utils/utils';
 
 import { GeneratorOptions } from './generator-options';
-import { PlantUmlOutputService } from './plant-uml.service';
 
 export class GeneratorService {
 
@@ -29,7 +28,6 @@ export class GeneratorService {
     }
 
     constructor(
-        private readonly plantUmlService: PlantUmlOutputService,
         private readonly convertFactories: ConvertContextFactory[],
         private readonly renderer: Renderer,
         private readonly outputs: Output[],

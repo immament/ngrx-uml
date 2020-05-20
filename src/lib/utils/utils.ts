@@ -3,7 +3,7 @@ import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import log from 'loglevel';
 import path from 'path';
 
-import { ConvertedItem, TypeKind } from '../converters/models';
+import { ConvertedItem, TypeKind } from '../core/converters/models';
 
 export function objectFlter<T>(key: string, value: T): T | undefined {
     if (!key) {
