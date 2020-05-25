@@ -2,11 +2,14 @@ import { Program, Symbol, TypeChecker } from 'typescript';
 
 import { ConvertContext } from '../../core/converters/convert.context';
 import { Converter } from '../../core/converters/converter';
-import { NamedConvertedItem, TypeKind } from '../../core/converters/models/type.model';
+import {
+    NamedConvertedItem
+} from '../../core/converters/models/converted-items/named-converted-item.model';
+import { TypeKind } from '../../core/converters/models/type-kind.enum';
 import { getKeyReplacer, serializeConvertedItemsMapToJson } from '../../utils';
 import { ItemWithSymbol } from '../models/item-with-symbol.model';
 
-export class ActionConvertContext implements ConvertContext {
+export class ItemConvertContext implements ConvertContext {
 
     private result: Map<TypeKind, Map<unknown, NamedConvertedItem>>;
 
@@ -17,7 +20,7 @@ export class ActionConvertContext implements ConvertContext {
         public converter: Converter,
         public rootKinds: TypeKind[],
         lastContext?: ConvertContext,
-        private onFinish?: (context: ActionConvertContext) => void
+        private onFinish?: (context: ItemConvertContext) => void
     ) {
         if (lastContext) {
             this.result = lastContext.getRawResult() as Map<TypeKind, Map<unknown, NamedConvertedItem>>;
@@ -45,15 +48,15 @@ export class ActionConvertContext implements ConvertContext {
         return resultMap;
     }
 
-    addResult(actionWithSymbol: ItemWithSymbol): void {
+    addResult(itemWithSymbol: ItemWithSymbol): void {
 
-        let map = this.result.get(actionWithSymbol.item.kind);
+        let map = this.result.get(itemWithSymbol.item.kind);
         if (!map) {
             // eslint-disable-next-line @typescript-eslint/ban-types
             map = new Map<Symbol, NamedConvertedItem>();
-            this.result.set(actionWithSymbol.item.kind, map);
+            this.result.set(itemWithSymbol.item.kind, map);
         }
-        map.set(actionWithSymbol.symbol, actionWithSymbol.item);
+        map.set(itemWithSymbol.symbol, itemWithSymbol.item);
     }
 
     // eslint-disable-next-line @typescript-eslint/ban-types
@@ -64,9 +67,11 @@ export class ActionConvertContext implements ConvertContext {
         if (reducersMap) {
             return reducersMap.get(symbol) as T;
         }
+        return;
     }
 
     serializeResultToJson(): { kind: string; json: string }[] | undefined {
+        // TODO: configurable keyReplacer
         return serializeConvertedItemsMapToJson(this.getResult(), getKeyReplacer('action'));
     }
 

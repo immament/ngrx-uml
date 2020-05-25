@@ -1,17 +1,19 @@
 import ts from 'typescript';
 
 import { ConvertContext } from '../../../core/converters/convert.context';
-import { NodeConverter } from '../../../core/converters/models/node.converter';
-import { ConvertedItem, Property, TypeLiteral } from '../../../core/converters/models/type.model';
+import {
+    ConvertedItem
+} from '../../../core/converters/models/converted-items/converted-item.model';
+import { Property } from '../../../core/converters/models/property.model';
+import { TypeLiteral } from '../../../core/converters/models/type-literal.model';
+import { NodeConverter } from '../../../core/converters/node.converter';
 
 export class TypeLiteralConverter extends NodeConverter {
 
-    convert(context: ConvertContext, node: ts.TypeLiteralNode): ConvertedItem | undefined {
-        const properties = node.members.map((member) => {
-            if (ts.isPropertySignature(member)) {
-                return this.propertySignatureToProperty(member);
-            }
-        }).filter(p => !!p) as Property[];
+    convert(_context: ConvertContext, node: ts.TypeLiteralNode): ConvertedItem | undefined {
+        const properties = node.members
+            .map((member) => ts.isPropertySignature(member) && this.propertySignatureToProperty(member))
+            .filter(p => !!p) as Property[];
         return new TypeLiteral(properties);
     }
 

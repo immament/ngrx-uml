@@ -6,7 +6,7 @@ import { DefaultConverter } from '../../impl/converters/node-converters/default.
 
 import { ConvertContext } from './convert.context';
 import { ConvertedItem, NamedConvertedItem, TypeKind } from './models';
-import { NodeConverter } from './models/node.converter';
+import { NodeConverter } from './node.converter';
 
 export class Converter {
     private converters: { [kind: number]: NodeConverter[] } = {};
@@ -52,6 +52,7 @@ export class Converter {
         } else if (withDefault) {
             return this.defaultConverter.convert(context, node);
         }
+        return;
     }
 
     convertRecursive(context: ConvertContext, node: Node): void {

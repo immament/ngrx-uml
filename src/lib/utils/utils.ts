@@ -25,11 +25,21 @@ export function getKeyReplacer(keyToReplace: string) {
 
 }
 
+export function getKeysReplacer(keysToReplace: string[]) {
+    return function actionReplacer<T>(key: string, value: T): T | undefined {
+        if (keysToReplace.includes(key)) {
+            return undefined;
+        }
+        return value;
+    };
+
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function writeJsonToFile(data: unknown, outDir: string, fileName: string, replacer?: (key: string, value: any) => any): void {
 
     if (!existsSync(outDir)) {
-        mkdirSync(outDir, {recursive: true});
+        mkdirSync(outDir, { recursive: true });
     }
 
     const filePath = `${outDir}/${fileName}`;
@@ -42,7 +52,7 @@ export function writeJsonToFile(data: unknown, outDir: string, fileName: string,
 export function writeToFile(content: string, outDir: string, fileName: string): string {
 
     if (!existsSync(outDir)) {
-        mkdirSync(outDir, {recursive: true});
+        mkdirSync(outDir, { recursive: true });
     }
 
     const filePath = `${outDir}/${fileName}`;
@@ -96,4 +106,6 @@ export function serializeConvertedItemsMapToJson(
         }
         return result;
     }
+    return;
 }
+

@@ -50,6 +50,7 @@ export class ActionReferenceRenderer implements ItemRenderer {
                 .map(dc => `${dc.kindText.replace('Declaration', '')}: ${dc.name || ''}`)
                 .join(EOL);
         }
+        return;
     }
 
 

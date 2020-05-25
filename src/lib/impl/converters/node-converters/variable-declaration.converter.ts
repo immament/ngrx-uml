@@ -2,7 +2,7 @@ import ts from 'typescript';
 
 import { ConvertContext } from '../../../core/converters';
 import { NamedConvertedItem } from '../../../core/converters/models';
-import { NodeConverter } from '../../../core/converters/models/node.converter';
+import { NodeConverter } from '../../../core/converters/node.converter';
 import { ItemWithSymbol } from '../../models';
 
 export class VariableDeclarationConverter extends NodeConverter {
@@ -26,6 +26,7 @@ export class VariableDeclarationConverter extends NodeConverter {
             return item;
         }
 
+        return;
     }
 
 

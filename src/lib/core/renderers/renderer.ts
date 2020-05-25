@@ -53,13 +53,12 @@ export class Renderer {
         if (outputs.length) {
             return outputs;
         }
+        return;
 
     }
 
     private renderItem(item: ConvertedItem, renderers: RenderersMap): string | undefined {
-        if (renderers[item.kind]) {
-            return renderers[item.kind].render(item);
-        }
+        return renderers[item.kind] && renderers[item.kind].render(item);
     }
 
 

@@ -4,9 +4,9 @@ import ts, { Program, TypeChecker } from 'typescript';
 
 import { ConvertContext, ConvertContextFactory } from '../../core/converters/convert.context';
 import { Converter } from '../../core/converters/converter';
-import { TypeKind } from '../../core/converters/models/type.model';
+import { TypeKind } from '../../core/converters/models/type-kind.enum';
 
-import { ActionConvertContext } from './action-convert.context';
+import { ItemConvertContext } from './item-convert.context';
 import { CallExpressionConverter } from './node-converters/call-expression.converter';
 import { CreateActionCallExpConverter } from './node-converters/create-action-call-exp.converter';
 import { CreateReducerCallExpConverter } from './node-converters/create-reducer-call-exp.converter';
@@ -18,7 +18,7 @@ export class ActionConvertContextFactory implements ConvertContextFactory {
 
     create(program: Program, typeChecker: TypeChecker, converter: Converter, _lastContext?: ConvertContext): ConvertContext {
         this.configureConverter(converter);
-        return new ActionConvertContext(
+        return new ItemConvertContext(
             'actions',
             program,
             typeChecker,

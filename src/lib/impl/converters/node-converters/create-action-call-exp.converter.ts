@@ -4,8 +4,10 @@ import log from 'loglevel';
 import ts from 'typescript';
 
 import { ConvertContext } from '../../../core/converters/convert.context';
-import { NodeConverter } from '../../../core/converters/models/node.converter';
-import { ConvertedItem } from '../../../core/converters/models/type.model';
+import {
+    ConvertedItem
+} from '../../../core/converters/models/converted-items/converted-item.model';
+import { NodeConverter } from '../../../core/converters/node.converter';
 import { getCallExpressionName } from '../../../utils/tsutils';
 import { Action } from '../../models/action.model';
 
@@ -25,6 +27,7 @@ export class CreateActionCallExpConverter extends NodeConverter {
                 return action;
             }
         } 
+        return;
     }
 
     private isCreateAction(callExpression: ts.CallExpression): boolean {

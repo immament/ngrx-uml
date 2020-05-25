@@ -2,8 +2,12 @@
 import { EOL } from 'os';
 
 import {
-    CallExpression, NamedType, TypeKind, TypeLiteral, TypeReference
-} from '../../../core/converters/models/type.model';
+    CallExpression
+} from '../../../core/converters/models/converted-items/call-expression.model';
+import { NamedType } from '../../../core/converters/models/converted-items/named-type.model';
+import { TypeKind } from '../../../core/converters/models/type-kind.enum';
+import { TypeLiteral } from '../../../core/converters/models/type-literal.model';
+import { TypeReference } from '../../../core/converters/models/type-reference.model';
 import { ItemRenderer } from '../../../core/renderers/item.renderer';
 import { getFileName } from '../../../utils/utils';
 import { Action } from '../../models/action.model';
@@ -48,6 +52,7 @@ export class ActionRenderer implements ItemRenderer {
                 return `{${EOL}${propertiesText}${EOL}}`;
             }
         }
+        return;
     }
 
     private callExpressionToText(callExpression: CallExpression): string | undefined {
@@ -87,6 +92,7 @@ export class ActionRenderer implements ItemRenderer {
             }
             return resultText;
         }
+        return;
     }
 
     

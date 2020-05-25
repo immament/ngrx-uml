@@ -4,17 +4,17 @@ import ts from 'typescript';
 
 import { ConvertContext } from '../../../core/converters/convert.context';
 import { TypeKind } from '../../../core/converters/models';
-import { NodeConverter } from '../../../core/converters/models/node.converter';
+import { NodeConverter } from '../../../core/converters/node.converter';
 import { syntaxKindText } from '../../../utils/tsutils';
 import { getFileName } from '../../../utils/utils';
 import { ActionReference, Declaration } from '../../models/action-reference.model';
 import { Action } from '../../models/action.model';
 import { Reducer } from '../../models/reducer.model';
-import { ActionConvertContext } from '../action-convert.context';
+import { ItemConvertContext } from '../item-convert.context';
 
 export class ActionReferenceConverter extends NodeConverter {
 
-    convert(context: ActionConvertContext, node: ts.VariableDeclaration): ActionReference | undefined {
+    convert(context: ItemConvertContext, node: ts.VariableDeclaration): ActionReference | undefined {
 
         if (!node.parent || ts.isVariableDeclaration(node.parent)) {
             return;
@@ -34,10 +34,11 @@ export class ActionReferenceConverter extends NodeConverter {
                 return reference;
             }
         }
+        return;
 
     }
 
-    private declarationContext(context: ActionConvertContext, action: Action, node: ts.Node): Declaration[] {
+    private declarationContext(context: ItemConvertContext, action: Action, node: ts.Node): Declaration[] {
 
         const contextStack: Declaration[] = [];
         let currentNode: ts.Node = node;
@@ -78,7 +79,7 @@ export class ActionReferenceConverter extends NodeConverter {
         return reference;
     }
 
-    private serializeActionUse(context: ActionConvertContext, action: Action, node: ts.Node, symbol: ts.Symbol): ActionReference {
+    private serializeActionUse(context: ItemConvertContext, action: Action, node: ts.Node, symbol: ts.Symbol): ActionReference {
         const reference = this.serializeSymbol(context, symbol);
         reference.isCall = this.isActionCall(node);
         reference.action = action;

@@ -1,8 +1,10 @@
 import path from 'path';
 
+import { ConvertedItem } from '../../core/converters/models/converted-items/converted-item.model';
 import {
-    ConvertedItem, NamedConvertedItem, TypeKind
-} from '../../core/converters/models/type.model';
+    NamedConvertedItem
+} from '../../core/converters/models/converted-items/named-converted-item.model';
+import { TypeKind } from '../../core/converters/models/type-kind.enum';
 
 import { Action } from './action.model';
 

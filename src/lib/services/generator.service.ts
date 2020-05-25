@@ -77,9 +77,11 @@ export class GeneratorService {
 
 
     private createTsProgram(filesPattern: string, baseDir: string, tsConfigFileName: string): ts.Program {
-        const sourceFilePattern = this.options.baseDir + filesPattern;
+        const sourceFilePattern = filesPattern;
         const files = globSync(sourceFilePattern, {
-            ignore: this.options.ignorePattern
+            ignore: this.options.ignorePattern,
+            cwd: this.options.baseDir,
+            absolute: true
         });
         log.debug('Used source files', files);
         const program = createTsProgram(files, baseDir, tsConfigFileName);

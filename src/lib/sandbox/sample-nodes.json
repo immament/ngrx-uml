@@ -1,0 +1,105 @@
+{
+    "escapedName": "reducers",
+    "declarations": [
+        {
+            "kind": 244,
+            "jsDoc": [
+                {
+                    "kind": 303,
+                    "tags": null,
+                    "comment": "Provide reducer in AoT-compilation happy way"
+                }
+            ],
+            "decorators": null,
+            "modifiers": [
+                {
+                    "kind": 89
+                }
+            ],
+            "asteriskToken": null,
+            "name": {
+                "kind": 75,
+                "escapedText": "reducers"
+            },
+            "typeParameters": null,
+            "parameters": [
+                {
+                    "kind": 156,
+                    "decorators": null,
+                    "modifiers": null,
+                    "dotDotDotToken": null,
+                    "name": {
+                        "kind": 75,
+                        "escapedText": "state"
+                    },
+                    "questionToken": null,
+                    "type": {
+                        "kind": 178,
+                        "types": [
+                            "Array"
+                        ]
+                    },
+                    "initializer": null,
+                    "symbol": {
+                        "escapedName": "state",
+                        "declarations": [
+                            "Array"
+                        ],
+                        "exports": {},
+                        "valueDeclaration": "circular"
+                    }
+                },
+                {
+                    "kind": 156,
+                    "decorators": null,
+                    "modifiers": null,
+                    "dotDotDotToken": null,
+                    "name": {
+                        "kind": 75,
+                        "escapedText": "action"
+                    },
+                    "questionToken": null,
+                    "type": {
+                        "kind": 169,
+                        "typeName": [
+                            "Object"
+                        ]
+                    },
+                    "initializer": null,
+                    "symbol": {
+                        "escapedName": "action",
+                        "declarations": [
+                            "Array"
+                        ],
+                        "exports": {},
+                        "valueDeclaration": "circular"
+                    }
+                }
+            ],
+            "body": {
+                "kind": 223,
+                "multiLine": true,
+                "statements": [
+                    {
+                        "kind": 235,
+                        "expression": [
+                            "Object"
+                        ]
+                    }
+                ]
+            },
+            "symbol": "circular",
+            "localSymbol": {
+                "escapedName": "reducers",
+                "declarations": [
+                    "circular"
+                ],
+                "exportSymbol": "circular"
+            },
+            "locals": {},
+            "nextContainer": "circular"
+        }
+    ],
+    "valueDeclaration": "circular",
+    "id": 3385
+}

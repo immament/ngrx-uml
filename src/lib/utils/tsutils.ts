@@ -1,5 +1,6 @@
 import chalk from 'chalk';
 import log from 'loglevel';
+import path from 'path';
 import ts from 'typescript';
 
 export function syntaxKindText(element: { kind: ts.SyntaxKind }): string {
@@ -23,14 +24,14 @@ function readConfigFile(baseDir: string, configName: string): {
         throw new Error(errMsg);
     }
     log.info(chalk.yellow(`Use ts-config file: ${configFileName}`));
-    
+
     return ts.readConfigFile(configFileName, ts.sys.readFile);
 
 }
 
 export function createTsProgram(fileNames: string[], baseDir: string, configName: string): ts.Program {
 
-    log.debug(chalk.yellowBright('baseDir:'), baseDir, chalk.yellowBright('configName:'),configName);
+    log.debug(chalk.yellowBright('baseDir:'), baseDir, chalk.yellowBright('configName:'), configName);
     const configFileRef = readConfigFile(baseDir, configName);
 
     if (configFileRef.error) {
@@ -46,10 +47,12 @@ export function createTsProgram(fileNames: string[], baseDir: string, configName
         useCaseSensitiveFileNames: true
     };
 
-    const compilerOptions = ts.parseJsonConfigFileContent(configFileRef.config, parseConfigHost, './');
+    const compilerOptions = ts.parseJsonConfigFileContent(configFileRef.config, parseConfigHost, baseDir);
 
     log.trace(chalk.yellow('CompilerOptions:'), compilerOptions.options);
     compilerOptions.options.baseUrl = baseDir;
-    const program = ts.createProgram([...fileNames], compilerOptions.options);
+    const program = ts.createProgram(fileNames, compilerOptions.options);
+
     return program;
 }
+

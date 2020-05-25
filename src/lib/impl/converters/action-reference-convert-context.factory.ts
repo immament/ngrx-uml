@@ -4,17 +4,17 @@ import { Program, TypeChecker } from 'typescript';
 
 import { ConvertContext, ConvertContextFactory } from '../../core/converters/convert.context';
 import { Converter } from '../../core/converters/converter';
-import { TypeKind } from '../../core/converters/models/type.model';
+import { TypeKind } from '../../core/converters/models/type-kind.enum';
 import { Action } from '../models';
 
-import { ActionConvertContext } from './action-convert.context';
+import { ItemConvertContext } from './item-convert.context';
 import { ActionReferenceConverter } from './node-converters/action-reference.converter';
 
 export class ActionReferenceConvertContextFactory implements ConvertContextFactory {
 
     create(program: Program, typeChecker: TypeChecker, converter: Converter, lastContext: ConvertContext): ConvertContext {
         this.configureConverter(converter);
-        return new ActionConvertContext(
+        return new ItemConvertContext(
             'action-references',
             program,
             typeChecker,
@@ -34,7 +34,7 @@ export class ActionReferenceConvertContextFactory implements ConvertContextFacto
         converter.nodeFilter = undefined;
     }
 
-    onFinish(context: ActionConvertContext): void {
+    onFinish(context: ItemConvertContext): void {
         const result = context.getRawResult();
 
         // for (const [kind, map] of result.entries()) {

@@ -14,7 +14,6 @@ describe('SearchActionsConverter', () => {
     const base = path.join(__dirname, 'search-actions-converter_data');
 
     function expectedSearchResult(
-        testFile: string,
         expectedActions: Partial<Action>[],
         convertedItemsMap?: Map<TypeKind, NamedConvertedItem[]>
     ): void {
@@ -51,7 +50,7 @@ describe('SearchActionsConverter', () => {
         return path.join(base, fileName);
     }
 
-    function convertFile(testFilePath: string, program: ts.Program): Map<TypeKind, NamedConvertedItem[]> | undefined {
+    function convertFile(program: ts.Program): Map<TypeKind, NamedConvertedItem[]> | undefined {
 
         const converter = new Converter();
         const typeChecker = program.getTypeChecker();
@@ -62,8 +61,8 @@ describe('SearchActionsConverter', () => {
 
     function convertFileTest(testFilePath: string, expectedActions: Partial<Action>[]): void {
         const program = createProgram(testFilePath);
-        const convertedItemsMap = convertFile(testFilePath, program);
-        expectedSearchResult(testFilePath, expectedActions, convertedItemsMap);
+        const convertedItemsMap = convertFile(program);
+        expectedSearchResult(expectedActions, convertedItemsMap);
 
     }
 
@@ -312,7 +311,7 @@ describe('SearchActionsConverter', () => {
 
         const testFilePath = createPathToTestFile('zero.actions.ts');
         const program = createProgram(testFilePath);
-        const convertedItemsMap = convertFile(testFilePath, program);
+        const convertedItemsMap = convertFile(program);
 
         expect(convertedItemsMap, 'search actionsMap is defined').toBeTruthy();
         if (!convertedItemsMap) {
