@@ -23,6 +23,7 @@ export class NgModuleConverter extends NodeConverter {
                 // log.info(item.name, chalk.gray(item.filePath));
                 this.getReducersFromDecorator(context, decorator);
                 context.addResult({ symbol, item } as ItemWithSymbol);
+                return item;
             }
         }
         return;
@@ -68,10 +69,10 @@ export class NgModuleConverter extends NodeConverter {
 
 
         switch (callName) {
-            case 'forFeature':
+            case 'StoreModule.forFeature':
                 this.extractArgName(storeModuleCall.arguments[0]);
                 break;
-            case 'forRoot':
+            case 'StoreModule.forRoot':
                 break;
             default:
                 log.warn('StoreModule not supported call:', callName);

@@ -1,6 +1,5 @@
 import chalk from 'chalk';
 import log from 'loglevel';
-import path from 'path';
 import ts from 'typescript';
 
 export function syntaxKindText(element: { kind: ts.SyntaxKind }): string {
@@ -56,3 +55,15 @@ export function createTsProgram(fileNames: string[], baseDir: string, configName
     return program;
 }
 
+export function isSymbol(object: unknown): object is ts.Symbol {
+    return (object as ts.Symbol).valueDeclaration != null;
+}
+
+const tsutils = {
+    syntaxKindText,
+    getCallExpressionName,
+    createTsProgram,
+    isSymbol,
+};
+
+export default tsutils;

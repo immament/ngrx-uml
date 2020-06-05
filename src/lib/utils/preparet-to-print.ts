@@ -1,21 +1,34 @@
 
 
-import { SyntaxKind } from 'typescript';
+import { Node, SyntaxKind } from 'typescript';
+import util from 'util';
 
 import { syntaxKindText } from './tsutils';
 
-export function prepareToPrint(node: object): unknown {
-    const ignoreKeys = ['parent', 'pos', 'end', 'flags', 'modifierFlagsCache', 'transformFlags', 'flowNode'];
+function createNodeObj(node: object): { [key: string]: unknown } {
+    const anyNode = node as { kind: SyntaxKind };
+    return anyNode.kind ? { kindText: `${syntaxKindText(anyNode) || ''} (${anyNode.kind})`} : {}; 
+}
+
+
+
+export function prepareToPrint(node?: object): unknown {
+
+    if (!node) {
+        return undefined;
+    }
+    const ignoreKeys = ['parent', 'pos', 'end', 'flags', 'modifierFlagsCache', 'transformFlags', 'flowNode', 'kind'];
 
 
     const refs: object[] = [];
 
     function prepare(node: object, level = 0): unknown {
         if (refs.includes(node)) {
-            const anyNode = node as {id: string; kind: number };
-            return `circular [${anyNode.id||''}/${anyNode.kind||''}]`;
+            const anyNode = node as { id: string; kind: number };
+            return `circular [${anyNode.id || ''}/${anyNode.kind || ''}]`;
         }
         refs.push(node);
+
         const reduced = Object.entries(node)
             .filter(([key]) => !ignoreKeys.includes(key))
             .reduce((acc, [key, value]) => {
@@ -27,12 +40,12 @@ export function prepareToPrint(node: object): unknown {
                         value = prepare(value, level + 1);
                     }
                 }
-                acc[key] = value;
+                if (value) {
+                    acc[key] = value;
+                }
                 return acc;
 
-            }, {  } as { [key: string]: unknown });
-        const anyNode = node as {id: string; kind: SyntaxKind };
-        reduced.kindText = syntaxKindText(anyNode);
+            }, createNodeObj(node) );
         return reduced;
 
     }
@@ -41,6 +54,33 @@ export function prepareToPrint(node: object): unknown {
 
 }
 
+export function printNode(node?: object, level = 3): string | undefined {
+    return node && util.inspect(prepareToPrint(node), false, level, true);
+} 
+
+export interface SimpleNode {
+    kindText: string;
+    childs?: SimpleNode[];
+}
+
+export function prepareToPrintChilds(node?: Node): SimpleNode | undefined {
+
+    if (!node) {
+        return undefined;
+    }
+
+    function prepare(node: Node, level = 0): SimpleNode {
+        const reduced: SimpleNode = { kindText: syntaxKindText(node) };
+        const childs = node.getChildren().map(child => prepare(child, level + 1));
+        if (childs.length) {
+            reduced.childs = childs;
+        }
+        return reduced;
+    }
+
+    return prepare(node);
+
+}
 
 
 // export function prepareToPrint(node: ts.Node): unknown {

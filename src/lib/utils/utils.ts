@@ -109,3 +109,18 @@ export function serializeConvertedItemsMapToJson(
     return;
 }
 
+const utils = {
+    objectFlter,
+    getKeyReplacer,
+    getKeysReplacer,
+    writeJsonToFile,
+    writeToFile,
+    prepareTraceLogger,
+    getFileName,
+    printProgress,
+    getCommandFilesExtensionsForEnvironment,
+    removeiIlegalCharacters,
+    serializeConvertedItemsMapToJson
+};
+
+export default utils;

@@ -13,5 +13,6 @@ export enum TypeKind {
     Action = 1002,
     ActionReference = 1003,
     Reducer = 1004,
-    NgModule = 1005
+    NgModule = 1005,
+    RegisteredReducer = 1006,
 }
