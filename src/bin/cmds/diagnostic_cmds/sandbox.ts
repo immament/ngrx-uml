@@ -1,7 +1,7 @@
 import log from 'loglevel';
 import { Argv } from 'yargs';
 
-import { ModuleService } from '../../../lib/sandbox/sandbox.service';
+import { ModulesService } from '../../../lib/sandbox/modules.service';
 import { GeneratorOptions } from '../../../lib/services';
 
 exports.command = 'sandbox';
@@ -90,7 +90,7 @@ exports.handler = function (argv: any): void {
     };
 
 
-    const service = new ModuleService(options);
+    const service = new ModulesService(options);
 
     service.generate(argv.files);
 };

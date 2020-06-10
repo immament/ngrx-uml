@@ -16,7 +16,7 @@ export interface ConvertContext {
     typeChecker: TypeChecker;
     getResult(): Map<TypeKind, NamedConvertedItem[]> | undefined;
     addResult(convertedItem: unknown): void; 
-    serializeResultToJson(): { kind: string; json: string }[] | undefined;
+    serializeResultToJson(container: {}): { kind: string; json: string }[] | undefined;
     isRootKind(kind: TypeKind): boolean;
     finish(): void;
 }

@@ -14,10 +14,9 @@ import {
     SandboxConvertContextFactory
 } from '../../src/lib/sandbox/converters/sandbox-context.factory';
 import { syntaxKindText } from '../../src/lib/utils';
-import { prepareToPrint, printNode } from '../../src/lib/utils/preparet-to-print';
 import { getTokens } from '../utils/utils';
 
-const programFiles = ['coach.reducer.ts'];
+const programFiles = ['combined.reducer.ts', 'create-function.reducer.ts'];
 
 describe('Register reducers using forFeature', () => {
     log.setLevel(log.levels.INFO);
@@ -68,6 +67,10 @@ describe('Register reducers using forFeature', () => {
             {
                 filePath: testFileName,
                 name: 'keyFromReducerFile'
+            },
+            {
+                filePath: testFileName,
+                name: 'keyFromCreateFunctionReducerFile'
             }
         ];
 
@@ -80,7 +83,7 @@ describe('Register reducers using forFeature', () => {
 
         const tokens = getTokens('StoreModule.forFeature', sourceFile, (node: ts.Node): boolean => !!ts.isCallExpression(node));
 
-        log.info('tokens', printNode(tokens.map(t => prepareToPrint(t)), 8));
+         // log.info('tokens', printNode(tokens.map(t => prepareToPrint(t)), 8));
         for (const [index, node] of tokens.entries()) {
             if (ts.isCallExpression(node)) {
                 const registeredReducer = storeModuleCallConverter.convert(convertContext, node) as RegisteredReducerItem;
@@ -97,7 +100,7 @@ describe('Register reducers using forFeature', () => {
         registered?: Partial<RegisteredReducerItem>[];
     }
 
-    fit('Should resolve reducers', () => {
+    it('Should resolve reducers', () => {
         const convertContext = new SandboxConvertContextFactory().create(program, typeChecker, converter);
 
         const expectedReducers: ExpectedReducers[] = [
@@ -121,7 +124,12 @@ describe('Register reducers using forFeature', () => {
                         escapedName: 'reducer',
                     } as ts.Symbol
                 }]
-            }
+            },
+            {
+                symbol: {
+                    escapedName: 'createFunctionReducer' // TODO: exported: 'reducer'
+                }
+            },
         ];
 
         const sourceFile = program.getSourceFile(testFileName);

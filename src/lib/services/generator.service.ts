@@ -105,7 +105,7 @@ export class GeneratorService {
 
     private saveConvertResult(context: ConvertContext, outDir: string): void {
         if (this.options.saveConvertResultToJson) {
-            const result = context.serializeResultToJson();
+            const result = context.serializeResultToJson({rootPath: this.options.baseDir });
             if (result) {
                 for (const { kind, json } of result) {
                     const filePath = writeToFile(json, path.join(outDir, 'json'), `${context.name}_${kind}.json`);

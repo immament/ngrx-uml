@@ -3,9 +3,9 @@ import {
 } from '../impl/renderers/actions-plant-diagram-renderer.factory';
 import { GeneratorOptions, GeneratorService } from '../services';
 
-import { SandboxConvertContextFactory } from './converters/sandbox-context.factory';
+import { ModulesConvertContextFactory } from './converters/modules-context.factory';
 
-export class ModuleService  {
+export class ModulesService  {
 
     constructor(private options: GeneratorOptions) {}
 
@@ -14,7 +14,7 @@ export class ModuleService  {
 
         const generateService = new GeneratorService(
             [
-                new SandboxConvertContextFactory,
+                new ModulesConvertContextFactory,
             ],
             new ActionsPlantDiagramRenderFactory().create(),
             [],

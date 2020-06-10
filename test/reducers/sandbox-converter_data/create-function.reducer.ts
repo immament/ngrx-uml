@@ -7,7 +7,7 @@ import { Book } from '@example-app/books/models';
 import { createEntityAdapter, EntityAdapter, EntityState } from '@ngrx/entity';
 import { createReducer, on } from '@ngrx/store';
 
-export const booksFeatureKey = 'books';
+export const createFunctionFeatureKey = 'keyFromCreateFunctionReducerFile';
 
 export interface State extends EntityState<Book> {
   selectedBookId: string | null;
@@ -23,7 +23,7 @@ export const initialState: State = adapter.getInitialState({
   selectedBookId: null,
 });
 
-export const reducer = createReducer(
+const createFunctionReducer = createReducer(
   initialState,
   on(
     BooksApiActions.searchSuccess,
@@ -36,3 +36,7 @@ export const reducer = createReducer(
     selectedBookId: id,
   }))
 );
+
+export const reducer = (state: State | undefined, action: Action) => {
+  return createFunctionReducer(state, action);
+};

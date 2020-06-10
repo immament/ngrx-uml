@@ -17,7 +17,11 @@ export class CreateReducerCallExpConverter extends NodeConverter {
 
     convert(_context: ConvertContext, node: ts.CallExpression): ConvertedItem | undefined {
         if (this.isCreateReducer(node)) {
-            const reducer = new Reducer();
+            const reducer = new Reducer(
+                node.getSourceFile().fileName,
+                node.getStart(),
+                node.getEnd()
+            );
             reducer.filePath = node.getSourceFile().fileName;
             log.debug(`Found reducer in ${chalk.gray(reducer.filePath)}`);
 

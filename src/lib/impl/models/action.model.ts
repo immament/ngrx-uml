@@ -15,12 +15,16 @@ export class Action implements NamedConvertedItem {
     readonly kindText = 'Action';
 
     variable?: string;
-    filePath?: string;
     references?: ActionReference[];
     type?: string;
     createActionArgs?: NamedType[];
 
-    constructor(public readonly name: string) { }
+    constructor(
+        public readonly name: string,
+        public readonly filePath: string,
+        public readonly pos: number,
+        public readonly end: number
+    ) { }
 
     setName(variableName: string): void {
         this.variable = variableName;

@@ -94,14 +94,15 @@ export function removeiIlegalCharacters(name: string, makeClickableInTerminal = 
 }
 
 export function serializeConvertedItemsMapToJson(
-    map?: Map<TypeKind, ConvertedItem[]>,
+    map: Map<TypeKind, ConvertedItem[]> | undefined,
+    parent?: {},
     replacer?: ((this: unknown, key: string, value: unknown) => unknown) | undefined
 ): { kind: string; json: string }[] | undefined {
     if (map) {
         const result: { kind: string; json: string }[] = [];
         for (const [kind, items] of map) {
             if (items && items.length) {
-                result.push({ kind: TypeKind[kind], json: JSON.stringify(items, replacer, 2) });
+                result.push({ kind: TypeKind[kind], json: JSON.stringify({ ...parent, data: items}, replacer, 2) });
             }
         }
         return result;

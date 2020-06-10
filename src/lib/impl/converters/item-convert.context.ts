@@ -6,7 +6,7 @@ import {
     NamedConvertedItem
 } from '../../core/converters/models/converted-items/named-converted-item.model';
 import { TypeKind } from '../../core/converters/models/type-kind.enum';
-import { getKeyReplacer, serializeConvertedItemsMapToJson } from '../../utils';
+import { getKeysReplacer, serializeConvertedItemsMapToJson } from '../../utils';
 import { ItemWithSymbol } from '../models/item-with-symbol.model';
 
 export class ItemConvertContext implements ConvertContext {
@@ -70,9 +70,9 @@ export class ItemConvertContext implements ConvertContext {
         return;
     }
 
-    serializeResultToJson(): { kind: string; json: string }[] | undefined {
+    serializeResultToJson(parent?: {}): { kind: string; json: string }[] | undefined {
         // TODO: configurable keyReplacer
-        return serializeConvertedItemsMapToJson(this.getResult(), getKeyReplacer('action'));
+        return serializeConvertedItemsMapToJson(this.getResult(), parent, getKeysReplacer(['action', 'reducerSymbol']));
     }
 
     isRootKind(kind: TypeKind): boolean {

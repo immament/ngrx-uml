@@ -13,7 +13,7 @@ export class RegisteredReducerItem  implements NamedConvertedItem {
         public name: string,
         public filePath: string,
         public pos: number,
-        public end: number,
+        public end: number
     ) {
     }
 

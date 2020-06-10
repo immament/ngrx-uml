@@ -9,9 +9,14 @@ export class Reducer implements NamedConvertedItem {
     readonly kind = TypeKind.Reducer;
     readonly kindText = 'Reducer';
 
-    filePath?: string;
     actions?: Action[];
     name?: string;
+
+    constructor(
+        public filePath: string,
+        public pos: number,
+        public end: number
+    ) {}
 
     setName(name: string): void {
         this.name = name;

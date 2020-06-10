@@ -1,4 +1,6 @@
+import chalk from 'chalk';
 import log from 'loglevel';
+import { EOL } from 'os';
 import ts from 'typescript';
 
 import { ConvertContext } from '../../../core/converters';
@@ -35,20 +37,22 @@ export class RegisterReducerCallConverter extends NodeConverter {
         let reducerSearchItem: ReducerSearchItem | undefined;
         switch (callName) {
             case 'StoreModule.forFeature':
+            case 'forFeature': {
                 name = this.getStringValue(context, storeModuleCall.arguments[0]) || 'noForFeatureKey';
                 reducerSearchItem = this.getReducer(context, storeModuleCall.arguments[1]);
                 break;
+            }
             case 'StoreModule.forRoot':
                 name = 'root';
                 break;
             default:
-                log.warn('StoreModule not supported call:', callName);
-                break;
+                // log.warn('StoreModule not supported call:', callName);
+                return;
         }
 
+        // log.info(`registeredReducer [${name}]:`, reducerSearchItem);
 
         const registeredReducer = this.createRegisteredReducer(name, storeModuleCall, reducerSearchItem);
-        log.info('registeredReducer:', registeredReducer);
         return registeredReducer;
 
     }
@@ -59,7 +63,12 @@ export class RegisterReducerCallConverter extends NodeConverter {
         srcNode: ts.Node,
         reducer: ReducerSearchItem | undefined
     ): RegisteredReducerItem {
-        const registeredReducer = new RegisteredReducerItem(name || 'noName', srcNode.getSourceFile().fileName, srcNode.pos, srcNode.end);
+        const registeredReducer = new RegisteredReducerItem(
+            name || 'noName',
+            srcNode.getSourceFile().fileName,
+            srcNode.getStart(),
+            srcNode.getEnd()
+        );
         if (reducer) {
             registeredReducer.reducerItems = reducer.registered;
             registeredReducer.reducerSymbol = reducer.symbol;
@@ -84,7 +93,7 @@ export class RegisterReducerCallConverter extends NodeConverter {
         log.debug('getReducer:', prepareToPrint(foundReducer));
         if (foundReducer) {
             if (foundReducer.symbol?.flags) {
-                 log.debug('reducer symbol flags:', this.symbolFlagsToString(foundReducer.symbol.flags));
+                log.debug('reducer symbol flags:', this.symbolFlagsToString(foundReducer.symbol.flags));
             }
         }
         return foundReducer;
@@ -94,7 +103,7 @@ export class RegisterReducerCallConverter extends NodeConverter {
 
     private getReducerRecursive(context: ConvertContext, exp: ts.Node): ReducerSearchItem | undefined {
 
-        log.debug('getReducerRecursive:', syntaxKindText(exp));
+        log.trace('getReducerRecursive:', syntaxKindText(exp));
 
         switch (exp.kind) {
             case ts.SyntaxKind.PropertyAccessExpression: {
@@ -139,7 +148,6 @@ export class RegisterReducerCallConverter extends NodeConverter {
             case ts.SyntaxKind.CallExpression: {
                 const callExp = exp as ts.CallExpression;
 
-
                 if (ts.isIdentifier(callExp.expression)) {
                     const callName = callExp.expression.getText();
                     switch (callName) {
@@ -149,26 +157,31 @@ export class RegisterReducerCallConverter extends NodeConverter {
                             const reducerItems = this.extractCombineReducers(context, callExp);
                             return reducerItems && { registered: reducerItems };
                         }
-                        default:
-                            log.info('callExpression:', callName);
-                            break;
+                        default: {
+
+                            const symbol = context.typeChecker.getSymbolAtLocation(callExp.expression);
+                            if (symbol) {
+                                return this.getReducerRecursive(context, symbol.valueDeclaration as ts.Node);
+                            } else {
+                                log.warn('no symbol for callExpression:', callName);
+                                return;
+                            }
+
+                        }
                     }
-                } else {
-                    return this.getReducerRecursive(context, callExp.expression);
+
                 }
-                return;
+                return this.getReducerRecursive(context, callExp.expression);
 
             }
 
             case ts.SyntaxKind.ArrowFunction: {
                 const arrowFunction = exp as ts.ArrowFunction;
-                log.debug('ArrowFunction');
                 return this.getReducerRecursive(context, arrowFunction.body);
             }
 
             case ts.SyntaxKind.Block: {
                 const block = exp as ts.Block;
-                log.debug('Block');
                 for (const statement of block.statements) {
                     const reducer = this.getReducerRecursive(context, statement);
 
@@ -192,8 +205,22 @@ export class RegisterReducerCallConverter extends NodeConverter {
 
             }
 
+            case ts.SyntaxKind.FunctionDeclaration: {
+                const declaration = exp as ts.FunctionDeclaration;
+
+                if (declaration.body) {
+                    return this.getReducerRecursive(context, declaration.body);
+                }
+
+                return;
+
+            }
+
             default:
-                log.info('Unknown argument kind', syntaxKindText(exp), exp.getText());
+                log.info(`getReducerRecursive - Unknown argument kind [${syntaxKindText(exp)}] [${chalk.gray(exp.getSourceFile().fileName)}]`,
+                    EOL,
+                    chalk.gray(exp.getText())
+                );
                 return;
         }
     }

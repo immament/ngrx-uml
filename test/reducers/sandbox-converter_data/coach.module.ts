@@ -10,7 +10,8 @@ import { TranslateModule } from '@ngx-translate/core';
 
 import { CoachPage } from './coach-page/coach.page';
 import { CoachRoutingModule } from './coach-routing.module';
-import * as fromCoach from './coach.reducer';
+import * as fromCoach from './combined.reducer';
+import * as fromCreateFunction from './create-function.reducer';
 import * as fromSimpleReducer from './simple.reducer';
 import { CoachEffects } from './store/effects/coach.effects';
 import { TeamSelectionComponent } from './team-selection/team-selection.component';
@@ -34,6 +35,7 @@ const fromCoachProp = {
     StoreModule.forFeature('keyFromString', fromSimpleReducer.reducer),
     StoreModule.forFeature(fromCoachProp.coachFeatureKey, fromCoachProp.reducer),
     StoreModule.forFeature(fromCoach.coachFeatureKey, fromCoach.reducers),
+    StoreModule.forFeature(fromCreateFunction.createFunctionFeatureKey, fromCreateFunction.reducer),
     EffectsModule.forFeature([CoachEffects])
   ],
   declarations: [

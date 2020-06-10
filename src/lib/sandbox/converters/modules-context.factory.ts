@@ -10,16 +10,16 @@ import { ItemConvertContext } from '../../impl/converters/item-convert.context';
 
 import { NgModuleConverter } from './node-converters/ng-module.converter';
 
-export class SandboxConvertContextFactory implements ConvertContextFactory {
+export class ModulesConvertContextFactory implements ConvertContextFactory {
 
     create(program: Program, typeChecker: TypeChecker, converter: Converter, _lastContext?: ConvertContext): ConvertContext {
         this.configureConverter(converter);
         return new ItemConvertContext(
-            'sandbox',
+            'Modules',
             program,
             typeChecker,
             converter,
-            [TypeKind.Action, TypeKind.Reducer, TypeKind.NgModule],
+            [TypeKind.Action, TypeKind.Reducer, TypeKind.NgModule, TypeKind.RegisteredReducer],
             undefined,
             this.onFinish
         );
@@ -28,6 +28,7 @@ export class SandboxConvertContextFactory implements ConvertContextFactory {
     configureConverter(converter: Converter): void {
         converter.registerConverters({
             [SyntaxKind.ClassDeclaration]: [new NgModuleConverter],
+          //   [SyntaxKind.CallExpression]: [new RegisterReducerCallConverter]
         }, {});
         // TODO: temporary filter
         // converter.nodeFilter = (node: ts.Node): boolean => !node.getSourceFile().fileName.includes('/ngrx/modules/');

@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import log from 'loglevel';
 import ts from 'typescript';
 
@@ -6,7 +7,9 @@ import { NamedConvertedItem } from '../../../core/converters/models';
 import { NgModule } from '../../../core/converters/models/converted-items/ng-module.model';
 import { NodeConverter } from '../../../core/converters/node.converter';
 import { ItemWithSymbol } from '../../../impl/models';
-import { prepareToPrint } from '../../../utils/preparet-to-print';
+import { RegisteredReducerItem } from '../models/registered-reducer.model';
+
+import { RegisterReducerCallConverter } from './register-reducer-call.converter';
 
 export class NgModuleConverter extends NodeConverter {
 
@@ -19,9 +22,11 @@ export class NgModuleConverter extends NodeConverter {
             const symbol = context.typeChecker.getSymbolAtLocation(node.name);
             if (symbol) {
                 // log.info(context.typeChecker.getSymbolAtLocation(decorator));
-                const item = new NgModule(node.name.getText(), sourceFile.fileName, node.pos, node.end);
+                const item = new NgModule(node.name.getText(), sourceFile.fileName, node.getStart(), node.getEnd());
+                // log.warn('node start', node.getStart(), ' / ',  node.getEnd(), ' / ',node.getFullStart(), node.pos, node.end , node.getLeadingTriviaWidth());
                 // log.info(item.name, chalk.gray(item.filePath));
-                this.getReducersFromDecorator(context, decorator);
+
+                item.registeredReducers = this.getReducersFromDecorator(context, decorator);
                 context.addResult({ symbol, item } as ItemWithSymbol);
                 return item;
             }
@@ -43,73 +48,34 @@ export class NgModuleConverter extends NodeConverter {
     }
 
 
-    private extractArgName(exp: ts.Expression): any {
-        switch (exp.kind) {
-            case ts.SyntaxKind.PropertyAccessExpression:
-                console.log(prepareToPrint(exp)
-                );
-                break;
-        }
-
+    private extractStoreModuleCall(context: ConvertContext, storeModuleCall: ts.CallExpression): RegisteredReducerItem | undefined {
+        return new RegisterReducerCallConverter().convert(context, storeModuleCall) as RegisteredReducerItem;
     }
 
-    private storeModule(context: ConvertContext, storeModuleCall: ts.CallExpression): void {
-        log.info('-----------------');
-        let callName: string;
-
-        const callSymbol = context.typeChecker.getSymbolAtLocation(storeModuleCall.expression);
-        if (callSymbol) {
-            callName = callSymbol.getName();
-            console.log('call', callSymbol.getName());
-
-
-        } else {
-            callName = storeModuleCall.expression.getText();
-        }
-
-
-        switch (callName) {
-            case 'StoreModule.forFeature':
-                this.extractArgName(storeModuleCall.arguments[0]);
-                break;
-            case 'StoreModule.forRoot':
-                break;
-            default:
-                log.warn('StoreModule not supported call:', callName);
-                break;
-        }
-
-        // const nameOfDeclaration = ts.getNameOfDeclaration(storeModuleCall);
-        // log.info('getNameOfDeclaration', nameOfDeclaration?.getText());
-
-        // const args = storeModuleCall.get.map(a => {
-        //     const symbol = context.typeChecker.getSymbolAtLocation(a);
-        //     return symbol && prepareToPrint(symbol);
-        // }).filter(a => !!a);
-
-
-
-        // et val = (args[1] as any).declarations[0].body.statements[0].expression.expression.arguments[0].properties[0].initializer;
-
-        //  val = context.typeChecker.getSymbolAtLocation(val);
-        //log.info(util.inspect(args, { colors: true, depth: 5 }));
-    }
-
-    private importsProperty(context: ConvertContext, importsProperty: ts.PropertyAssignment): void {
+    private extractImportsProperty(context: ConvertContext, importsProperty: ts.PropertyAssignment): RegisteredReducerItem[] | undefined {
         if (!ts.isArrayLiteralExpression(importsProperty.initializer)) {
             return;
         }
 
+        const registeredReducers = [];
         for (const el of importsProperty.initializer.elements) {
             if (ts.isCallExpression(el) && ts.isPropertyAccessExpression(el.expression)) {
                 switch (el.expression.expression.getText()) {
                     case 'StoreModule': {
-                        this.storeModule(context, el);
+                        const result = this.extractStoreModuleCall(context, el);
+                        if (result) {
+                            registeredReducers.push(result);
+                        } else {
+                            log.warn(chalk.yellow('StoreModule call without reducer'), el.getText());
+                        }
+                        // context.converter.convertNode(context, el);
                     }
                 }
             }
 
         }
+
+        return registeredReducers.length ? registeredReducers : undefined;
 
     }
 
@@ -122,22 +88,27 @@ export class NgModuleConverter extends NodeConverter {
 
     }
 
-    private decoratorArgument(context: ConvertContext, arg: ts.Expression): void {
+    private getReducersFromDecoratorArgument(context: ConvertContext, arg: ts.Expression): RegisteredReducerItem[] | undefined {
         if (ts.isObjectLiteralExpression(arg)) {
 
             const importsProperty = this.getImportsProperty(arg);
             if (importsProperty) {
-                this.importsProperty(context, importsProperty);
+                return this.extractImportsProperty(context, importsProperty);
             }
         }
+        return;
     }
 
-    private getReducersFromDecorator(context: ConvertContext, decorator: ts.Decorator): any {
+    private getNgModuleMetadata(decorator: ts.Decorator): ts.Expression | undefined {
         if (ts.isCallExpression(decorator.expression)) {
-
-            decorator.expression.arguments.forEach(arg => {
-                this.decoratorArgument(context, arg);
-            });
+            return decorator.expression.arguments[0];
         }
+        return;
+
+    }
+
+    private getReducersFromDecorator(context: ConvertContext, decorator: ts.Decorator): RegisteredReducerItem[] | undefined {
+            const ngModuleMetadata = this.getNgModuleMetadata(decorator);
+            return ngModuleMetadata && this.getReducersFromDecoratorArgument(context, ngModuleMetadata);
     }
 }

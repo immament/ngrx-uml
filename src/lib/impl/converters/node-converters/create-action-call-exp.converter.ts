@@ -20,13 +20,17 @@ export class CreateActionCallExpConverter extends NodeConverter {
             const [nameArg, ...args] = node.arguments;
             let action: Action;
             if (ts.isStringLiteral(nameArg)) {
-                action = new Action(nameArg.text);
+                action = new Action(
+                    nameArg.text,
+                    node.getSourceFile().fileName,
+                    node.getStart(),
+                    node.getEnd()
+                );
                 action.createActionArgs = this.extractCreateActionArgs(context, args);
-                action.filePath = node.getSourceFile().fileName;
                 log.debug(`Found ${action.kindText}: ${chalk.yellow(action.name)} in ${chalk.gray(action.filePath)}`);
                 return action;
             }
-        } 
+        }
         return;
     }
 
@@ -42,7 +46,7 @@ export class CreateActionCallExpConverter extends NodeConverter {
 
         for (const arg of args) {
             const convertedArg = context.converter.convertNode(context, arg, true);
-            if(convertedArg) {
+            if (convertedArg) {
                 convertedArgs.push(convertedArg);
             }
         }
