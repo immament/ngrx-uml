@@ -1,11 +1,11 @@
-export { ActionConvertContextFactory } from './lib/actions/converters/action-convert-context.factory';
-export { ActionReferenceConvertContextFactory } from './lib/action-references/converters/action-reference-convert-context.factory';
-export { ActionsPlantDiagramRenderFactory } from './lib/actions/renderer/actions-plant-diagram-renderer.factory';
+export { ActionConvertContextFactory } from './lib/impl/converters/action-convert-context.factory';
+export { ActionReferenceConvertContextFactory } from './lib/impl/converters/action-reference-convert-context.factory';
+export { ActionsPlantDiagramRenderFactory } from './lib/impl/renderers/actions-plant-diagram-renderer.factory';
 export {
     CreateActionsDiagramService,
-    PlantUmlOutputService,
     GeneratorOptions,
     GeneratorService
 } from './lib/services';
 
-export { Renderer } from './lib/renderers';
+export { PlantUmlOutputService } from './lib/impl/outputs/plant-uml-output.service';
+export { Renderer } from './lib/core/renderers';

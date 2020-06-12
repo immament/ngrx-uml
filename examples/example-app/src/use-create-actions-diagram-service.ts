@@ -7,11 +7,12 @@ export function useCreateActionsDiagramService(): Promise<void>  {
         outDir: 'out/diagram-service',
         imageFormat: 'svg',
         ignorePattern: ['**/*.spec.ts'],
-        tsConfigFileName: 'ss.ts',
+        // tsConfigFileName: 'ss.ts',
         saveConvertResultToJson: false,
         saveWsd: true,
         logLevel: 'INFO'
     };
+
     const files = '../../test/test_data/**/*.ts';
     const createActionsDiagramService = new CreateActionsDiagramService(options);
     return createActionsDiagramService.generateDiagram(files)

@@ -14,7 +14,7 @@ deploy:
       secure: v1/Yu5ufdqJMhZ4KelIXZSSjnL+Ac1E6eUSW23kXKLAOAV8IxROwENnH6VRO93pzhCOo4pZ1LUl3mr3KKw2ZNujEl28HilGsW5qgcmNiJJ+guK0mtk2TKDUfq3z35PP2+yXJYJ/1Z7kvU7fNfGHrAr7HHu3w1ulTgqtV5eZrgJw9FHFkqDQWj1Adc0OybvsxTNbvletizTt0Bg+791WPKp+rLz1x++jmvLUTcPjJ4c5OdEu5gNa4YCfPSoEwTAtx9VyxnlJ8BMLpYZVGTASiKFWS5CSrzi+9z/jNJdhFuhYkZCKNDsKNxELlQB+BMe9ndefS7D4szElthdBxXTO1zDmBiXmsoLPKH/RFfROA8hmtSROA8ZsFsdqIq2oXrEElRzgqL23y1ra/cxT4p/mga4A4S5mKQZutI97aM6wxKjzbnSjl+zrtR1pqh0qj17Uas7Z2j6GgA9khJGHmzBt9GiwXrOSx2TAKuvqlz1H+i2lp/JSsmr/09rf6Zg6wNCwfEP+lilyipAjD9RdDDV45ZKsCCKqp9io/fYhg+gMi10s8plRjBxAaEskmAEFviRF77cI67s00+v+DXmxiw4cXX29kjoOQ9m2Y7QNcBeRFIxLIcFL/xaXFuNeGPHRcv4qU1WQ6w+QfsLSrHhuVCFd2aMJN9sWHvoY9rvwjnkepv34=
     on:
       repo: immament/ngrx-uml
-      branch: dev
+      branch: master
     skip_cleanup: 'true'
   - provider: releases
     api_key:

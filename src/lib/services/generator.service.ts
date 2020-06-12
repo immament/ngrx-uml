@@ -3,17 +3,16 @@ import log from 'loglevel';
 import path from 'path';
 import ts from 'typescript';
 
-import { ConvertContext, ConvertContextFactory } from '../converters';
-import { Converter } from '../converters/converter';
-import { NamedConvertedItem, TypeKind } from '../converters/models';
-import { Output } from '../outputs/output';
-import { Renderer, RenderResult } from '../renderers';
+import { ConvertContext, ConvertContextFactory } from '../core/converters';
+import { Converter } from '../core/converters/converter';
+import { NamedConvertedItem, TypeKind } from '../core/converters/models';
+import { Output } from '../core/outputs/output';
+import { Renderer, RenderResult } from '../core/renderers';
 import { globSync } from '../utils/glob';
 import { createTsProgram } from '../utils/tsutils';
 import { writeToFile } from '../utils/utils';
 
 import { GeneratorOptions } from './generator-options';
-import { PlantUmlOutputService } from './plant-uml.service';
 
 export class GeneratorService {
 
@@ -29,7 +28,6 @@ export class GeneratorService {
     }
 
     constructor(
-        private readonly plantUmlService: PlantUmlOutputService,
         private readonly convertFactories: ConvertContextFactory[],
         private readonly renderer: Renderer,
         private readonly outputs: Output[],
@@ -79,9 +77,11 @@ export class GeneratorService {
 
 
     private createTsProgram(filesPattern: string, baseDir: string, tsConfigFileName: string): ts.Program {
-        const sourceFilePattern = this.options.baseDir + filesPattern;
+        const sourceFilePattern = filesPattern;
         const files = globSync(sourceFilePattern, {
-            ignore: this.options.ignorePattern
+            ignore: this.options.ignorePattern,
+            cwd: this.options.baseDir,
+            absolute: true
         });
         log.debug('Used source files', files);
         const program = createTsProgram(files, baseDir, tsConfigFileName);
@@ -105,7 +105,7 @@ export class GeneratorService {
 
     private saveConvertResult(context: ConvertContext, outDir: string): void {
         if (this.options.saveConvertResultToJson) {
-            const result = context.serializeResultToJson();
+            const result = context.serializeResultToJson({rootPath: this.options.baseDir });
             if (result) {
                 for (const { kind, json } of result) {
                     const filePath = writeToFile(json, path.join(outDir, 'json'), `${context.name}_${kind}.json`);

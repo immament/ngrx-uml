@@ -3,7 +3,7 @@ import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import log from 'loglevel';
 import path from 'path';
 
-import { ConvertedItem, TypeKind } from '../converters/models';
+import { ConvertedItem, TypeKind } from '../core/converters/models';
 
 export function objectFlter<T>(key: string, value: T): T | undefined {
     if (!key) {
@@ -25,11 +25,21 @@ export function getKeyReplacer(keyToReplace: string) {
 
 }
 
+export function getKeysReplacer(keysToReplace: string[]) {
+    return function actionReplacer<T>(key: string, value: T): T | undefined {
+        if (keysToReplace.includes(key)) {
+            return undefined;
+        }
+        return value;
+    };
+
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function writeJsonToFile(data: unknown, outDir: string, fileName: string, replacer?: (key: string, value: any) => any): void {
 
     if (!existsSync(outDir)) {
-        mkdirSync(outDir, {recursive: true});
+        mkdirSync(outDir, { recursive: true });
     }
 
     const filePath = `${outDir}/${fileName}`;
@@ -42,7 +52,7 @@ export function writeJsonToFile(data: unknown, outDir: string, fileName: string,
 export function writeToFile(content: string, outDir: string, fileName: string): string {
 
     if (!existsSync(outDir)) {
-        mkdirSync(outDir, {recursive: true});
+        mkdirSync(outDir, { recursive: true });
     }
 
     const filePath = `${outDir}/${fileName}`;
@@ -84,16 +94,34 @@ export function removeiIlegalCharacters(name: string, makeClickableInTerminal = 
 }
 
 export function serializeConvertedItemsMapToJson(
-    map?: Map<TypeKind, ConvertedItem[]>,
+    map: Map<TypeKind, ConvertedItem[]> | undefined,
+    parent?: {},
     replacer?: ((this: unknown, key: string, value: unknown) => unknown) | undefined
 ): { kind: string; json: string }[] | undefined {
     if (map) {
         const result: { kind: string; json: string }[] = [];
         for (const [kind, items] of map) {
             if (items && items.length) {
-                result.push({ kind: TypeKind[kind], json: JSON.stringify(items, replacer, 2) });
+                result.push({ kind: TypeKind[kind], json: JSON.stringify({ ...parent, data: items}, replacer, 2) });
             }
         }
         return result;
     }
+    return;
 }
+
+const utils = {
+    objectFlter,
+    getKeyReplacer,
+    getKeysReplacer,
+    writeJsonToFile,
+    writeToFile,
+    prepareTraceLogger,
+    getFileName,
+    printProgress,
+    getCommandFilesExtensionsForEnvironment,
+    removeiIlegalCharacters,
+    serializeConvertedItemsMapToJson
+};
+
+export default utils;
