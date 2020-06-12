@@ -17,6 +17,6 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
-    "ngrx-uml": "^1.0.0"
+    "ngrx-uml": "^1.0.1"
   }
 }
