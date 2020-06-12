@@ -1,6 +1,6 @@
 {
   "name": "ngrx-uml",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "NGRX to Plant UML diagram",
   "homepage": "https://github.com/immament/ngrx-uml",
   "bugs": {
