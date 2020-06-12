@@ -30,7 +30,7 @@
     "run:print": "ts-node ./src/bin print -f 'test/test-files/**/*ts'",
     "prepublishOnly": "npm run lint && npm run build && npm test",
     "deployLocal": "npm run build && npm i -g .",
-    "sb": "ts-node ./src/bin di sandbox  -f '**/*ts' -d ../ngrx/projects/example-app/ -i '**/*.spec.ts' -c tsconfig.app.json --js -o '../ngrx/projects/example-app/out'",
+    "sb": "ts-node ./src/bin di sandbox  -f '**/*ts' -d ../ngrx/projects/example-app/ -i '**/*.spec.ts' -c tsconfig.app.json --js",
     "sb-cp": "ts-node ./src/bin di sandbox -f 'src/app/**/*.module.ts' -d ../ChampionPath/champ-app --js"
   },
   "keywords": [

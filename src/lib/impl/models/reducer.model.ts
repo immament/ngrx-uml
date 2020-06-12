@@ -1,6 +1,7 @@
 import path from 'path';
 
 import { ConvertedItem, NamedConvertedItem, TypeKind } from '../../core/converters/models';
+import { State } from '../../core/converters/models/state.model';
 
 import { Action } from './action.model';
 
@@ -11,6 +12,7 @@ export class Reducer implements NamedConvertedItem {
 
     actions?: Action[];
     name?: string;
+    state?: State; 
 
     constructor(
         public filePath: string,

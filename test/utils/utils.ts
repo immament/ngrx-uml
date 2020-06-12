@@ -1,7 +1,5 @@
 import ts, { Node, SourceFile, SyntaxKind } from 'typescript';
 
-import { syntaxKindText } from '../../src/lib/utils';
-
 export function getNodeAtPosition(sourceFile: SourceFile, position: number): Node {
     const getContainingChild = (child: Node): Node | undefined => {
         if (child.pos <= position && (position < child.end || (position === child.end && (child.kind === SyntaxKind.EndOfFileToken)))) {
@@ -17,7 +15,6 @@ export function getNodeAtPosition(sourceFile: SourceFile, position: number): Nod
         if (!child) {
             return current;
         }
-        console.log(syntaxKindText(child), child.pos, position);
         if (child.pos === position) {
             return child;
         }

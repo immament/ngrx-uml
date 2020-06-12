@@ -8,11 +8,11 @@ import {
     RegisteredReducerItem
 } from '../../src/lib/sandbox/converters/models/registered-reducer.model';
 import {
+    ModulesConvertContextFactory
+} from '../../src/lib/sandbox/converters/modules-context.factory';
+import {
     RegisterReducerCallConverter
 } from '../../src/lib/sandbox/converters/node-converters/register-reducer-call.converter';
-import {
-    SandboxConvertContextFactory
-} from '../../src/lib/sandbox/converters/sandbox-context.factory';
 import { syntaxKindText } from '../../src/lib/utils';
 import { getTokens } from '../utils/utils';
 
@@ -53,7 +53,7 @@ describe('Register reducers using forFeature', () => {
 
 
     it('Should resolve reducer keys', () => {
-        const convertContext = new SandboxConvertContextFactory().create(program, typeChecker, converter);
+        const convertContext = new ModulesConvertContextFactory().create(program, typeChecker, converter);
 
         const expectedReducers: Partial<RegisteredReducerItem>[] = [
             {
@@ -101,7 +101,7 @@ describe('Register reducers using forFeature', () => {
     }
 
     it('Should resolve reducers', () => {
-        const convertContext = new SandboxConvertContextFactory().create(program, typeChecker, converter);
+        const convertContext = new ModulesConvertContextFactory().create(program, typeChecker, converter);
 
         const expectedReducers: ExpectedReducers[] = [
             {

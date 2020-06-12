@@ -7,7 +7,7 @@ import { syntaxKindText } from './tsutils';
 
 function createNodeObj(node: object): { [key: string]: unknown } {
     const anyNode = node as { kind: SyntaxKind };
-    return anyNode.kind ? { kindText: `${syntaxKindText(anyNode) || ''} (${anyNode.kind})`} : {}; 
+    return anyNode.kind ? { kindText: `${syntaxKindText(anyNode) || ''} (${anyNode.kind})` } : {};
 }
 
 
@@ -17,7 +17,16 @@ export function prepareToPrint(node?: object): unknown {
     if (!node) {
         return undefined;
     }
-    const ignoreKeys = ['parent', 'pos', 'end', 'flags', 'modifierFlagsCache', 'transformFlags', 'flowNode', 'kind'];
+    const ignoreKeys = ['parent',
+        'pos',
+        'end',
+        'flags',
+        'modifierFlagsCache',
+        'transformFlags',
+        'flowNode',
+        'kind',
+        'checker'
+    ];
 
 
     const refs: object[] = [];
@@ -45,7 +54,7 @@ export function prepareToPrint(node?: object): unknown {
                 }
                 return acc;
 
-            }, createNodeObj(node) );
+            }, createNodeObj(node));
         return reduced;
 
     }
@@ -56,7 +65,7 @@ export function prepareToPrint(node?: object): unknown {
 
 export function printNode(node?: object, level = 3): string | undefined {
     return node && util.inspect(prepareToPrint(node), false, level, true);
-} 
+}
 
 export interface SimpleNode {
     kindText: string;

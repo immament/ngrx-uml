@@ -32,6 +32,12 @@ describe('SearchActionsConverter', () => {
         const resultIterator = convertedActions.values();
         for (const expectedAction of expectedActions) {
             const action = resultIterator.next().value;
+            // ignore pos and end
+            expect(action.pos, 'Action pos > 0').toBeGreaterThan(0);
+            expect(action.end, 'Action end > 0').toBeGreaterThan(0);
+
+            action.pos = 0;
+            action.end = 0;
             expect(action, 'Action equal').toEqual(expectedAction);
             // expect(symbol, 'action contain symbol').toBeTruthy();
             // expect(symbol.escapedName, 'symbol has correct name').toBe(expectedAction.variable);
@@ -68,7 +74,7 @@ describe('SearchActionsConverter', () => {
 
     function toActions(actions: Partial<Action>[]): Action[] {
         return actions.map(a => ({
-            ...new Action(a.name || ''),
+            ...new Action(a.name || '', a.filePath|| '', 0, 0),
             ...a
         } as Action));
     }
