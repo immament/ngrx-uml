@@ -1,6 +1,6 @@
 
 
-import { PlantUmlOutputService } from '../services/plant-uml.service';
+import { PlantUmlOutputService } from '../impl/outputs/plant-uml-output.service';
 
 function testPlantServer(outDir = 'out'): void {
 

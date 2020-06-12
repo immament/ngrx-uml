@@ -1,11 +1,11 @@
 import { ActionConvertContextFactory, ActionReferenceConvertContextFactory } from '../..';
+import { PlantUmlOutputService } from '../impl/outputs/plant-uml-output.service';
 import {
     ActionsPlantDiagramRenderFactory
-} from '../actions/renderer/actions-plant-diagram-renderer.factory';
+} from '../impl/renderers/actions-plant-diagram-renderer.factory';
 
 import { GeneratorOptions, GeneratorService } from './';
 import { DiagramService } from './diagram.service';
-import { PlantUmlOutputService } from './plant-uml.service';
 
 export class CreateActionsDiagramService implements DiagramService {
 
@@ -21,10 +21,8 @@ export class CreateActionsDiagramService implements DiagramService {
             saveWsd:  this.options.saveWsd || false,
             generateDiagramsImages: this.options.generateImages || true
         });
-       
 
         const generateService = new GeneratorService(
-            plantUmlService,
             [
                 new ActionConvertContextFactory,
                 new ActionReferenceConvertContextFactory,

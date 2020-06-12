@@ -13,6 +13,7 @@ export function useGeneratorService(): Promise<void> {
         ignorePattern: ['**/*.spec.ts'],
         saveConvertResultToJson: false,
         // tsConfigFileName: 'tsconfig.json',
+        clickableLinks: true,
         saveWsd: false,
         logLevel: 'INFO'
     };
@@ -27,7 +28,6 @@ export function useGeneratorService(): Promise<void> {
 
 
     const generateService = new GeneratorService(
-        plantUmlService,
         [
             new ActionConvertContextFactory,
             new ActionReferenceConvertContextFactory,

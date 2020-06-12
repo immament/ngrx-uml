@@ -1,6 +1,10 @@
 import { useCreateActionsDiagramService } from './use-create-actions-diagram-service';
 import { useGeneratorService } from './use-generator-service';
 
-useCreateActionsDiagramService();
+async function main(): Promise<void> {
 
-useGeneratorService();
+    await useCreateActionsDiagramService();
+    await useGeneratorService();
+}
+
+main();
