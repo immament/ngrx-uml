@@ -9,17 +9,21 @@ import { NamedConvertedItem, TypeKind } from '../core/converters/models';
 import { Output } from '../core/outputs/output';
 import { Renderer, RenderResult } from '../core/renderers';
 import { globSync } from '../utils/glob';
+import { logColor, yesNoPrompt } from '../utils/logger';
 import { createTsProgram } from '../utils/tsutils';
 import { writeToFile } from '../utils/utils';
 
 import { GeneratorOptions } from './generator-options';
+
+const filesCountWarnLevel = 5000;
+
 
 export class GeneratorService {
 
     public options: GeneratorOptions = {
         saveConvertResultToJson: false,
         saveWsd: false,
-        outDir: '/out',
+        outDir: 'out',
         baseDir: '',
         tsConfigFileName: 'tsconfig.json',
         clickableLinks: false,
@@ -43,7 +47,7 @@ export class GeneratorService {
         }
     }
 
-   async generate(filesPattern: string): Promise<void> {
+    async generate(filesPattern: string): Promise<void> {
 
         log.info('Starting...');
         log.debug(chalk.yellow('filePattern:'), filesPattern);
@@ -56,11 +60,17 @@ export class GeneratorService {
             return;
         }
 
+        // TODO: check if baseDir exists
+
         if (this.options.baseDir !== '' && !this.options.baseDir.endsWith('/')) {
             this.options.baseDir += '/';
         }
 
-        const program = this.createTsProgram(filesPattern, this.options.baseDir, this.options.tsConfigFileName);
+        const files = this.getFiles(filesPattern);
+        if (!await this.filesCheck(files)) {
+            return;
+        }
+        const program = this.createTsProgram(files, this.options.baseDir, this.options.tsConfigFileName);
         const convertedItems = this.convert(program, this.options.outDir);
         log.info('Items converted');
 
@@ -75,15 +85,52 @@ export class GeneratorService {
         log.info('Items transformed');
     }
 
-
-    private createTsProgram(filesPattern: string, baseDir: string, tsConfigFileName: string): ts.Program {
+    private getFiles(filesPattern: string): string[] {
         const sourceFilePattern = filesPattern;
-        const files = globSync(sourceFilePattern, {
+        return globSync(sourceFilePattern, {
             ignore: this.options.ignorePattern,
             cwd: this.options.baseDir,
             absolute: true
         });
+    }
+
+
+    private isToManyFiles(files: string[]): boolean {
+        if (files.length > filesCountWarnLevel) {
+
+            log.warn(logColor.warn(`Used ${files.length} source files`));
+            return true;
+        }
+
+        log.info(`Used ${files.length} source files`);
+        return false;
+    }
+
+    private containsForbiddenPath(files: string[], forbiddenPathPart: string): boolean {
+        const nodeModulesFilesCount = files.filter(f => f.includes('/node_modules/')).length;
+        if (nodeModulesFilesCount > 0) {
+            
+            log.warn(chalk.yellow(`WARN: files Pattern include ${nodeModulesFilesCount} ${forbiddenPathPart} files.`));
+            return true;
+        }
+
+        return false;
+
+    }
+
+    private async filesCheck(files: string[]): Promise<boolean> {
+
+        let shouldPrompt = this.isToManyFiles(files);
+        shouldPrompt = this.containsForbiddenPath(files, 'node_modules/') || shouldPrompt;
+
+        const result = shouldPrompt ? await yesNoPrompt() : true;
+         
         log.debug('Used source files', files);
+        return result;
+
+    }
+
+    private createTsProgram(files: string[], baseDir: string, tsConfigFileName: string): ts.Program {
         const program = createTsProgram(files, baseDir, tsConfigFileName);
         return program;
     }
@@ -105,7 +152,7 @@ export class GeneratorService {
 
     private saveConvertResult(context: ConvertContext, outDir: string): void {
         if (this.options.saveConvertResultToJson) {
-            const result = context.serializeResultToJson({rootPath: this.options.baseDir });
+            const result = context.serializeResultToJson({ rootPath: this.options.baseDir });
             if (result) {
                 for (const { kind, json } of result) {
                     const filePath = writeToFile(json, path.join(outDir, 'json'), `${context.name}_${kind}.json`);

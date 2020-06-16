@@ -63,7 +63,7 @@ export function prepareToPrint(node?: object): unknown {
 
 }
 
-export function printNode(node?: object, level = 3): string | undefined {
+export function printNode(node: object | undefined, level = 3, ): string | undefined {
     return node && util.inspect(prepareToPrint(node), false, level, true);
 }
 

@@ -1,8 +1,10 @@
+import log from 'loglevel';
 import ts from 'typescript';
 
 import { ConvertContext } from '../../../core/converters';
 import { NamedConvertedItem } from '../../../core/converters/models';
 import { NodeConverter } from '../../../core/converters/node.converter';
+import { printNode } from '../../../utils/preparet-to-print';
 import { ItemWithSymbol } from '../../models';
 
 export class VariableDeclarationConverter extends NodeConverter {
@@ -18,8 +20,12 @@ export class VariableDeclarationConverter extends NodeConverter {
 
         if (item && context.isRootKind(item.kind)) {
             const symbol = context.typeChecker.getSymbolAtLocation(node.name);
+            
             if (symbol) {
-                item.setName(node.name.getText(sourceFile));
+                
+                const nodeType = symbol.valueDeclaration;
+                log.info('nodeType', printNode(nodeType));
+                    item.setName(node.name.getText(sourceFile));
                 item.filePath = sourceFile.fileName;
                 context.addResult({ symbol, item } as ItemWithSymbol);
             }

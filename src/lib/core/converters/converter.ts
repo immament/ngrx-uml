@@ -25,13 +25,13 @@ export class Converter {
 
     convert(context: ConvertContext, program: Program): Map<TypeKind, NamedConvertedItem[]> | undefined {
 
-        for (const sourceFile of program.getSourceFiles()) {
-            if (sourceFile.isDeclarationFile) {
-                continue;
-            }
+        for (const sourceFile of program.getSourceFiles()
+            .filter(sf => !program.isSourceFileFromExternalLibrary(sf) || !sf.isDeclarationFile)
+        ) {
+
             log.trace('convert file:', chalk.cyan(sourceFile.fileName));
 
-            sourceFile.forEachChild((node) => this.convertRecursive(context, node));
+            this.convertRecursive(context, sourceFile);
         }
         context.finish();
         return context.getResult();

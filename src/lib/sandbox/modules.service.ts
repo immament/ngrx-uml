@@ -1,6 +1,4 @@
-import {
-    ActionsPlantDiagramRenderFactory
-} from '../impl/renderers/actions-plant-diagram-renderer.factory';
+import { Renderer } from '../core/renderers';
 import { GeneratorOptions, GeneratorService } from '../services';
 
 import { ModulesConvertContextFactory } from './converters/modules-context.factory';
@@ -16,7 +14,7 @@ export class ModulesService  {
             [
                 new ModulesConvertContextFactory,
             ],
-            new ActionsPlantDiagramRenderFactory().create(),
+            new Renderer({}),
             [],
             this.options
         );

@@ -25,13 +25,15 @@
     "lint": "eslint . --ext .ts",
     "run:diagram": "ts-node ./src/bin diagram -f 'test/test_data/**/*ts'",
     "run:d": "ts-node ./src/bin diagram -f 'test/test_data/**/books*ts'",
-    "run:diagram:ngrx": "ts-node ./src/bin diagram -f '**/*ts' -d ../ngrx/projects/example-app/ -i '**/*.spec.ts' -c tsconfig.app.json --js",
+    "run:diagram:ngrx": "ts-node ./src/bin diagram -f 'src/**/*.ts' -d ../_sandbox_/ngrx-example-app -i '**/*.spec.ts' --js",
     "json:diagram:ngrx": "npm run run:diagram:ngrx -- --im off",
     "run:print": "ts-node ./src/bin print -f 'test/test-files/**/*ts'",
     "prepublishOnly": "npm run lint && npm run build && npm test",
     "deployLocal": "npm run build && npm i -g .",
     "sb": "ts-node ./src/bin di sandbox  -f '**/*ts' -d ../ngrx/projects/example-app/ -i '**/*.spec.ts' -c tsconfig.app.json --js",
-    "sb-cp": "ts-node ./src/bin di sandbox -f 'src/app/**/*.module.ts' -d ../ChampionPath/champ-app --js"
+    "sb-cp": "ts-node ./src/bin di sandbox -f 'src/app/**/*.module.ts' -d ../ChampionPath/champ-app --js",
+    "sb-symbols": "ts-node ./src/lib/sandbox/symbols/symbols.service.ts",
+    "sb-lab": "ts-node ./src/lib/sandbox/lab/lab.ts"
   },
   "keywords": [
     "ngrx",

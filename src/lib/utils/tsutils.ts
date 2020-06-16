@@ -59,11 +59,26 @@ export function isSymbol(object: unknown): object is ts.Symbol {
     return (object as ts.Symbol).valueDeclaration != null;
 }
 
+function symbolFlagsToString(flags: ts.SymbolFlags): string {
+    let i = 0;
+    let flag: number;
+    let resultText = '';
+    while (ts.SymbolFlags[flag = 1 << i++]) {
+        if (flags & flag) {
+            resultText += ts.SymbolFlags[flag];
+        }
+    }
+    return resultText;
+}
+
+
 const tsutils = {
     syntaxKindText,
     getCallExpressionName,
     createTsProgram,
     isSymbol,
+    symbolFlagsToString
 };
 
 export default tsutils;
+
