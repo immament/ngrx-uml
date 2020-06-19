@@ -2,8 +2,6 @@
     "eslint.enable": true,
     "workbench.colorCustomizations": {
         "[Default Dark+]": {
-            "statusBar.background": "#486357",
-            "statusBar.foreground": "#c8e9c5",
             "activityBar.background": "#486357",
             "activityBar.activeBackground": "#2f7c47",
             "activityBar.activeBorder": "#422c74",
@@ -12,11 +10,14 @@
             "activityBarBadge.foreground": "#e7e7e7",
             "statusBar.border": "#215732",
             "statusBarItem.hoverBackground": "#2f7c47",
-            "titleBar.activeBackground": "#215732",
+            "titleBar.activeBackground": "#486357",
             "titleBar.activeForeground": "#e7e7e7",
             "titleBar.border": "#215732",
             "titleBar.inactiveBackground": "#21573299",
-            "titleBar.inactiveForeground": "#e7e7e799"
+            "titleBar.inactiveForeground": "#e7e7e799",
+            "tab.activeBorder": "#422c74",
+            "statusBar.background": "#486357",
+            "statusBar.foreground": "#c8e9c5"
         }
-    }
+    },
 }

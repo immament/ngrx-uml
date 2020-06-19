@@ -4,7 +4,7 @@ import ts from 'typescript';
 import { ConvertContext } from '../../../../core/converters';
 import { NamedConvertedItem } from '../../../../core/converters/models';
 import { NodeConverter } from '../../../../core/converters/node.converter';
-import devLogger from '../../../../utils/logger';
+import devLogger, { callStack, logColor } from '../../../../utils/logger';
 import labUtils from '../../lab-utils';
 import { KnownElementsService } from '../../services/known-elements.service';
 
@@ -19,18 +19,22 @@ const knownElements = new KnownElementsService();
 // TODO: move to context
 
 // TEMP
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const uniqueHelper = new  labUtils.UniqueHelper;
 
 export class LabConverter extends NodeConverter {
 
     convert(context: ConvertContext, node: ts.CallExpression): NamedConvertedItem | undefined {
 
-        const nameOfDeclarationSymbol = labUtils.getNameOfDeclarationSymbol(node.expression, context);
+
+        const nameOfDeclarationSymbol = labUtils.getNameOfDeclarationSymbol(node.expression, context.typeChecker);
         if (nameOfDeclarationSymbol) {
             const fullyQName = context.typeChecker.getFullyQualifiedName(nameOfDeclarationSymbol);
 
             const knownElement = knownElements.getElement(fullyQName);
             if (knownElement) {
+                devLogger.info(logColor.info('+ LabConverter.convert:'), labUtils.nodeText(node));
+
                 const item = knownElement.work(context, node);
                 if (item) {
 
@@ -41,7 +45,7 @@ export class LabConverter extends NodeConverter {
             else {
                 // TEMP: to remove only dev diagnostic
                 if (fullyQName.includes('@ngrx/')) {
-                    uniqueHelper.add(fullyQName, true);
+                    // uniqueHelper.add(fullyQName, true);
                 }
 
             }

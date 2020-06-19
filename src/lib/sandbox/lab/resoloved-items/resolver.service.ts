@@ -1,40 +1,40 @@
-import chalk from 'chalk';
 import ts from 'typescript';
 
 import { ConvertedItem } from '../../../core/converters/models';
-import devLogger from '../../../utils/logger';
+import { syntaxKindText } from '../../../utils';
+import devLogger, { logColor } from '../../../utils/logger';
 
-import { Reference, ResolvedItem } from './resolved-item.model';
+import { Reference, ResolveItem } from './resolved-item.model';
 
 export interface ResolverService {
-    toResolve:  Map<string, ResolvedItem>;
-    getItem(fqn: string): ResolvedItem | undefined;
-    resolveItem(fqn: string, item: ConvertedItem): ResolvedItem;
-    addSymbolToResolve(symbol: ts.Symbol, reference: Reference): ResolvedItem;
+    getItem(node: ts.Node): ResolveItem | undefined;
+    resolveItem(node: ts.Node, item: ConvertedItem): ResolveItem;
+    addToResolve(node: ts.Node, reference: Reference): ResolveItem;
+    getItems(): ResolveItem[];
 }
 
 export class MemoryResolverService implements ResolverService {
 
-
-    toResolve = new Map<string, ResolvedItem>();
+    private toResolve = new Map<ts.Node, ResolveItem>();
 
     constructor(private readonly typeChecker: ts.TypeChecker) {
 
     }
 
-    getItem(_fqn: string): ResolvedItem | undefined {
-        return;
-    }
-    resolveItem(_fqn: string, _item: ConvertedItem): ResolvedItem {
-        throw new Error('not implemented');
+    getItem(_node: ts.Node): ResolveItem | undefined {
+        return ;
     }
 
-    addSymbolToResolve(symbol: ts.Symbol, reference: Reference): ResolvedItem {
-        devLogger.info(chalk.cyan('addSymbolToResolve'));
+    resolveItem(_node: ts.Node, _item: ConvertedItem): ResolveItem {
+        throw new Error('not implemented!');
+    }
 
-        const fqn = this.typeChecker.getFullyQualifiedName(symbol);
-        if (this.toResolve.has(fqn)) {
-            const item = this.toResolve.get(fqn);
+
+
+    addToResolve(node: ts.Node, reference: Reference): ResolveItem {
+        devLogger.info(logColor.warn('addSymbolToResolve:'), syntaxKindText(node));
+        if (this.toResolve.has(node)) {
+            const item = this.toResolve.get(node);
             if (item) {
                 item.addReference(reference);
                 return item;
@@ -42,10 +42,14 @@ export class MemoryResolverService implements ResolverService {
 
         }
 
-        const item = new ResolvedItem(fqn, symbol, reference);
-        this.toResolve.set(fqn, item);
+        const item = new ResolveItem(node, reference);
+        this.toResolve.set(node, item);
         return item;
 
+    }
+
+    getItems(): ResolveItem[] {
+        return [...this.toResolve.values()];
     }
 
 }

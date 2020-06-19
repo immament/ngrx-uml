@@ -5,14 +5,14 @@ import { ConvertContext, Converter } from '../../../core/converters';
 import { NamedConvertedItem, TypeKind } from '../../../core/converters/models';
 import { ItemWithSymbol } from '../../../impl/models';
 import { getKeysReplacer, serializeConvertedItemsMapToJson } from '../../../utils';
-import devLogger, { callStack, currentStackLevel, logColor } from '../../../utils/logger';
+import devLogger, { currentStackLevel, logColor } from '../../../utils/logger';
 import labUtils from '../lab-utils';
-import { MemoryResolverService, ResolverService } from '../resoloved-items/resolver.service';
+import { MemorySymbolResolverService, SymbolResolverService } from '../resoloved-items/symbol-resolver.service';
 
 export class LabItemConvertContext implements ConvertContext {
 
     private result: Map<TypeKind, Map<unknown, NamedConvertedItem>>;
-    public readonly resolverService: ResolverService;
+    public readonly symbolResolverService: SymbolResolverService;
 
 
     constructor(
@@ -30,23 +30,25 @@ export class LabItemConvertContext implements ConvertContext {
             this.result = new Map<TypeKind, Map<unknown, NamedConvertedItem>>();
         }
 
-        this.resolverService = new MemoryResolverService(typeChecker);
+        this.symbolResolverService = new MemorySymbolResolverService(typeChecker);
 
     }
 
     // TODO: move to ?
     private resolveAll(): void {
 
-        devLogger.info(cyan('resolveAll size: '), this.resolverService.toResolve.size);
-        for (const [_fqn, entry] of this.resolverService.toResolve.entries()) {
+        const resolveItems =  this.symbolResolverService.getItems();
+        devLogger.info(cyan('resolveAll size: '),resolveItems.length);
+        for (const entry of resolveItems) {
             if (!entry.isResolved()) {
+
                 let item = labUtils.getItemRecursive(this.typeChecker, entry.symbol.valueDeclaration);
                 devLogger.info(logColor.info('resolve item in loop'), currentStackLevel());
                 
                 if (item?.symbol && !item.item) {
                     devLogger.debug(logColor.info('resolve item in loop'));
 
-                    const resolvedItem = this.resolverService.getItem(this.typeChecker.getFullyQualifiedName(item.symbol));
+                    const resolvedItem = this.symbolResolverService.getItem(this.typeChecker.getFullyQualifiedName(item.symbol));
                     if (!resolvedItem?.item) {
 
                         // item = labUtils.getItemRecursive(this.typeChecker, entry.symbol.valueDeclaration);

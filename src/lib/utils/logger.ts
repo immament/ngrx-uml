@@ -8,16 +8,19 @@ import readline from 'readline';
 const devLogger = log.getLogger('dev');
 
 const logMethods: { [x: string]: number } = {
-    'trace': 0,
-    'debug': 1,
-    'info': 2,
-    'warn': 3,
-    'error': 4
+    trace: 0,
+    debug: 1,
+    info: 2,
+    warn: 3,
+    error: 4
 };
 
-export const logColor = {
+export const logColor: { [method: string]: chalk.Chalk } = {
+    trace: chalk.gray,
+    debug: chalk.white,
+    info: chalk.cyan,
     warn: chalk.yellow,
-    info: chalk.cyan
+    error: chalk.red
 };
 
 export default devLogger;
@@ -29,33 +32,32 @@ function getElement<T>(elements: T[], index: number): T | undefined {
 
 function getStackLevel(level: number): string {
     const errStack = new Error().stack?.split('    at ');
-    return  errStack && getElement( errStack, level)?.replace(EOL, '') || '';
+    return errStack && getElement(errStack, level)?.replace(EOL, '') || '';
 }
 
 
-export function logFnName(logger: log.Logger, minLevel: log.LogLevelNumbers = log.levels.DEBUG): void {
+function getFnNameFromStackLine(line: string): string {
+    if (!line) {
+        return '';
+    }
 
+    return line.split(' ', 1)[0];
+}
+
+export function logFnName(logger: log.Logger): void {
 
     const originalFactory = logger.methodFactory;
 
     logger.methodFactory = (methodName: string, level: log.LogLevelNumbers, loggerName: string): log.LoggingMethod => {
-
-        if (logMethods[methodName] <= minLevel) {
-
-            const rawMethod = originalFactory(methodName, level, loggerName);
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            return (...message: any[]): void => {
-
-                const logLineDetails = getStackLevel(3);
-                rawMethod(EOL + chalk.gray(methodName.toUpperCase(), logLineDetails));
-                rawMethod(...message);
-            };
-        }
-
-        return originalFactory(methodName, level, loggerName);
+        const rawMethod = originalFactory(methodName, level, loggerName);
+        const color = logColor[methodName];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return (message: any, ...rest: any[]): void => {
+            const logLineDetails = getFnNameFromStackLine(getStackLevel(3));
+            rawMethod(color(methodName.toUpperCase()), chalk.gray(logLineDetails), color(message), ...rest);
+        };
     };
     logger.setLevel(devLogger.getLevel());
-
 }
 
 

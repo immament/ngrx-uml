@@ -1,3 +1,4 @@
+
 import ts from 'typescript';
 
 import { ConvertedItem } from '../../../core/converters/models';
@@ -7,12 +8,12 @@ export interface Reference {
     propertyName: string;
 }
 
-export class ResolvedItem {
+export class ResolveItem {
 
     item?: ConvertedItem;
     private references: Reference[] = [];
 
-    constructor(public fqn: string, public symbol: ts.Symbol, reference?: Reference) { 
+    constructor(public node: ts.Node, reference?: Reference) { 
         if(reference) {
             this.references.push(reference);
         }

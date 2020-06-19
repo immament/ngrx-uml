@@ -1,9 +1,9 @@
-import chalk from 'chalk';
+
 import ts from 'typescript';
 
 import { NamedConvertedItem } from '../../../../core/converters/models';
 import { NodeConverter } from '../../../../core/converters/node.converter';
-import devLogger from '../../../../utils/logger';
+import devLogger, { logColor } from '../../../../utils/logger';
 import { RegisteredReducerItem } from '../../../converters/models/registered-reducer.model';
 import labUtils, { SearchedItem } from '../../lab-utils';
 import { LabItemConvertContext } from '../lab-item-convert.context';
@@ -11,11 +11,14 @@ import { LabItemConvertContext } from '../lab-item-convert.context';
 export class RegisterReducerCallConverter extends NodeConverter {
 
     convert(context: LabItemConvertContext, storeModuleCall: ts.CallExpression): NamedConvertedItem | undefined {
-        const name = labUtils.getValue<string>(context.typeChecker, storeModuleCall.arguments[0]) || 'noForFeatureKey';
+        const [nameArg, reducerArg ] = storeModuleCall.arguments;
+        const name = labUtils.getValue<string>(context.typeChecker, nameArg) || 'noForFeatureKey';
 
-        const reducerSearchItem =  labUtils.getItemRecursive(context.typeChecker, storeModuleCall.arguments[1]);
+        const reducerSearchItem =  labUtils.getItemRecursive(context.typeChecker, reducerArg);
 
         const registeredReducer = this.createRegisteredReducer(context, name, storeModuleCall, reducerSearchItem);
+        const converted = context.converter.convertRecursive2(context, reducerArg);
+        devLogger.info(logColor.info('!!!!! convert storeModuleCall.arguments[1] result:'), converted);
         return registeredReducer;
     }
 
@@ -31,14 +34,17 @@ export class RegisterReducerCallConverter extends NodeConverter {
             srcNode.getStart(),
             srcNode.getEnd()
         );
+        
         devLogger.info('registeredReducer', registeredReducer.name);
+        
         if (reducer) {
             if (reducer.item) {
+                devLogger.info('registeredReducer item: ', reducer.item);
                 registeredReducer.reducerItems = reducer.item as RegisteredReducerItem[];
             } else if (reducer.symbol) {
      
                 registeredReducer.reducerSymbol = reducer.symbol;
-                context.resolverService.addSymbolToResolve(reducer.symbol, { item: registeredReducer,propertyName: 'reducerItems'});
+                context.symbolResolverService.addSymbolToResolve(reducer.symbol, { item: registeredReducer,propertyName: 'reducerItems'});
             }
         }
         return registeredReducer;

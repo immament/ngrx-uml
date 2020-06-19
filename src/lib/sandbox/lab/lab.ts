@@ -6,7 +6,7 @@ import devLogger, { logFnName } from '../../utils/logger';
 import { LabService } from './services/lab.service';
 
 logFnName(devLogger);
-devLogger.setLevel('DEBUG');
+devLogger.setLevel(devLogger.levels.DEBUG);
 
 const options: GeneratorOptions = {
     baseDir: '../_sandbox_/ngrx-example-app',
