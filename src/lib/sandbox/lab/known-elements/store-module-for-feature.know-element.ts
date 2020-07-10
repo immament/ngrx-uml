@@ -4,22 +4,25 @@ import { NamedConvertedItem } from '../../../core/converters/models';
 import { LabItemConvertContext } from '../converters/lab-item-convert.context';
 import { RegisterReducerCallConverter } from '../converters/node-converters/register-reducer-call.converter';
 
-import { KnownElement, KnownElementKinds } from './known-element.model';
+import { KnownElement } from './known-element.model';
 
-export class StoreModuleForFeatureKnowElement implements KnownElement {
-    readonly kind = KnownElementKinds.storeModuleForFeature;
-    readonly postfix = '@ngrx/store/src/store_module".StoreModule.forFeature';
+export class StoreModuleForFeatureKnowElement extends KnownElement {
+    readonly postfixes = ['@ngrx/store/src/store_module".StoreModule.forFeature'];
 
     private registerReducerCallConverter = new RegisterReducerCallConverter();
 
     work(context: LabItemConvertContext, node: ts.Node): NamedConvertedItem | undefined {
         if (ts.isCallExpression(node)) {
-            return this.registerReducerCallConverter.convert(context, node);
+            const item = this.registerReducerCallConverter.convert(context, node);
+            if (item) {
+
+                const symbol = this.resolveParentSymbol(context, node, item);
+                StoreModuleForFeatureKnowElement.devLogger.warn('TODO symbol:', !!symbol);
+                return item;
+            }
+
         }
         return;
     }
 
-    get kindText(): string {
-        return KnownElementKinds[this.kind];
-    }
 }

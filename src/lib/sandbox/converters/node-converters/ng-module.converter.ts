@@ -7,7 +7,7 @@ import { NamedConvertedItem } from '../../../core/converters/models';
 import { NgModule } from '../../../core/converters/models/converted-items/ng-module.model';
 import { NodeConverter } from '../../../core/converters/node.converter';
 import { ItemWithSymbol } from '../../../impl/models';
-import { RegisteredReducerItem } from '../models/registered-reducer.model';
+import { RegisteredReducerItem } from '../models/registered-reducer.item';
 
 import { RegisterReducerCallConverter } from './register-reducer-call.converter';
 

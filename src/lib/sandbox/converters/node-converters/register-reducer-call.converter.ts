@@ -6,9 +6,9 @@ import ts from 'typescript';
 import { ConvertContext } from '../../../core/converters';
 import { NamedConvertedItem } from '../../../core/converters/models';
 import { NodeConverter } from '../../../core/converters/node.converter';
-import { syntaxKindText } from '../../../utils';
+import { syntaxKindLog } from '../../../utils';
 import { prepareToPrint, printNode } from '../../../utils/preparet-to-print';
-import { RegisteredReducerItem } from '../models/registered-reducer.model';
+import { RegisteredReducerItem } from '../models/registered-reducer.item';
 
 enum ReducerFunctions {
     createReducer = 'createReducer',
@@ -103,7 +103,7 @@ export class RegisterReducerCallConverter extends NodeConverter {
 
     private getReducerRecursive(context: ConvertContext, exp: ts.Node): ReducerSearchItem | undefined {
 
-        log.trace('getReducerRecursive:', syntaxKindText(exp));
+        log.trace('getReducerRecursive:', syntaxKindLog(exp));
 
         switch (exp.kind) {
             case ts.SyntaxKind.PropertyAccessExpression: {
@@ -217,7 +217,7 @@ export class RegisterReducerCallConverter extends NodeConverter {
             }
 
             default:
-                log.info(`getReducerRecursive - Unknown argument kind [${syntaxKindText(exp)}] [${chalk.gray(exp.getSourceFile().fileName)}]`,
+                log.info(`getReducerRecursive - Unknown argument kind ${syntaxKindLog(exp)} [${chalk.gray(exp.getSourceFile().fileName)}]`,
                     EOL,
                     chalk.gray(exp.getText())
                 );
@@ -243,7 +243,7 @@ export class RegisterReducerCallConverter extends NodeConverter {
                 }
                 break;
             default:
-                log.warn('extractPropertyName:', syntaxKindText(node), prepareToPrint(node));
+                log.warn('extractPropertyName:', syntaxKindLog(node), prepareToPrint(node));
                 break;
         }
         return;
@@ -314,7 +314,7 @@ export class RegisterReducerCallConverter extends NodeConverter {
                 return (exp as ts.StringLiteral).text;
 
             default:
-                log.info('arg kind', syntaxKindText(exp));
+                log.info('arg kind', syntaxKindLog(exp));
                 return;
         }
     }

@@ -1,6 +1,9 @@
 {
     "extends": "../tsconfig.json",
     "include": [
-        "/**/*.ts"
-    ]
+        "/**/*.ts",
+    ],
+    "compilerOptions": {
+        "experimentalDecorators": true
+    }
 }

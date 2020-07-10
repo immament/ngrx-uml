@@ -4,15 +4,13 @@ import log from 'loglevel';
 import ts from 'typescript';
 
 import { ConvertContext } from '../../../core/converters/convert.context';
-import {
-    ConvertedItem
-} from '../../../core/converters/models/converted-items/converted-item.model';
+import { ConvertedItem } from '../../../core/converters/models/converted-items/converted-item.model';
 import { Member } from '../../../core/converters/models/member.model';
 import { State } from '../../../core/converters/models/state.model';
 import { NodeConverter } from '../../../core/converters/node.converter';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import * as _ts from '../../../ts-internal';
-import { getCallExpressionName, syntaxKindText } from '../../../utils/tsutils';
+import _ts from '../../../ts-internal';
+import { getCallExpressionName, syntaxKindLog } from '../../../utils/tsutils';
 import { Reducer } from '../../models/reducer.model';
 
 const createReducerName = 'createReducer';
@@ -64,7 +62,7 @@ export class CreateReducerCallExpConverter extends NodeConverter {
             }
 
             default:
-                log.warn(`getMember - unknown node kind ${syntaxKindText(node)}`);
+                log.warn(`getMember - unknown node kind ${syntaxKindLog(node)}`);
                 break;
         }
         return undefined;
@@ -94,7 +92,7 @@ export class CreateReducerCallExpConverter extends NodeConverter {
 
 
             default:
-                log.warn(`getState - unknown node kind ${syntaxKindText(node)}`);
+                log.warn(`getState - unknown node kind ${syntaxKindLog(node)}`);
                 break;
         }
         return;

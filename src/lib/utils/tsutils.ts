@@ -6,6 +6,11 @@ export function syntaxKindText(element: { kind: ts.SyntaxKind }): string {
     return ts.SyntaxKind[element.kind];
 }
 
+export function syntaxKindLog(element: { kind: ts.SyntaxKind }): string {
+    return chalk.green(`[ ${ts.SyntaxKind[element.kind]} ]`);
+}
+
+
 export function getCallExpressionName(callExpression: ts.CallExpression): string | undefined {
     return ts.isIdentifier(callExpression.expression) ? callExpression.expression.text : undefined;
 }
@@ -56,8 +61,14 @@ export function createTsProgram(fileNames: string[], baseDir: string, configName
 }
 
 export function isSymbol(object: unknown): object is ts.Symbol {
-    return (object as ts.Symbol).valueDeclaration != null;
+    const symbol = (object as ts.Symbol); 
+    return symbol && symbol.valueDeclaration != null || (symbol.flags & ts.SymbolFlags.AliasExcludes )> 0;
 }
+
+export function isNode(object: unknown): object is ts.Node {
+    return (object as ts.Node)?.kind > 0;
+}
+
 
 function symbolFlagsToString(flags: ts.SymbolFlags): string {
     let i = 0;
@@ -77,6 +88,7 @@ const tsutils = {
     getCallExpressionName,
     createTsProgram,
     isSymbol,
+    isNode,
     symbolFlagsToString
 };
 

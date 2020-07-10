@@ -6,7 +6,7 @@ import yargs from 'yargs';
 import { GeneratorOptions } from '../../services';
 import devLogger, { logFnNameWithFile } from '../../utils/logger';
 
-import { LabService } from './services/lab.service';
+import { Lab2Service } from './services/lab2.service';
 
 const argv = yargs
   .usage('Usage: $0 <command> [options]')
@@ -44,7 +44,7 @@ const options: GeneratorOptions = {
 
 
 // -f '**/*ts' -d  -i '**/*.spec.ts' -c tsconfig.app.json --js
-const labService = new LabService(options);
+const labService = new Lab2Service(options);
 
 
 labService.generate('src/**/*.ts');

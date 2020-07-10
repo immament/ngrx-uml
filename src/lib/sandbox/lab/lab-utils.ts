@@ -1,20 +1,85 @@
 import chalk from 'chalk';
 import log from 'loglevel';
 import { EOL } from 'os';
-import ts, { VariableDeclaration } from 'typescript';
+import ts, { SymbolFlags } from 'typescript';
 
-import devLogger, { currentStackLevel, logColor } from '../../utils/logger';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import _ts from '../../ts-internal';
+import { currentStackLevel, logColor } from '../../utils/logger';
 import { printNode } from '../../utils/preparet-to-print';
-import { syntaxKindText } from '../../utils/tsutils';
+import tsutils, { syntaxKindLog } from '../../utils/tsutils';
+
+const devLogger = log.getLogger('lab-utils');
 
 export interface SearchedItem {
     item?: unknown;
     symbol?: ts.Symbol;
+    items?: SearchedItem[];
+}
+
+const defaultNodeTextOptions: NodeTextOptions = { inOneLine: true, maxLength: 20, dots: true };
+
+function nodeText(node: ts.Node, options?: NodeTextOptions): string {
+
+    options = options ? { ...defaultNodeTextOptions, ...options } : defaultNodeTextOptions;
+
+    const orgText = node.getText();
+
+    let text = options.maxLength ? orgText.substr(0, options.maxLength) : orgText;
+    if (options.inOneLine) {
+        text = text.replace(new RegExp(EOL, 'g'), ' ').replace(new RegExp(' {2,}', 'g'), ' ');
+    }
+
+    text = text.trim();
+
+    if (options.maxLength && orgText.length > options.maxLength) {
+        if (options.dots) {
+            text += '...';
+        }
+    }
+    return chalk.gray(text);
+}
+
+
+
+function getFullyQualifiedName(symbol: ts.Symbol, typeChecker: ts.TypeChecker): string {
+
+    const orgSymbol = symbol;
+    if (symbol.flags & ts.SymbolFlags.AliasExcludes) {
+        symbol = typeChecker.getAliasedSymbol(symbol);
+    }
+
+    let fqn = typeChecker.getFullyQualifiedName(symbol);
+
+    if (!fqn.includes('"') && fqn !== 'unknown' && symbol.valueDeclaration) {
+
+        const declaration = symbol.valueDeclaration;//  ? symbol.valueDeclaration : symbol.declarations[0];
+        fqn = `"${declaration.getSourceFile().fileName}".${declaration.pos}-${declaration.end}-${fqn}`;
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+        devLogger.warn('internal symbol', symbolFlagsToString(symbol.flags), chalk.gray(fqn));
+    }
+
+    if (fqn === 'unknown' && orgSymbol !== symbol) {
+        fqn = typeChecker.getFullyQualifiedName(orgSymbol);
+        const importSpecifier = orgSymbol.declarations[0];
+        if (importSpecifier && ts.isImportSpecifier(importSpecifier)) {
+            // eslint-disable-next-line @typescript-eslint/no-use-before-define
+            const moduleSpecifierText = getModuleSpecifierText(importSpecifier, typeChecker);
+            if (moduleSpecifierText) {
+                fqn = `"${moduleSpecifierText}".${fqn}`;
+            }
+        }
+    }
+    return fqn;
+}
+
+function getModuleSpecifierText(node: ts.ImportSpecifier, typeChecker: ts.TypeChecker): string | undefined {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    return getValue<string>(typeChecker, node.parent.parent.parent.moduleSpecifier);
 }
 
 function printNodeInfo(node: ts.Node, typechecker: ts.TypeChecker): void {
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    devLogger.info(logColor.warn('+ NODE INFO:', syntaxKindText(node)), ': ', nodeText(node));
+    devLogger.info(logColor.warn('+ NODE INFO:', syntaxKindLog(node)), ': ', nodeText(node));
 
     const symbol = typechecker.getSymbolAtLocation(node);
 
@@ -81,230 +146,64 @@ function getValue<T extends string | number | boolean>(typeChecker: ts.TypeCheck
             return (exp as ts.StringLiteral).text as T;
 
         default:
-            log.info('arg kind', syntaxKindText(exp));
+            log.info('arg kind', syntaxKindLog(exp));
             return;
     }
 }
 
 
-function getItemRecursive(typeChecker: ts.TypeChecker, exp: ts.Node): SearchedItem | undefined {
-
-    // log.info('getItemRecursive:', syntaxKindText(exp));
-
-    switch (exp.kind) {
-        case ts.SyntaxKind.PropertyAccessExpression: {
-            const propertyExp = exp as ts.PropertyAccessExpression;
-
-            const symbol = typeChecker.getSymbolAtLocation(propertyExp);
-            if (symbol) {
-                // if(resolveSymbols) {
-                //     return getItemRecursive(typeChecker, symbol.valueDeclaration);
-                // }
-                return { symbol };
-            } else {
-                log.warn('no symbol for PropertyAccessExpression');
-            }
-            return;
-        }
-
-        // case ts.SyntaxKind.ShorthandPropertyAssignment: {
-        //     const assigment = exp as ts.ShorthandPropertyAssignment;
-        //     if (assigment.objectAssignmentInitializer) {
-        //         const result = this.getItemRecursive(typeChecker, assigment.objectAssignmentInitializer);
-        //         if (result?.callName === ReducerFunctions.createReducer) {
-        //             const symbol = typeChecker.getSymbolAtLocation(assigment.name);
-        //             return symbol && { symbol };
-        //         }
-        //         return result;
-        //     }
-        //     return;
-        // }
-
-
-        // case ts.SyntaxKind.VariableDeclaration: {
-        //     const declaration = exp as ts.VariableDeclaration;
-
-        //     if (declaration.initializer) {
-        //         const result = this.getItemRecursive(typeChecker, declaration.initializer);
-        //         if (result?.callName === ReducerFunctions.createReducer) {
-        //             const symbol = typeChecker.getSymbolAtLocation(declaration.name);
-        //             return symbol && { symbol };
-        //         }
-        //         return result;
-        //     }
-        //     return;
-        // }
-
-
-        case ts.SyntaxKind.CallExpression: {
-            const callExp = exp as ts.CallExpression;
-            devLogger.info('+ callExpression:', chalk.gray(callExp.getText()));
-            // printSymbols(callExp, typeChecker);
-            // const nameOfDeclarationSymbol = getNameOfDeclarationSymbol(callExp.expression, typeChecker);
-
-            // if (nameOfDeclarationSymbol) {
-            //     const fullyQName = typeChecker.getFullyQualifiedName(nameOfDeclarationSymbol);
-            //     devLogger.info('nameOfDeclarationSymbol:', chalk.gray(fullyQName));
-
-            //     return;
-
-            // }
-
-            return;
-
-        }
-
-        case ts.SyntaxKind.ArrowFunction: {
-            const arrowFunction = exp as ts.ArrowFunction;
-            return getItemRecursive(typeChecker, arrowFunction.body);
-        }
-
-        case ts.SyntaxKind.Block: {
-            const block = exp as ts.Block;
-            for (const statement of block.statements) {
-                const reducer = getItemRecursive(typeChecker, statement);
-
-                if (reducer) {
-                    return reducer;
-                }
-            }
-
-            return;
-
-        }
-
-        case ts.SyntaxKind.ReturnStatement: {
-            const returnStatement = exp as ts.ReturnStatement;
-
-            if (returnStatement.expression) {
-                return getItemRecursive(typeChecker, returnStatement.expression);
-            }
-
-            return;
-
-        }
-
-        case ts.SyntaxKind.FunctionDeclaration: {
-            const declaration = exp as ts.FunctionDeclaration;
-
-            if (declaration.body) {
-                return getItemRecursive(typeChecker, declaration.body);
-            }
-
-            return;
-
-        }
-
-        default:
-            log.info(`getItemRecursive - ${logColor.warn('Unknown argument kind')} [${syntaxKindText(exp)}] [${chalk.gray(exp.getSourceFile().fileName)}]`,
-                EOL, chalk.gray(exp.getText()),
-                EOL, currentStackLevel()
-            );
-            return;
+function getNodeLink(node: ts.Node, sourceFile?: ts.SourceFile): string {
+    if (!sourceFile) {
+        sourceFile = node.getSourceFile();
     }
+    const start = node.getStart(sourceFile, true);
+    const lineAndCharacter = ts.getLineAndCharacterOfPosition(sourceFile, start);
+    return `${sourceFile.fileName}:${lineAndCharacter.line + 1}:${lineAndCharacter.character + 1}`;
 }
 
+function getReturnedChild(typeChecker: ts.TypeChecker, exp: ts.Node): (ts.Node | ts.Symbol)[] | undefined {
 
+    devLogger.info('+ getReturnedChild:', syntaxKindLog(exp), nodeText(exp), getNodeLink(exp));
 
-function getChilds(typeChecker: ts.TypeChecker, exp: ts.Node): ts.Node[] | ts.Symbol {
-
-    devLogger.trace('+ getChilds:', syntaxKindText(exp));
+    if (exp.getSourceFile().isDeclarationFile) { // TODO: external
+        return;
+    }
 
     switch (exp.kind) {
 
         case ts.SyntaxKind.Identifier:
         case ts.SyntaxKind.PropertyAccessExpression: {
 
-            if (exp.localSymbol) {
-                return [exp.localSymbol.valueDeclaration];
-            }
+            // if (exp.localSymbol) {
+            //     log.warn('  local symbol');
+            //     return [exp.localSymbol.valueDeclaration];
+            // }
+
+
             const symbol = typeChecker.getSymbolAtLocation(exp);
 
-
-            if (symbol) {
-                // if (symbol.flags & ts.SymbolFlags.BlockScoped) {
-                //     return symbol.declarations;
-                // }
-                return symbol;
-            } else {
-                log.warn('no symbol for PropertyAccessExpression');
+            if (!symbol) {
+                log.warn('  no symbol for', syntaxKindLog(exp), nodeText(exp, { maxLength: 40 }));
+                return;
             }
 
-            return [];
+            if (symbol.flags & SymbolFlags.BlockScopedVariable) {
+                devLogger.warn('  BlockScopedVariable', nodeText(exp, { maxLength: 40 }), printNode(symbol.valueDeclaration));
+            }
+
+            return [symbol];
+
         }
 
         case ts.SyntaxKind.VariableDeclaration: {
             const variableDeclaration = exp as ts.VariableDeclaration;
-            return variableDeclaration.initializer ? [variableDeclaration.initializer]:  [];
+            return variableDeclaration.initializer && [variableDeclaration.initializer];
         }
-
-        // case ts.SyntaxKind.ShorthandPropertyAssignment: {
-        //     const assigment = exp as ts.ShorthandPropertyAssignment;
-        //     if (assigment.objectAssignmentInitializer) {
-        //         const result = this.getItemRecursive(typeChecker, assigment.objectAssignmentInitializer);
-        //         if (result?.callName === ReducerFunctions.createReducer) {
-        //             const symbol = typeChecker.getSymbolAtLocation(assigment.name);
-        //             return symbol && { symbol };
-        //         }
-        //         return result;
-        //     }
-        //     return;
-        // }
-
-
-        // case ts.SyntaxKind.VariableDeclaration: {
-        //     const declaration = exp as ts.VariableDeclaration;
-
-        //     if (declaration.initializer) {
-        //         const result = this.getItemRecursive(typeChecker, declaration.initializer);
-        //         if (result?.callName === ReducerFunctions.createReducer) {
-        //             const symbol = typeChecker.getSymbolAtLocation(declaration.name);
-        //             return symbol && { symbol };
-        //         }
-        //         return result;
-        //     }
-        //     return;
-        // }
-
-
-        // case ts.SyntaxKind.VariableDeclarationList: {
-        //     if (ts.isVariableDeclarationList(exp)) {
-        //         return [...exp.declarations];
-        //     } 
-        //     return [];
-
-        // }
-
-
-        // case ts.SyntaxKind.FirstStatement: {
-        //     if (ts.isVariableStatement(exp)) {
-        //         devLogger.info('FirstStatement: isVariableStatement');
-        //         return [exp.declarationList];
-        //     } else {
-        //         devLogger.warn('FirstStatement: IS NOT VariableStatement');
-
-        //     }
-        //     return [];
-
-        // }
 
         case ts.SyntaxKind.CallExpression: {
             const callExp = exp as ts.CallExpression;
-            devLogger.info('+ callExpression:', chalk.gray(callExp.getText()));
-
-            printNodeInfo(callExp, typeChecker);
-            // const nameOfDeclarationSymbol = getNameOfDeclarationSymbol(callExp.expression, typeChecker);
-
-            // if (nameOfDeclarationSymbol) {
-            //     const fullyQName = typeChecker.getFullyQualifiedName(nameOfDeclarationSymbol);
-            //     devLogger.info('nameOfDeclarationSymbol:', chalk.gray(fullyQName));
-
-            //     return;
-
-            // }
 
             return [callExp.expression];
-
         }
 
         case ts.SyntaxKind.ArrowFunction: {
@@ -314,15 +213,17 @@ function getChilds(typeChecker: ts.TypeChecker, exp: ts.Node): ts.Node[] | ts.Sy
 
         case ts.SyntaxKind.Block: {
             const block = exp as ts.Block;
-            return [...block.statements].filter(s => s.kind === ts.SyntaxKind.ReturnStatement);
-
-
+            const returnStatement = [...block.statements].find(s => s.kind === ts.SyntaxKind.ReturnStatement);
+            if (returnStatement) {
+                return [returnStatement];
+            }
+            return;
         }
 
         case ts.SyntaxKind.ReturnStatement: {
             const returnStatement = exp as ts.ReturnStatement;
 
-            return returnStatement.expression ? [returnStatement.expression] : [];
+            return returnStatement.expression && [returnStatement.expression];
 
         }
 
@@ -331,44 +232,101 @@ function getChilds(typeChecker: ts.TypeChecker, exp: ts.Node): ts.Node[] | ts.Sy
             if (declaration.body) {
                 return [declaration.body];
             }
-            return [];
+            return;
+        }
+
+
+        case ts.SyntaxKind.ObjectLiteralExpression: {
+            const objectLiteralExp = exp as ts.ObjectLiteralExpression;
+
+            return [...objectLiteralExp.properties];
+
+
+        }
+
+        case ts.SyntaxKind.PropertyAssignment: {
+            const assigment = exp as ts.PropertyAssignment;
+            return [assigment.initializer];
+        }
+
+        case ts.SyntaxKind.ArrayLiteralExpression: {
+            const arrayLiteralExpression = exp as ts.ArrayLiteralExpression;
+            return [...arrayLiteralExpression.elements];
         }
 
 
 
+        case ts.SyntaxKind.ClassDeclaration: {
+            const classDeclaration = exp as ts.ClassDeclaration;
+
+            devLogger.debug('  class declaration', classDeclaration.name?.escapedText);
+            return [];
+        }
 
         default:
-            log.info(`- getChilds - ${logColor.warn('Unknown argument kind')} [${syntaxKindText(exp)}] [${chalk.gray(exp.getSourceFile().fileName)}]`,
-                EOL, chalk.gray(exp.getText()),
-                EOL, printNode(exp),
+
+            devLogger.warn(`- getReturnedChild - ${logColor.warn('Unknown argument kind')} [${syntaxKindLog(exp)}] [${chalk.gray(exp.getSourceFile().fileName)}]`,
+                EOL, nodeText(exp, { maxLength: 100 }),
+                // EOL, printNode(exp),
                 EOL, currentStackLevel()
             );
-            return [];
+            return;
     }
 }
 
+function getReturnedChildRecursive(typeChecker: ts.TypeChecker, exp: ts.Node): ts.Symbol[] | undefined {
+    let result: ts.Node | ts.Symbol | (ts.Node | ts.Symbol)[] | undefined = exp;
+    do {
+        result = getReturnedChild(typeChecker, result);
 
+    } while (result && tsutils.isNode(result));
+
+    if (!result) {
+        devLogger.info('result undefined', nodeText(exp));
+        return;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    return arrayResult(typeChecker, result);
+
+}
+
+
+function arrayResult(typeChecker: ts.TypeChecker, arr: (ts.Node | ts.Symbol)[]): ts.Symbol[] | undefined {
+    const results = [];
+    for (const item of arr) {
+        if (tsutils.isSymbol(item)) {
+            results.push(item);
+        } else if (tsutils.isNode(item)) {
+            const result = getReturnedChildRecursive(typeChecker, item);
+            if (result) {
+                results.push(...result);
+            }
+        }
+    }
+    return results.length > 0 ? results : undefined;
+}
 
 function getNameOfDeclarationSymbol(node: ts.Declaration | ts.Expression, typeChecker: ts.TypeChecker): ts.Symbol | undefined {
     const nameOfDeclaration = ts.getNameOfDeclaration(node);
 
     if (nameOfDeclaration) {
-        let nameOfDeclarationSymbol = typeChecker.getSymbolAtLocation(nameOfDeclaration);
-
-        if (nameOfDeclarationSymbol) {
-
-            if (nameOfDeclarationSymbol.flags & ts.SymbolFlags.AliasExcludes) {
-                nameOfDeclarationSymbol = typeChecker.getAliasedSymbol(nameOfDeclarationSymbol);
+        let nameSymbol = typeChecker.getSymbolAtLocation(nameOfDeclaration);
+        devLogger.info('nameSymbol:', nameSymbol?.escapedName);
+        if (nameSymbol && nameSymbol.flags & ts.SymbolFlags.AliasExcludes) {
+            const aliasedSymbol = typeChecker.getAliasedSymbol(nameSymbol);
+            if (!typeChecker.isUnknownSymbol(aliasedSymbol)) {
+                nameSymbol = aliasedSymbol;
             }
         }
-        return nameOfDeclarationSymbol;
-    } else if (ts.isCallExpression(node)) {
-        // return getNameOfDeclarationSymbol(node.expression, typeChecker);
+        return nameSymbol;
     }
 
     return;
 
 }
+
+
 
 class UniqueHelper<T> {
 
@@ -389,34 +347,46 @@ class UniqueHelper<T> {
 }
 
 
-function nodeText(node: ts.Node, options = { inOneLine: true, maxLength: 20, dots: true }): string {
 
-    const orgText = node.getText();
-    let text = orgText.substr(0, options.maxLength);
-    if (options.inOneLine) {
-        text = text.replace(EOL, ' ');
-    }
+function isFqnFromExternalLibrary(fqn: string): boolean {
+    return fqn.includes('/node_modules/');
+}
 
-    text = text.trim();
+function isSourceFileFromExternalLibrary(sf: ts.SourceFile): boolean {
+    return sf.fileName.includes('/node_modules/') || (!sf.fileName.startsWith('".') && !sf.fileName.startsWith('"/'));
+}
 
-    if (orgText.length > options.maxLength) {
-        if (options.dots) {
-            text += '...';
+function symbolFlagsToString(flags: ts.SymbolFlags): string {
+    let i = 0;
+    let flag: number;
+    let resultText = '';
+    while (ts.SymbolFlags[flag = 1 << i++]) {
+        if (flags & flag) {
+            resultText += ts.SymbolFlags[flag];
         }
     }
+    return resultText;
+}
 
 
 
-    return text;
+export interface NodeTextOptions {
+    inOneLine?: boolean;
+    maxLength?: number;
+    dots?: boolean;
 }
 
 const labUtils = {
-    getItemRecursive,
     getValue,
     getNameOfDeclarationSymbol,
     printSymbols,
     nodeText,
-    getChilds,
+    getReturnedChild,
+    getReturnedChildRecursive,
+    getFullyQualifiedName,
+    isSourceFileFromExternalLibrary,
+    isFqnFromExternalLibrary,
+    symbolFlagsToString,
     UniqueHelper
 };
 

@@ -1,0 +1,12 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "sb-lab",
+			"problemMatcher": [],
+			"label": "npm: sb-lab",
+			"detail": "ts-node ./src/lib/sandbox/lab/lab.ts"
+		}
+	]
+}

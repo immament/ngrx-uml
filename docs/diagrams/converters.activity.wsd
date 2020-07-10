@@ -1,0 +1,30 @@
+@startuml Name
+(*) --> "NodeConverter.convert()"
+
+
+
+partition Converter {
+    
+    --> "Converter.getResolvedItem()"
+    --> convertNode()
+    if "result is null?" then
+        --> [false] (*)
+    else
+
+        --> [true] "getReturnedChild()"
+        if "child type?" then
+            --> [is node] "getResolvedItem()"
+            --> (*)
+        else
+            -->[is symbol] "symbolResolverService.getItem()"
+            --> (*)
+        else 
+            -->[is null] (*)
+        endif
+        
+    endif
+
+
+}
+
+@enduml

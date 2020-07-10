@@ -5,6 +5,7 @@ export interface NamedConvertedItem extends ConvertedItem {
     filePath?: string;
     pos?: number;
     end?: number;
+    parentSymbolName?: string;
     setName(name: string): void;
     getExportName(): string;
 }

@@ -6,6 +6,7 @@ import { ConvertedItem } from '../../../core/converters/models';
 export interface Reference {
     item: ConvertedItem;
     propertyName: string;
+    addToArray?: boolean;
 }
 
 export class ResolveItem {

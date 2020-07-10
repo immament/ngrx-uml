@@ -1,9 +1,7 @@
 import ts from 'typescript';
 
 import { ConvertContext } from '../../../core/converters/convert.context';
-import {
-    ConvertedItem
-} from '../../../core/converters/models/converted-items/converted-item.model';
+import { ConvertedItem } from '../../../core/converters/models/converted-items/converted-item.model';
 import { Property } from '../../../core/converters/models/property.model';
 import { TypeLiteral } from '../../../core/converters/models/type-literal.model';
 import { NodeConverter } from '../../../core/converters/node.converter';

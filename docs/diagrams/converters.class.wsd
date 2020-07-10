@@ -1,0 +1,80 @@
+@startuml Converters class diagram
+
+set namespaceSeparator ::
+skinparam class {
+    BackgroundColor<<model>> HoneyDew
+    BackgroundColor<<service>> Wheat
+    BackgroundColor<<dispatch>> Technology
+}
+
+class Converter <<(S,#FF7700) service>> {
+
+    defaultConverter: NodeConverter
+    registerConverters(converters, options): void
+    convert(context: ConvertContext, program: Program): Map<TypeKind, NamedConvertedItem[]> | undefined
+    convertNode(context: ConvertContext, node: Node, withDefault = false): ConvertedItem | undefined
+    convertRecursive(context: ConvertContext, node: Node): ConvertedItem | undefined
+    convertRecursive2(context: LabItemConvertContext, node: Node, level = 0):  ConvertedItem | undefined
+
+}
+
+interface ConvertedItem <<model>> {
+    kind: TypeKind
+    kindText: string
+    getChildren(): ConvertedItem[]
+
+}
+
+interface ConvertContext <<(S,#FF7700) service>>{
+    getRawResult(): unknown;
+    name: string;
+    converter: Converter;
+    typeChecker: TypeChecker;
+    getResult(): Map<TypeKind, NamedConvertedItem[]> | undefined;
+    addResult(convertedItem: unknown): void;
+    serializeResultToJson(container: {}): { kind: string; json: string }[] | undefined;
+    isRootKind(kind: TypeKind): boolean;
+    finish(): void;
+}
+
+ConvertContext --> Converter
+ConvertContext o-- ConvertedItem
+
+interface NodeConverter <<(S,#FF7700) service>>{
+   convert(context: ConvertContext, node: Node): ConvertedItem | undefined;
+}
+
+Converter o-- NodeConverter
+
+interface KnownElement <<model>> {
+    kind: number
+    postfix: string
+    kindText: string
+
+    work(context: ConvertContext, node: ts.Node): NamedConvertedItem | undefined
+}
+
+class KnownElementsService <<service>> {
+    getElement(fullyQualifiedName: string): KnownElement | undefined
+}
+
+KnownElementsService o-- KnownElement
+
+class ResolveItem <<model>> {
+    isResolved(): boolean
+    addReference(): boolean
+}
+
+interface ResolverService <<(S,#FF7700) service>>{
+    getItem(node: ts.Node): ResolveItem | undefined
+    resolveItem(node: ts.Node, item: ConvertedItem): ResolveItem
+    addToResolve(node: ts.Node, reference: Reference): ResolveItem
+    getItems(): ResolveItem[]
+}
+
+ResolverService o-- ResolveItem
+
+ConvertContext o-- KnownElementsService
+ConvertContext o-- ResolverService
+
+@enduml

@@ -1,0 +1,18 @@
+@startuml Converters sequence diagram
+control Generator
+control Converter
+entity ConverContext
+control NodeConverter
+
+Generator -> Converter: convert()
+loop for each sourece file
+    Converter -> Converter: convertRecursive()
+    Converter -> NodeConverter: convert()
+
+    loop
+        Converter -> Converter: convertRecursive()
+    end
+end
+
+
+@enduml

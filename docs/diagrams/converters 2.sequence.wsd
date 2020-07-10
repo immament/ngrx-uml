@@ -1,0 +1,23 @@
+@startuml Converters sequence diagram
+
+control NodeConverter
+control Converter
+control ResolverService
+entity ConverContext
+control KnownElementsService
+control KnownElements
+
+NodeConverter -> Converter : getResolvedItem()
+Converter -> Converter : convertNode();
+
+Converter -> Converter : getResolvedItem(child)
+Converter <-- Converter : response ResolvedItem
+
+
+
+Converter -> ResolverService : addToResolve()
+NodeConverter -> KnownElementsService: getElement()
+NodeConverter -> KnownElement :work(context, node);
+
+
+@enduml

@@ -4,16 +4,10 @@ import ts from 'typescript';
 
 import { Converter } from '../../src/lib/core/converters';
 import { TypeKind } from '../../src/lib/core/converters/models';
-import {
-    RegisteredReducerItem
-} from '../../src/lib/sandbox/converters/models/registered-reducer.model';
-import {
-    ModulesConvertContextFactory
-} from '../../src/lib/sandbox/converters/modules-context.factory';
-import {
-    RegisterReducerCallConverter
-} from '../../src/lib/sandbox/converters/node-converters/register-reducer-call.converter';
-import { syntaxKindText } from '../../src/lib/utils';
+import { RegisteredReducerItem } from '../../src/lib/sandbox/converters/models/registered-reducer.item';
+import { ModulesConvertContextFactory } from '../../src/lib/sandbox/converters/modules-context.factory';
+import { RegisterReducerCallConverter } from '../../src/lib/sandbox/converters/node-converters/register-reducer-call.converter';
+import { syntaxKindLog } from '../../src/lib/utils';
 import { getTokens } from '../utils/utils';
 
 const programFiles = ['combined.reducer.ts', 'create-function.reducer.ts'];
@@ -90,7 +84,7 @@ describe('Register reducers using forFeature', () => {
                 expectRegisteredReducer(registeredReducer, expectedReducers[index], ''+index);
 
             } else {
-                log.warn('expect callExpression got', syntaxKindText(node));
+                log.warn('expect callExpression got', syntaxKindLog(node));
             }
         }
     });
@@ -171,7 +165,7 @@ describe('Register reducers using forFeature', () => {
                 }
 
             } else {
-                log.warn('expect callExpression got', syntaxKindText(node));
+                log.warn('expect callExpression got', syntaxKindLog(node));
             }
         }
 

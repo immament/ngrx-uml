@@ -7,7 +7,9 @@ export class RegisteredReducerItem  implements NamedConvertedItem {
     kind = TypeKind.RegisteredReducer;
     kindText  = 'RegisteredReducer';
     reducerSymbol?: ts.Symbol; 
-    reducerItems?: RegisteredReducerItem[]; 
+    reducerItems?: RegisteredReducerItem[];
+
+    registered? :  ConvertedItem;
 
     constructor(
         public name: string,

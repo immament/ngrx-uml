@@ -4,5 +4,7 @@ module.exports = {
   setupFilesAfterEnv: ['jest-expect-message'],
   globals: {
     'ts-jest': { tsConfig: './test/tsconfig.json' }
-  }
+  },
+  verbose: true,
+ // silent: true
 };

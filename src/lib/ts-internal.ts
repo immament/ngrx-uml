@@ -7,3 +7,5 @@ declare module 'typescript' {
         localSymbol?: ts.Symbol;
     }
 }
+
+export default '_ts';

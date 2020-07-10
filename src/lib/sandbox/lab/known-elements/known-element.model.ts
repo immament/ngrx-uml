@@ -1,67 +1,53 @@
+import log from 'loglevel';
 import ts from 'typescript';
 
 import { ConvertContext } from '../../../core/converters';
 import { NamedConvertedItem } from '../../../core/converters/models';
-import { Reducer } from '../../../impl/models';
-import devLogger from '../../../utils/logger';
-import { printNode } from '../../../utils/preparet-to-print';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import _ts from '../../../ts-internal';
 import { LabItemConvertContext } from '../converters/lab-item-convert.context';
 import labUtils from '../lab-utils';
 
-export interface KnownElement {
-    kind: number;
-    postfix: string;
-    kindText: string;
+export abstract class KnownElement {
 
-    work(context: ConvertContext, node: ts.Node): NamedConvertedItem | undefined;
-}
+    static devLogger = log.getLogger('known-element');
+    
+    abstract postfixes: string[];
 
-export enum KnownElementKinds {
-    storeModuleForFeature,
-    storeModuleForRoot,
-    storeModuleCreateSelector,
-    storeCreateSelector,
-    storeCreateFeatureSelector,
-    storeCreateReducer,
-    storeCreateAction,
-    storeCreateReducerOn,
-    storeCreateActionProps,
-    storeSelect,
-    storeCombineReducers,
-    storeDispatch,
-    effectsForFeature,
-    other = 999
-}
+    abstract work(context: ConvertContext, node: ts.Node, symbol?: ts.Symbol): NamedConvertedItem | undefined;
 
-export class SimpleKnownElement implements KnownElement {
-    constructor(
-        public readonly postfix: string,
-        public readonly kind = KnownElementKinds.other
-    ) { }
-
-    work(context: LabItemConvertContext, node: ts.Node): NamedConvertedItem | undefined {
-        devLogger.info('+', labUtils.nodeText(node), printNode(node.parent));
-        
-        const reducer = new Reducer(node.getSourceFile().fileName, node.pos, node.end);
+    resolveParentSymbol(context: LabItemConvertContext, node: ts.Node, convertedItem: NamedConvertedItem): ts.Symbol | undefined {
+        KnownElement.devLogger.info('+', labUtils.nodeText(node), 'parent:');
         const parentSymbol = this.findParentSymbol(node);
-        if(parentSymbol) {
-            devLogger.info('  parentSymbol', parentSymbol.escapedName);
-            context.symbolResolverService.addResolvedSymbol(parentSymbol, reducer);
+        if (parentSymbol) {
+            KnownElement.devLogger.info('  parentSymbol for:', labUtils.nodeText(node), 'parent:', parentSymbol.escapedName);
+            context.symbolResolverService.addResolvedSymbol(parentSymbol, convertedItem);
+            convertedItem.parentSymbolName = parentSymbol.getEscapedName().toString();
+            return parentSymbol;
         }
-        return reducer;
-    }
-    get kindText(): string {
-        return KnownElementKinds[this.kind];
+
+        KnownElement.devLogger.info('- no parentSymbol for:', labUtils.nodeText(node));
+        return;
     }
 
-    findParentSymbol(node: ts.Node): ts.Symbol {
-        const parent  = node.parent;
-        if(parent.symbol) {
+    private findParentSymbol(node: ts.Node): ts.Symbol {
+        const parent = node.parent;
+        if (parent.symbol) {
+            // devLogger.error('parent symbol');
             return parent.symbol;
         }
-        if(parent.localSymbol) {
+        if (parent.localSymbol) {
+            // devLogger.error('parent localSymbol');
             return parent.localSymbol;
         }
+        // devLogger.error('no parent symbol');
+
         return this.findParentSymbol(parent);
     }
+
+    match(fullyQualifiedName: string): boolean {
+        return this.postfixes.some(p => fullyQualifiedName.endsWith(p));
+    }
+
 }
+

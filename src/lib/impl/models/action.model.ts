@@ -1,9 +1,7 @@
 
 
 import { ConvertedItem } from '../../core/converters/models/converted-items/converted-item.model';
-import {
-    NamedConvertedItem
-} from '../../core/converters/models/converted-items/named-converted-item.model';
+import { NamedConvertedItem } from '../../core/converters/models/converted-items/named-converted-item.model';
 import { NamedType } from '../../core/converters/models/converted-items/named-type.model';
 import { TypeKind } from '../../core/converters/models/type-kind.enum';
 

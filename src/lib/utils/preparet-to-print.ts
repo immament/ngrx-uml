@@ -10,14 +10,13 @@ function createNodeObj(node: object): { [key: string]: unknown } {
     return anyNode.kind ? { kindText: `${syntaxKindText(anyNode) || ''} (${anyNode.kind})` } : {};
 }
 
-
-
-export function prepareToPrint(node?: object): unknown {
+export function prepareToPrint(node: object | undefined, ignoreKeysArg?: string[]): unknown {
 
     if (!node) {
-        return undefined;
+        return;
     }
-    const ignoreKeys = ['parent',
+
+    const ignoreKeys = ignoreKeysArg ? ignoreKeysArg : ['parent',
         'pos',
         'end',
         'flags',
@@ -63,8 +62,8 @@ export function prepareToPrint(node?: object): unknown {
 
 }
 
-export function printNode(node: object | undefined, level = 3, ): string | undefined {
-    return node && util.inspect(prepareToPrint(node), false, level, true);
+export function printNode(node: object | undefined, level = 3, ignoreKeysArg?: string[]): string | undefined {
+    return node && util.inspect(prepareToPrint(node, ignoreKeysArg), false, level, true);
 }
 
 export interface SimpleNode {
@@ -92,37 +91,3 @@ export function prepareToPrintChilds(node?: Node): SimpleNode | undefined {
 }
 
 
-// export function prepareToPrint(node: ts.Node): unknown {
-//     const ignoreKeys = ['parent', 'pos', 'end', 'flags', 'modifierFlagsCache', 'transformFlags', 'flowNode'];
-
-
-//     const refs: ts.Node[] = [];
-
-//     function prepareNode(node: ts.Node, level = 0): unknown {
-//         if (refs.includes(node)) {
-//             return 'circular';
-//         }
-//         refs.push(node);
-//         const reduced = Object.entries(node)
-//             .filter(([key]) => !ignoreKeys.includes(key))
-//             .reduce((acc, [key, value]) => {
-
-//                 if (Array.isArray(value)) {
-//                     value = value.map(v => prepareNode(v, level + 1));
-//                 } else {
-//                     if (typeof value === 'object') {
-//                         value = prepareNode(value, level + 1);
-//                     }
-//                 }
-//                 acc[key] = value;
-//                 return acc;
-
-//             }, { kindText: syntaxKindText(node) } as { [key: string]: unknown });
-
-//         return reduced;
-
-//     }
-
-//     return prepareNode(node);
-
-// }

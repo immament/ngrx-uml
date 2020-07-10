@@ -1,7 +1,7 @@
 
 import chalk from 'chalk';
 import { once } from 'events';
-import log from 'loglevel';
+import log, { LogLevelDesc, LogLevelNumbers } from 'loglevel';
 import { EOL } from 'os';
 import readline from 'readline';
 
@@ -30,10 +30,14 @@ function getElement<T>(elements: T[], index: number): T | undefined {
     return elements.length > index ? elements[index] : undefined;
 }
 
+//TODO: configure baseDir
+const baseDir = '/home/tofik-tuptus/Documents/android/ngrx-uml/';
+
 function getStackLevel(level: number): string {
     const errStack = new Error().stack?.split('    at ');
-    return errStack && getElement(errStack, level)?.replace(EOL, '') || '';
+    return errStack && getElement(errStack, level)?.replace(EOL, '').replace(baseDir, '') || '';
 }
+
 
 
 function getFnNameFromStackLine(line: string): string {
@@ -44,18 +48,44 @@ function getFnNameFromStackLine(line: string): string {
     return line.split(' ', 1)[0];
 }
 
-export function logFnName(logger: log.Logger): void {
+export function configLogger(logName: string, level: LogLevelDesc, shouldLogFnName?: boolean): void {
+    const logger = log.getLogger(logName);
+    if (shouldLogFnName) {
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+        logFnNameWithFile(logger,  log.levels.INFO);
+    }
+    logger.setLevel(level);
+}
+
+type LoggerNames = 'converter' | 'node-converter' | 'symbol-resolve' | 'lab-utils' | 'known-element';
+
+export function configLoggers(logNames: LoggerNames[], level: LogLevelDesc, shouldLogFnName?: boolean): void {
+
+    for (const logName of logNames) {
+        configLogger(logName, level, shouldLogFnName);
+    }
+}
+
+
+export function logFnNameWithFile(logger: log.Logger, fileNameForMinLevel: LogLevelNumbers): void {
 
     const originalFactory = logger.methodFactory;
 
     logger.methodFactory = (methodName: string, level: log.LogLevelNumbers, loggerName: string): log.LoggingMethod => {
         const rawMethod = originalFactory(methodName, level, loggerName);
         const color = logColor[methodName];
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return (message: any, ...rest: any[]): void => {
-            const logLineDetails = getFnNameFromStackLine(getStackLevel(3));
-            rawMethod(color(methodName.toUpperCase()), chalk.gray(logLineDetails), color(message), ...rest);
-        };
+        if (logMethods[methodName] >= fileNameForMinLevel) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            return (message: any, ...rest: any[]): void => {
+                rawMethod(' ', chalk.gray(getStackLevel(3)), color(`${EOL}     ${methodName.toUpperCase()} ${message}`), ...rest);
+            };
+        } else {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            return (message: any, ...rest: any[]): void => {
+                const logLineDetails = getFnNameFromStackLine(getStackLevel(3));
+                rawMethod(color(methodName.toUpperCase()), chalk.gray(logLineDetails), color(message), ...rest);
+            };
+        }
     };
     logger.setLevel(devLogger.getLevel());
 }

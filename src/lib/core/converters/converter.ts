@@ -1,17 +1,16 @@
-import chalk from 'chalk';
 import log from 'loglevel';
-import { Node, Program } from 'typescript';
+import ts, { Node, Program } from 'typescript';
 
 import { DefaultConverter } from '../../impl/converters/node-converters/default.converter';
 import { LabItemConvertContext } from '../../sandbox/lab/converters/lab-item-convert.context';
 import labUtils from '../../sandbox/lab/lab-utils';
-import { syntaxKindText } from '../../utils';
-import devLogger, { logColor } from '../../utils/logger';
-import { printNode } from '../../utils/preparet-to-print';
+import tsutils, { syntaxKindLog } from '../../utils/tsutils';
 
 import { ConvertContext } from './convert.context';
 import { ConvertedItem, NamedConvertedItem, TypeKind } from './models';
 import { NodeConverter } from './node.converter';
+
+const logger = log.getLogger('converter');
 
 export class Converter {
     private converters: { [kind: number]: NodeConverter[] } = {};
@@ -34,7 +33,7 @@ export class Converter {
             .filter(sf => !program.isSourceFileFromExternalLibrary(sf) || !sf.isDeclarationFile)
         ) {
 
-            log.trace('convert file:', chalk.cyan(sourceFile.fileName));
+            logger.trace('convert file:', sourceFile.fileName);
 
             this.convertRecursive(context, sourceFile);
         }
@@ -50,6 +49,7 @@ export class Converter {
         if (nodeConverters) {
             for (const nodeConverter of nodeConverters) {
                 const convertResult = nodeConverter.convert(context, node);
+
                 if (convertResult) {
                     return convertResult;
                 }
@@ -61,62 +61,84 @@ export class Converter {
     }
 
     convertRecursive(context: ConvertContext, node: Node): ConvertedItem | undefined {
-        if (!this.nodeFilter || this.nodeFilter(node)) {
+        if (this.filter(node)) {
 
             const result = this.convertNode(context, node);
             if (result) {
                 return result;
             }
         }
+        return this.convertChild(context, node);
 
+    }
+
+    convertChild(context: ConvertContext, node: Node): ConvertedItem | undefined {
         node.forEachChild(child => {
             const childResult = this.convertRecursive(context, child);
             if (childResult) {
-                devLogger.info(logColor.warn('child result: '), childResult.kindText);
+                logger.debug('  convertRecursive child result:', `[${childResult.kindText}]`);
             }
         });
         return;
     }
 
-    convertRecursive2(context: LabItemConvertContext, node: Node, level = 0): ConvertedItem | undefined {
-        devLogger.info(syntaxKindText(node), 'level:', level);
-        if (!this.nodeFilter || this.nodeFilter(node)) {
+    private filter(node: Node): boolean {
+        return !this.nodeFilter || this.nodeFilter(node);
+    }
 
+
+    getResolvedItem(context: LabItemConvertContext, node: Node, level = 0): ConvertedItem[] | undefined {
+        logger.debug(`+ ${syntaxKindLog(node)} - level: ${level} - ${labUtils.nodeText(node, { maxLength: 30 })}`);
+        if (level >= 0 && (!this.nodeFilter || !this.nodeFilter(node))) {
             const result = this.convertNode(context, node);
+            logger.debug(`  ${syntaxKindLog(node)} - level: ${level} - has convert result: ${!!result}`);
             if (result) {
-                return result;
+                logger.info(`- result:`, result.kindText);
+                return [result];
             }
         }
 
-        const getChildsResult = labUtils.getChilds(context.typeChecker, node);
+        const childs = labUtils.getReturnedChild(context.typeChecker, node);
 
-        if (Array.isArray(getChildsResult)) {
+        if (!childs) { return; }
+        const convertedItems: ConvertedItem[] = [];
 
-            if(getChildsResult.length > 1) {
-                devLogger.warn('  Childs count > 1:', getChildsResult.map(c => syntaxKindText(c)));
+        logger.info(`  ${syntaxKindLog(node)} - level: ${level} - childs: ${childs.length}`);
+
+        for (const item of childs) {
+            const resolveResult = this.resolve(context, item, level);
+            if (resolveResult) {
+                convertedItems.push(...resolveResult);
             }
-            const childConvertResults = [];
-            for (const child of getChildsResult) {
-                const converResult = this.convertRecursive2(context, child, level + 1);
-                if (converResult) {
-                    childConvertResults.push(converResult);
-                    devLogger.info('  child result:', syntaxKindText(child), labUtils.nodeText(child), converResult.kindText, 'level:', level);
-                }
+        }
+        logger.info(`- result: ${labUtils.nodeText(node)} - level: ${level} - convertedItems count: ${convertedItems.length}`);
+
+        return convertedItems;
+
+    }
+
+    private resolve(context: LabItemConvertContext, child: ts.Node | ts.Symbol, level: number): ConvertedItem[] | undefined {
+
+        if (tsutils.isNode(child)) {
+            const resolvedItem = this.getResolvedItem(context, child, level + 1);
+            if (resolvedItem) {
+                logger.info(`- resolved item - level: ${level}`);
+                return resolvedItem;
             }
-            if (childConvertResults.length > 0) {
-                // TODO: can be more??
-                return childConvertResults[0];
-            }
+            return;
+
         } else {
-            const symbol = getChildsResult;
-            const fqn = context.typeChecker.getFullyQualifiedName(symbol);
-            const item = context.symbolResolverService.getItem(fqn);
-            if (item) {
-                return item.item;
+
+            logger.info(`  resolve symbol:`, child.escapedName);
+            const symbolResolveItem = context.symbolResolverService.resolveItem(child);
+            if (symbolResolveItem) {
+                if (symbolResolveItem.isResolved) {
+                    logger.info(`- resolvedItems count: ${symbolResolveItem.resolvedItems.length} - symbol: ${child.escapedName}`);
+                    return symbolResolveItem.resolvedItems;
+                }
+
+                return [symbolResolveItem];
             }
-
-            devLogger.warn('- Not resolved symbol:', printNode(symbol));
-
         }
         return;
     }
