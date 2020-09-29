@@ -20,7 +20,7 @@ export class GeneratorService {
         saveConvertResultToJson: false,
         saveWsd: false,
         outDir: '/out',
-        baseDir: '',
+        baseDir: './',
         tsConfigFileName: 'tsconfig.json',
         clickableLinks: false,
         ignorePattern: '../**/*spec.ts',
@@ -43,7 +43,7 @@ export class GeneratorService {
         }
     }
 
-   async generate(filesPattern: string): Promise<void> {
+    async generate(filesPattern: string): Promise<void> {
 
         log.info('Starting...');
         log.debug(chalk.yellow('filePattern:'), filesPattern);
@@ -56,9 +56,12 @@ export class GeneratorService {
             return;
         }
 
-        if (this.options.baseDir !== '' && !this.options.baseDir.endsWith('/')) {
-            this.options.baseDir += '/';
-        }
+        if (this.options.baseDir === '') {
+            this.options.baseDir = './';
+        } else
+            if (!this.options.baseDir.endsWith('/')) {
+                this.options.baseDir += '/';
+            }
 
         const program = this.createTsProgram(filesPattern, this.options.baseDir, this.options.tsConfigFileName);
         const convertedItems = this.convert(program, this.options.outDir);
@@ -105,7 +108,7 @@ export class GeneratorService {
 
     private saveConvertResult(context: ConvertContext, outDir: string): void {
         if (this.options.saveConvertResultToJson) {
-            const result = context.serializeResultToJson({rootPath: this.options.baseDir });
+            const result = context.serializeResultToJson({ rootPath: this.options.baseDir });
             if (result) {
                 for (const { kind, json } of result) {
                     const filePath = writeToFile(json, path.join(outDir, 'json'), `${context.name}_${kind}.json`);

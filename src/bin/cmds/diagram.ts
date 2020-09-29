@@ -32,7 +32,7 @@ exports.builder = (yargs: Argv<DiagramOptions>): DiagramOptions => {
     }).option('baseDir', {
         alias: 'd',
         description: 'Path to project base directory',
-        default: '',
+        default: './',
         type: 'string',
     }).option('tsConfig', {
         alias: 'c',
