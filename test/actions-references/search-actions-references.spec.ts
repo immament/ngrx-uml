@@ -11,7 +11,7 @@ import {
 import {
     ActionReferenceConvertContextFactory,
 } from '../../src/lib/impl/converters/action-reference-convert-context.factory';
-import { Action } from '../../src/lib/impl/models';
+import { Action, ActionReference } from '../../src/lib/impl/models';
 
 describe('Search Actions References', () => {
     let actionConvertFactory: ActionConvertContextFactory;
@@ -44,6 +44,20 @@ describe('Search Actions References', () => {
         return converterResult;
     }
 
+    /**
+     * Remove file paths diffrent in enviroments
+     */
+    function prepareActionReferencesToSnapshot(actionReferences: ActionReference[]): void {
+        actionReferences?.forEach(ar => {
+            ar.fileName = undefined;
+            if (ar.action) {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (ar.action as any).filePath = undefined;
+            }
+        });
+
+    }
+
     function checkResult(result: Map<TypeKind, NamedConvertedItem[]> | undefined): void {
         expect(result).toBeDefined();
 
@@ -54,24 +68,28 @@ describe('Search Actions References', () => {
         const actionReferences = (actions[0] as Action).references;
         expect(actionReferences).toBeDefined();
         expect(actionReferences).toHaveLength(1);
-        expect(actionReferences).toMatchSnapshot();
+        if (actionReferences) {
+            prepareActionReferencesToSnapshot(actionReferences);
+            expect(actionReferences).toMatchSnapshot();
+
+        }
     }
 
-    xit('Should find one action reference WITH alias', () => {
+    it('Should find one action reference WITH alias', () => {
         const programFiles = ['references/with-alias.ts', 'actions/actions.ts'];
         const program = ts.createProgram([...programFiles.map((fileName) => createPathToTestFile(fileName))], {});
         const result = convert(program, [actionConvertFactory, actionReferenceFactory]);
         checkResult(result);
     });
 
-    xit('Should find one action reference WITHOUT alias', () => {
+    it('Should find one action reference WITHOUT alias', () => {
         const programFiles = ['references/without-alias.ts', 'actions/actions.ts'];
         const program = ts.createProgram([...programFiles.map((fileName) => createPathToTestFile(fileName))], {});
         const result = convert(program, [actionConvertFactory, actionReferenceFactory]);
         checkResult(result);
     });
 
-    xit('Should find one action reference WITH tsconfig path and import alias', () => {
+    it('Should find one action reference WITH tsconfig path and import alias', () => {
         const programFiles = ['references/with-tsconfig-path-with-import-alias.ts', 'actions/actions.ts'];
         const program = ts.createProgram([...programFiles.map((fileName) => createPathToTestFile(fileName))], {
             baseUrl: base,
