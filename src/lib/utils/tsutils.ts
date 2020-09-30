@@ -49,7 +49,6 @@ export function createTsProgram(fileNames: string[], baseDir: string, configName
     const compilerOptions = ts.parseJsonConfigFileContent(configFileRef.config, parseConfigHost, baseDir);
 
     log.trace(chalk.yellow('CompilerOptions:'), compilerOptions.options);
-    compilerOptions.options.baseUrl = baseDir;
     const program = ts.createProgram(fileNames, compilerOptions.options);
 
     return program;
@@ -59,11 +58,25 @@ export function isSymbol(object: unknown): object is ts.Symbol {
     return (object as ts.Symbol).valueDeclaration != null;
 }
 
+function getAliasedSymbol(node: ts.Node, typeChecker: ts.TypeChecker): ts.Symbol | undefined {
+    let nameSymbol = typeChecker.getSymbolAtLocation(node);
+    if (nameSymbol && nameSymbol.flags & ts.SymbolFlags.AliasExcludes) {
+        const aliasedSymbol = typeChecker.getAliasedSymbol(nameSymbol);
+        if (!typeChecker.isUnknownSymbol(aliasedSymbol)) {
+            nameSymbol = aliasedSymbol;
+        }
+    }
+    return nameSymbol;
+}
+
 const tsutils = {
     syntaxKindText,
     getCallExpressionName,
     createTsProgram,
     isSymbol,
+    getAliasedSymbol
 };
+
+
 
 export default tsutils;
