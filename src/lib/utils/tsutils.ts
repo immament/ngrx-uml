@@ -49,7 +49,6 @@ export function createTsProgram(fileNames: string[], baseDir: string, configName
     const compilerOptions = ts.parseJsonConfigFileContent(configFileRef.config, parseConfigHost, baseDir);
 
     log.trace(chalk.yellow('CompilerOptions:'), compilerOptions.options);
-    compilerOptions.options.baseUrl = baseDir;
     const program = ts.createProgram(fileNames, compilerOptions.options);
 
     return program;
