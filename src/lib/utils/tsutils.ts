@@ -58,11 +58,25 @@ export function isSymbol(object: unknown): object is ts.Symbol {
     return (object as ts.Symbol).valueDeclaration != null;
 }
 
+function getAliasedSymbol(node: ts.Node, typeChecker: ts.TypeChecker): ts.Symbol | undefined {
+    let nameSymbol = typeChecker.getSymbolAtLocation(node);
+    if (nameSymbol && nameSymbol.flags & ts.SymbolFlags.AliasExcludes) {
+        const aliasedSymbol = typeChecker.getAliasedSymbol(nameSymbol);
+        if (!typeChecker.isUnknownSymbol(aliasedSymbol)) {
+            nameSymbol = aliasedSymbol;
+        }
+    }
+    return nameSymbol;
+}
+
 const tsutils = {
     syntaxKindText,
     getCallExpressionName,
     createTsProgram,
     isSymbol,
+    getAliasedSymbol
 };
+
+
 
 export default tsutils;

@@ -1,11 +1,12 @@
 import chalk from 'chalk';
 import log from 'loglevel';
+import path from 'path';
 import ts from 'typescript';
 
 import { ConvertContext } from '../../../core/converters/convert.context';
 import { TypeKind } from '../../../core/converters/models';
 import { NodeConverter } from '../../../core/converters/node.converter';
-import { syntaxKindText } from '../../../utils/tsutils';
+import tsutils, { syntaxKindText } from '../../../utils/tsutils';
 import { getFileName } from '../../../utils/utils';
 import { ActionReference, Declaration } from '../../models/action-reference.model';
 import { Action } from '../../models/action.model';
@@ -16,20 +17,20 @@ export class ActionReferenceConverter extends NodeConverter {
 
     convert(context: ItemConvertContext, node: ts.VariableDeclaration): ActionReference | undefined {
 
-        if (!node.parent || ts.isVariableDeclaration(node.parent)) {
+        if (!node.parent
+            || ts.isVariableDeclaration(node.parent)
+            || ts.isImportSpecifier(node.parent) // ignore imports
+        ) {
             return;
         }
-
-        const symbol = context.typeChecker.getSymbolAtLocation(node);
+        const symbol = tsutils.getAliasedSymbol(node, context.typeChecker);
         if (symbol) {
             const action = context.getItem<Action>(TypeKind.Action, symbol);
             if (action) {
-                // const fileName = path.basename(node.getSourceFile().fileName);
                 log.debug(`Found Action use: "${chalk.yellow(action.name)}" in ${chalk.gray(node.getSourceFile().fileName)}`);
                 log.trace('name:', node.getText());
 
                 const reference = this.serializeActionUse(context, action, node, symbol);
-                // context.addResult(reference);
 
                 return reference;
             }

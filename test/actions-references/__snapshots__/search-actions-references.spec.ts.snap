@@ -1,0 +1,109 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Search Actions References Should find one action reference WITH alias 1`] = `
+Array [
+  ActionReference {
+    "action": Action {
+      "createActionArgs": undefined,
+      "end": 83,
+      "filePath": "/home/tofik-tuptus/Documents/android/ngrx-uml-master/ngrx-uml/test/actions-references/search-actions-references_data/actions/actions.ts",
+      "kind": 1002,
+      "kindText": "Action",
+      "name": "[Books] Remove Book",
+      "pos": 42,
+      "references": [Circular],
+      "variable": "removeBook",
+    },
+    "declarationContext": Array [],
+    "documentation": "",
+    "fileName": "with-alias",
+    "filePath": "/home/tofik-tuptus/Documents/android/ngrx-uml-master/ngrx-uml/test/actions-references/search-actions-references_data/references/with-alias.ts",
+    "isCall": true,
+    "kind": 1003,
+    "kindText": "ActionReference",
+    "name": "removeBook",
+    "type": "any",
+  },
+]
+`;
+
+exports[`Search Actions References Should find one action reference WITH tsconfig path and WITHOUT import alias 1`] = `
+Array [
+  ActionReference {
+    "action": Action {
+      "createActionArgs": undefined,
+      "end": 83,
+      "filePath": "/home/tofik-tuptus/Documents/android/ngrx-uml-master/ngrx-uml/test/actions-references/search-actions-references_data/actions/actions.ts",
+      "kind": 1002,
+      "kindText": "Action",
+      "name": "[Books] Remove Book",
+      "pos": 42,
+      "references": [Circular],
+      "variable": "removeBook",
+    },
+    "declarationContext": Array [],
+    "documentation": "",
+    "fileName": "with-tsconfig-path-without-import-alias",
+    "filePath": "/home/tofik-tuptus/Documents/android/ngrx-uml-master/ngrx-uml/test/actions-references/search-actions-references_data/references/with-tsconfig-path-without-import-alias.ts",
+    "isCall": true,
+    "kind": 1003,
+    "kindText": "ActionReference",
+    "name": "removeBook",
+    "type": "any",
+  },
+]
+`;
+
+exports[`Search Actions References Should find one action reference WITH tsconfig path and import alias 1`] = `
+Array [
+  ActionReference {
+    "action": Action {
+      "createActionArgs": undefined,
+      "end": 83,
+      "filePath": "/home/tofik-tuptus/Documents/android/ngrx-uml-master/ngrx-uml/test/actions-references/search-actions-references_data/actions/actions.ts",
+      "kind": 1002,
+      "kindText": "Action",
+      "name": "[Books] Remove Book",
+      "pos": 42,
+      "references": [Circular],
+      "variable": "removeBook",
+    },
+    "declarationContext": Array [],
+    "documentation": "",
+    "fileName": "with-tsconfig-path-with-import-alias",
+    "filePath": "/home/tofik-tuptus/Documents/android/ngrx-uml-master/ngrx-uml/test/actions-references/search-actions-references_data/references/with-tsconfig-path-with-import-alias.ts",
+    "isCall": true,
+    "kind": 1003,
+    "kindText": "ActionReference",
+    "name": "removeBook",
+    "type": "any",
+  },
+]
+`;
+
+exports[`Search Actions References Should find one action reference WITHOUT alias 1`] = `
+Array [
+  ActionReference {
+    "action": Action {
+      "createActionArgs": undefined,
+      "end": 83,
+      "filePath": "/home/tofik-tuptus/Documents/android/ngrx-uml-master/ngrx-uml/test/actions-references/search-actions-references_data/actions/actions.ts",
+      "kind": 1002,
+      "kindText": "Action",
+      "name": "[Books] Remove Book",
+      "pos": 42,
+      "references": [Circular],
+      "variable": "removeBook",
+    },
+    "declarationContext": Array [],
+    "documentation": "",
+    "fileName": "without-alias",
+    "filePath": "/home/tofik-tuptus/Documents/android/ngrx-uml-master/ngrx-uml/test/actions-references/search-actions-references_data/references/without-alias.ts",
+    "isCall": true,
+    "kind": 1003,
+    "kindText": "ActionReference",
+    "name": "removeBook",
+    "type": "any",
+  },
+]
+`;
