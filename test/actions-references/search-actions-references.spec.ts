@@ -49,7 +49,7 @@ describe('Search Actions References', () => {
      */
     function prepareActionReferencesToSnapshot(actionReferences: ActionReference[]): void {
         actionReferences?.forEach(ar => {
-            ar.fileName = undefined;
+            ar.filePath = undefined;
             if (ar.action) {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 (ar.action as any).filePath = undefined;
